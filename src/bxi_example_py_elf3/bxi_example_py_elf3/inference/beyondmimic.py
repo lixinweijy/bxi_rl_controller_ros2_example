@@ -2,6 +2,7 @@
 import onnx
 import numpy as np
 import onnxruntime as ort
+from bxi_example_py_elf3.inference.rknn_policy import create_motion_session
 from bxi_example_py_elf3.mod_api.geometry import (
     get_gravity_orientation,
     matrix_to_quaternion_simple,
@@ -110,10 +111,12 @@ class DanceMotionPolicyMjlab:
         options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
         
         # 创建推理会话
-        self.session = ort.InferenceSession(
+        self.session = create_motion_session(
             onnx_path,
-            providers=providers,
-            sess_options=options
+            providers,
+            options,
+            rknn_outputs=["actions", "joint_pos"],
+            label=self.__class__.__name__,
         )
         
         # 预存输入输出信息
@@ -306,10 +309,12 @@ class DanceMotionPolicyGravityMjlab:
         options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
         
         # 创建推理会话
-        self.session = ort.InferenceSession(
+        self.session = create_motion_session(
             onnx_path,
-            providers=providers,
-            sess_options=options
+            providers,
+            options,
+            rknn_outputs=["actions", "joint_pos"],
+            label=self.__class__.__name__,
         )
         
         # 预存输入输出信息
@@ -593,10 +598,12 @@ class DanceMotionPolicyGravityIsaaclab:
         options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
         
         # 创建推理会话
-        self.session = ort.InferenceSession(
+        self.session = create_motion_session(
             onnx_path,
-            providers=providers,
-            sess_options=options
+            providers,
+            options,
+            rknn_outputs=["actions", "joint_pos"],
+            label=self.__class__.__name__,
         )
         
         # 预存输入输出信息
@@ -788,7 +795,13 @@ class DanceMotionPolicyGravityIsaaclabV2:
         options.intra_op_num_threads = 4
         options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
 
-        self.session = ort.InferenceSession(onnx_path, providers=providers, sess_options=options)
+        self.session = create_motion_session(
+            onnx_path,
+            providers,
+            options,
+            rknn_outputs=["actions", "joint_pos"],
+            label=self.__class__.__name__,
+        )
         self.input_info = self.session.get_inputs()[0]
         self.num_obs = int(self.input_info.shape[1])
         self.obs = np.zeros(self.num_obs, dtype=np.float32)
@@ -991,7 +1004,13 @@ class DanceMotionPolicyGravityIsaaclabV3:
         options.intra_op_num_threads = 4
         options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
 
-        self.session = ort.InferenceSession(onnx_path, providers=providers, sess_options=options)
+        self.session = create_motion_session(
+            onnx_path,
+            providers,
+            options,
+            rknn_outputs=["actions", "joint_pos"],
+            label=self.__class__.__name__,
+        )
         self.input_info = self.session.get_inputs()[0]
         self.num_obs = int(self.input_info.shape[1])
         self.obs = np.zeros(self.num_obs, dtype=np.float32)

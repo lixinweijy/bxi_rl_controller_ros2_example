@@ -12,6 +12,77 @@ _CV2 = None
 _CV2_IMPORT_TRIED = False
 
 
+class _ModelTensorInfo:
+    def __init__(self, name, shape):
+        self.name = name
+        self.shape = shape
+
+
+class _RknnPolicySession:
+    def __init__(self, onnx_path, rknn_path):
+        try:
+            from rknnlite.api import RKNNLite
+        except Exception as exc:
+            raise RuntimeError("rknn-toolkit-lite2 is unavailable") from exc
+
+        metadata = ort.InferenceSession(
+            onnx_path,
+            providers=["CPUExecutionProvider"],
+        )
+        self._inputs = [
+            _ModelTensorInfo(item.name, item.shape)
+            for item in metadata.get_inputs()
+        ]
+        self._outputs = [
+            _ModelTensorInfo(item.name, item.shape)
+            for item in metadata.get_outputs()
+        ]
+        self._input_names = [item.name for item in self._inputs]
+        self._output_names = [item.name for item in self._outputs]
+
+        rknn = RKNNLite(verbose=False)
+        ret = rknn.load_rknn(rknn_path)
+        if ret != 0:
+            rknn.release()
+            raise RuntimeError(f"load_rknn failed: ret={ret}")
+        ret = rknn.init_runtime(core_mask=RKNNLite.NPU_CORE_AUTO)
+        if ret != 0:
+            rknn.release()
+            raise RuntimeError(f"init_runtime failed: ret={ret}")
+        self._rknn = rknn
+
+    def get_inputs(self):
+        return self._inputs
+
+    def get_outputs(self):
+        return self._outputs
+
+    def run(self, output_names, feed):
+        inputs = [
+            np.asarray(feed[name], dtype=np.float32)
+            for name in self._input_names
+        ]
+        outputs = self._rknn.inference(inputs=inputs)
+        if outputs is None:
+            raise RuntimeError("RKNN inference returned no outputs")
+        if output_names is None:
+            return outputs
+
+        selected = []
+        for name in output_names:
+            selected.append(outputs[self._output_names.index(name)])
+        return selected
+
+    def release(self):
+        self._rknn.release()
+
+    def __del__(self):
+        try:
+            self.release()
+        except Exception:
+            pass
+
+
 def _get_cv2():
     global _CV2, _CV2_IMPORT_TRIED
     if _CV2_IMPORT_TRIED:
@@ -354,6 +425,16 @@ class HumanoidGaitDepthPolicyIsaaclab:
         self.range_velz = np.array([-1.57, 1.57], dtype=np.float32)
 
     def initialize_model(self, onnx_path):
+        rknn_session = self._try_initialize_rknn(onnx_path)
+        if rknn_session is not None:
+            self.session = rknn_session
+            self._configure_model_io()
+            self.reset()
+            self._warmup_policy()
+            print(f"AMP depth model init finished: {onnx_path} [RKNN]")
+            print("#" * 72)
+            return
+
         providers = (
             [
                 "CUDAExecutionProvider",
@@ -375,8 +456,31 @@ class HumanoidGaitDepthPolicyIsaaclab:
         self._configure_model_io()
         self.reset()
         self._warmup_policy()
-        print(f"AMP depth model init finished: {onnx_path}")
+        print(f"AMP depth model init finished: {onnx_path} [ONNXRuntime]")
         print("#" * 72)
+
+    def _try_initialize_rknn(self, onnx_path):
+        use_rknn = os.getenv("BXI_DEPTH_RKNN", "1").lower() not in (
+            "0",
+            "false",
+            "no",
+            "off",
+        )
+        if not use_rknn:
+            return None
+
+        rknn_path = Path(onnx_path).with_suffix(".rknn")
+        if not rknn_path.exists():
+            return None
+
+        try:
+            session = _RknnPolicySession(str(onnx_path), str(rknn_path))
+        except Exception as exc:
+            print(f"AMP depth RKNN init failed, fallback to ONNX: {exc}")
+            return None
+
+        print(f"AMP depth RKNN backend enabled: {rknn_path}")
+        return session
 
     def reset(self):
         self.actor_obs_buffer = np.zeros(

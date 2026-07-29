@@ -2,6 +2,7 @@
 import collections
 import numpy as np
 import onnxruntime as ort
+from bxi_example_py_elf3.inference.rknn_policy import create_motion_session
 from bxi_example_py_elf3.mod_api.geometry import get_gravity_orientation
 
 class HumanoidGaitPolicyLiteIsaaclab:
@@ -198,10 +199,11 @@ class HumanoidGaitPolicyLiteIsaaclab:
         options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
         
         # 创建推理会话
-        self.session = ort.InferenceSession(
+        self.session = create_motion_session(
             onnx_path,
-            providers=providers,
-            sess_options=options
+            providers,
+            options,
+            label="amp",
         )
         
         # 预存输入输出信息
