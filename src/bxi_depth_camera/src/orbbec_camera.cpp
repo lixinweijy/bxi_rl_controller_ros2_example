@@ -10,6 +10,7 @@
 #include <cctype>
 #include <cmath>
 #include <condition_variable>
+#include <cstdint>
 #include <cstring>
 #include <mutex>
 #include <stdexcept>
@@ -106,6 +107,20 @@ public:
     {
         auto devices = context_->queryDeviceList();
         device_ = devices->getDeviceBySN(descriptor_.serial.c_str());
+        try {
+            global_timestamp_enabled_ = device_->isGlobalTimestampSupported();
+            if (global_timestamp_enabled_) {
+                device_->enableGlobalTimestamp(true);
+            }
+        } catch (const std::exception &error) {
+            global_timestamp_enabled_ = false;
+            RCLCPP_WARN(node_.get_logger(),
+                        "cannot enable Orbbec global timestamps: %s",
+                        error.what());
+        }
+        RCLCPP_INFO(node_.get_logger(), "Orbbec frame timestamp source: %s",
+                    global_timestamp_enabled_ ? "global capture time" :
+                                                "host receive time");
         start_pipeline();
         video_thread_ = std::thread(&OrbbecCamera::run_video_worker, this);
     }
@@ -336,6 +351,35 @@ private:
         }
     }
 
+    rclcpp::Time frame_stamp(const std::shared_ptr<ob::Frame> &frame)
+    {
+        const auto now = node_.now();
+        if (!frame) {
+            return now;
+        }
+        try {
+            std::uint64_t stamp_us = global_timestamp_enabled_ ?
+                                         frame->getGlobalTimeStampUs() :
+                                         frame->getSystemTimeStampUs();
+            if (stamp_us == 0 && global_timestamp_enabled_) {
+                stamp_us = frame->getSystemTimeStampUs();
+            }
+            const auto stamp_ns = static_cast<std::int64_t>(stamp_us) * 1000;
+            const auto age_ns = now.nanoseconds() - stamp_ns;
+            if (stamp_us > 0 && age_ns >= -50'000'000LL &&
+                age_ns <= 5'000'000'000LL) {
+                return rclcpp::Time(stamp_ns, RCL_SYSTEM_TIME);
+            }
+        } catch (const std::exception &) {
+        }
+        if (!timestamp_fallback_warned_) {
+            RCLCPP_WARN(node_.get_logger(),
+                        "invalid Orbbec frame timestamp; using publish time");
+            timestamp_fallback_warned_ = true;
+        }
+        return now;
+    }
+
     void publish_frameset(const std::shared_ptr<ob::FrameSet> &frameset)
     {
         const bool need_depth = depth_requested();
@@ -348,9 +392,10 @@ private:
               need_infra2 || need_pointcloud)) {
             return;
         }
-        const auto stamp = node_.now();
+        const auto depth = frameset->getDepthFrame();
+        const auto stamp = frame_stamp(depth);
         if (need_depth) {
-            publish_depth(frameset->getDepthFrame(), stamp, pub_depth_,
+            publish_depth(depth, stamp, pub_depth_,
                           pub_depth_info_, depth_frame_id(),
                           config_.rectify_depth, true);
         }
@@ -618,6 +663,8 @@ private:
     std::condition_variable video_cv_;
     std::optional<std::shared_ptr<ob::FrameSet>> latest_frameset_;
     bool video_stopping_{ false };
+    bool global_timestamp_enabled_{ false };
+    bool timestamp_fallback_warned_{ false };
     std::thread video_thread_;
     std::atomic<bool> local_stopped_{ false };
 };

@@ -383,18 +383,38 @@ void CameraManager::update_single_camera_fallback(
 std::vector<DeviceDescriptor> CameraManager::discover()
 {
     std::vector<DeviceDescriptor> descriptors;
-    try {
-        auto values = discover_realsense();
-        descriptors.insert(descriptors.end(), values.begin(), values.end());
-    } catch (const std::exception &error) {
-        RCLCPP_WARN(get_logger(), "RealSense discovery failed: %s",
-                    error.what());
+    const auto preserve_running = [this, &descriptors](
+                                      const std::string &backend) {
+        std::size_t count = 0;
+        for (const auto &entry : workers_) {
+            const auto &descriptor = entry.second->descriptor();
+            if (descriptor.backend == backend) {
+                descriptors.push_back(descriptor);
+                ++count;
+            }
+        }
+        return count;
+    };
+    // ponytail: live RealSense hot-plug waits until the active worker stops;
+    // use one shared SDK context if simultaneous hot-plug is ever required.
+    if (preserve_running("realsense") == 0) {
+        try {
+            auto values = discover_realsense();
+            descriptors.insert(descriptors.end(), values.begin(), values.end());
+        } catch (const std::exception &error) {
+            RCLCPP_WARN(get_logger(), "RealSense discovery failed: %s",
+                        error.what());
+        }
     }
     try {
         auto values = discover_orbbec();
         descriptors.insert(descriptors.end(), values.begin(), values.end());
     } catch (const std::exception &error) {
-        RCLCPP_WARN(get_logger(), "Orbbec discovery failed: %s", error.what());
+        const auto preserved = preserve_running("orbbec");
+        RCLCPP_WARN(
+            get_logger(),
+            "Orbbec discovery failed: %s; preserving %zu active camera(s)",
+            error.what(), preserved);
     }
     const std::string selected_serial =
         strip_leading_underscores(get_parameter("serial_no").as_string());

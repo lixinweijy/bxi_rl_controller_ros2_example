@@ -943,7 +943,7 @@ outputs:
 system:
   start:
     - "mkdir -p /var/log/bxi_log"
-    - "ros2 launch bxi_example_py_elf3 example_demo_hw.launch.py > /var/log/bxi_log/$(date +%Y-%m-%d_%H-%M-%S)_elf.log 2>&1 &"
+    - "taskset -c 4-7 ros2 launch bxi_example_py_elf3 example_demo_hw.launch.py > /var/log/bxi_log/$(date +%Y-%m-%d_%H-%M-%S)_elf.log 2>&1 &"
     - "ros2 launch bxi_example_bms bms.launch.py > /var/log/bxi_log/bms_$(date +%Y-%m-%d_%H-%M-%S)_bms.log 2>&1 &"
     - "su bxi -c \"cd /home/bxi/bxi_ws/bxi_voice && ./bin/bxi-voice\" 2>&1 &"
   stop:

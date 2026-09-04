@@ -13,7 +13,8 @@
     device_timeout_sec: 3.0
 
     enable_depth: true
-    enable_color: true
+    # ELF3 深度策略最终使用 36x36 输入；需要彩色图的应用应在 launch 时覆盖。
+    enable_color: false
     enable_infra1: false
     enable_infra2: false
     enable_gyro: false
@@ -24,7 +25,7 @@
     pointcloud.allow_no_texture_points: false
     pointcloud.max_fps: 10.0
 
-    depth_module.depth_profile: "848x480x30"
+    depth_module.depth_profile: "480x270x60"
     depth_module.rectification.enable: false
     rgb_camera.color_profile: "1920,1080,30"
     rgb_camera.rectification.enable: true
@@ -46,7 +47,7 @@
     second_hole_filling_filter.enable: true
     second_hole_filling_filter.holes_fill: 2
 
-    orbbec.enable_sdk_filters: true
+    orbbec.enable_sdk_filters: false
     orbbec.fallback_hfov: 90.0
     orbbec.fallback_vfov: 65.0
 
