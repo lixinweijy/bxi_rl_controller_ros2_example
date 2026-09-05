@@ -4,7 +4,7 @@ Description=ROS Launch Service
 [Service]
 Type=simple
 User=root
-Environment=ROS_DOMAIN_ID=XX
+Environment=ROS_DOMAIN_ID=31
 Environment=RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 Environment=ROS_LOCALHOST_ONLY=0
 Environment='CYCLONEDDS_URI=<CycloneDDS><Domain Id="any"><General><Interfaces><NetworkInterface name="lo" multicast="true"/></Interfaces><AllowMulticast>true</AllowMulticast></General></Domain></CycloneDDS>'
