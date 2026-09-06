@@ -50,7 +50,7 @@ class BackendRegistry:
 
 @dataclass(frozen=True, slots=True)
 class RuntimeOptions:
-    backend: str = "auto"
+    backend: str = "onnxruntime"
     warmup_runs: int = 1
     warn_on_fallback: bool = True
 
@@ -197,7 +197,7 @@ class InferenceRuntime:
         *,
         backend: str | None = None,
     ) -> InferenceBackend:
-        requested = backend or self.options.backend
+        requested = self.options.backend if backend in (None, "auto") else backend
         errors: list[str] = []
         skipped: list[str] = []
         matched = False

@@ -8,7 +8,7 @@ _CPU_AFFINITY_PLAN = bootstrap_process_scheduling()
 import rclpy
 from rclpy.node import Node
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
-from rclpy.executors import MultiThreadedExecutor
+from rclpy.executors import SingleThreadedExecutor
 from rclpy.qos import QoSProfile, qos_profile_sensor_data
 import communication.msg as bxiMsg
 import communication.srv as bxiSrv
@@ -555,7 +555,7 @@ def main(args=None):
     rclpy.init(args=args)
     node = BxiExample(cpu_affinity_plan=_CPU_AFFINITY_PLAN)
 
-    executor = MultiThreadedExecutor(num_threads=3)
+    executor = SingleThreadedExecutor()
     try:
         executor.add_node(node)
         node.runtime.attach_executor(executor)

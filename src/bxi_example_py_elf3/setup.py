@@ -3,10 +3,7 @@ import os
 from pathlib import Path
 import shutil
 
-try:
-    from setuptools._distutils.command.install_data import install_data
-except ImportError:
-    from distutils.command.install_data import install_data
+from distutils.command.install_data import install_data
 
 try:
     from colcon_core.distutils.commands.symlink_data import symlink_data
@@ -252,6 +249,7 @@ setup(
         "console_scripts": [
             "bxi_example_py_elf3_mjlab = bxi_example_py_elf3.bxi_example_mjlab:main",
             "bxi_example_py_elf3_demo = bxi_example_py_elf3.bxi_example_demo:main",
+            "motor_online_test = bxi_example_py_elf3.motor_online_test:main",
         ],
     },
 )
