@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-ROS_SETUP=/opt/ros/humble/setup.bash
+ROS_SETUP=/opt/ros/jazzy/setup.bash
 BXI_SETUP=/opt/bxi/bxi_ros2_pkg/setup.bash
 
 if [ ! -f "$ROS_SETUP" ]; then

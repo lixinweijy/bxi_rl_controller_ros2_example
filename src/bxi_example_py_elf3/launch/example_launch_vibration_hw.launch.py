@@ -78,7 +78,7 @@ def generate_launch_description(
             {
                 "hardware_config/imu": True,
                 "hardware_config/motor_pwr": True,
-                "hardware_config/motor_disable": 0x60000000,
+                "hardware_config/motor_disable": 0x00000000,
             }
         ],
         emulate_tty=True,
