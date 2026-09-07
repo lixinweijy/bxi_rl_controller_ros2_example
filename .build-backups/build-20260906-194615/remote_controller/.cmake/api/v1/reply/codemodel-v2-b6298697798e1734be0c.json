@@ -1,0 +1,106 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-3827c15595d00d4af0e0.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "remote_controller",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "remote_controller::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-remote_controller-Release-a4503e4e2ecdbc89967d.json",
+					"name" : "remote_controller",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "remote_controller_control_rules_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-remote_controller_control_rules_test-Release-fade2718cc6ac2417dc3.json",
+					"name" : "remote_controller_control_rules_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "remote_controller_core::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-remote_controller_core-Release-894721804645a9d529db.json",
+					"name" : "remote_controller_core",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "remote_controller_crsf_frame_parser_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-remote_controller_crsf_frame_parser_test-Release-f74a19d9b2774d34197b.json",
+					"name" : "remote_controller_crsf_frame_parser_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "remote_controller_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-remote_controller_uninstall-Release-643ef52267f977a6a854.json",
+					"name" : "remote_controller_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Release-69f7046cd2ab3a86b7c6.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller",
+		"source" : "/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/src/remote_controller"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

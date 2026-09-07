@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG CMakeFiles/remote_controller_crsf_frame_parser_test.dir/test/crsf_frame_parser_test.cpp.o -o remote_controller_crsf_frame_parser_test 

@@ -1,0 +1,14 @@
+package.xml
+setup.cfg
+setup.py
+../../build/bxi_example_bms/bxi_example_bms.egg-info/PKG-INFO
+../../build/bxi_example_bms/bxi_example_bms.egg-info/SOURCES.txt
+../../build/bxi_example_bms/bxi_example_bms.egg-info/dependency_links.txt
+../../build/bxi_example_bms/bxi_example_bms.egg-info/entry_points.txt
+../../build/bxi_example_bms/bxi_example_bms.egg-info/requires.txt
+../../build/bxi_example_bms/bxi_example_bms.egg-info/top_level.txt
+../../build/bxi_example_bms/bxi_example_bms.egg-info/zip-safe
+bxi_example_bms/__init__.py
+bxi_example_bms/bxi_example_bms.py
+launch/bms.launch.py
+resource/bxi_example_bms

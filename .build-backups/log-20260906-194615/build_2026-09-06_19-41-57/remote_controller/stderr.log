@@ -1,0 +1,13 @@
+gmake[2]: *** [CMakeFiles/remote_controller_core.dir/build.make:118: CMakeFiles/remote_controller_core.dir/src/drivers/input_driver_base.cpp.o] Interrupt
+gmake[2]: *** [CMakeFiles/remote_controller_core.dir/build.make:146: CMakeFiles/remote_controller_core.dir/src/drivers/keyboard_input_driver.cpp.o] Interrupt
+gmake[2]: *** [CMakeFiles/remote_controller_core.dir/build.make:104: CMakeFiles/remote_controller_core.dir/src/drivers/crsf_input_driver.cpp.o] Interrupt
+gmake[2]: *** [CMakeFiles/remote_controller_core.dir/build.make:76: CMakeFiles/remote_controller_core.dir/src/config.cpp.o] Interrupt
+gmake[2]: *** [CMakeFiles/remote_controller_core.dir/build.make:173: CMakeFiles/remote_controller_core.dir/src/input_mapper.cpp.o] Interrupt
+gmake[2]: *** [CMakeFiles/remote_controller_core.dir/build.make:90: CMakeFiles/remote_controller_core.dir/src/drivers/driver_registry.cpp.o] Interrupt
+gmake[2]: *** [CMakeFiles/remote_controller_core.dir/build.make:132: CMakeFiles/remote_controller_core.dir/src/drivers/joystick_input_driver.cpp.o] Interrupt
+gmake[2]: *** [CMakeFiles/remote_controller_core.dir/build.make:187: CMakeFiles/remote_controller_core.dir/src/motion_commands_adapter.cpp.o] Interrupt
+gmake[2]: *** wait: No child processes.  Stop.
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[2]: *** wait: No child processes.  Stop.
+gmake[1]: *** [CMakeFiles/Makefile2:169: CMakeFiles/remote_controller_core.dir/all] Error 2
+gmake: *** [Makefile:146: all] Interrupt

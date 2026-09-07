@@ -1,0 +1,31 @@
+[0.281s] Invoking command in '/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller -- -j14 -l14
+[0.326s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.749s] -- Found rclcpp: 28.1.21 (/opt/ros/jazzy/share/rclcpp/cmake)
+[0.782s] -- Found rosidl_generator_c: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.789s] -- Found rosidl_generator_cpp: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.803s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.816s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.873s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[0.875s] -- Found rmw_fastrtps_cpp: 8.4.4 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[0.974s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.037s] -- Found std_msgs: 5.3.8 (/opt/ros/jazzy/share/std_msgs/cmake)
+[1.059s] [31mCMake Error at CMakeLists.txt:22 (find_package):
+[1.059s]   By not providing "Findcommunication.cmake" in CMAKE_MODULE_PATH this
+[1.059s]   project has asked CMake to find a package configuration file provided by
+[1.060s]   "communication", but CMake did not find one.
+[1.060s] 
+[1.060s]   Could not find a package configuration file provided by "communication"
+[1.060s]   with any of the following names:
+[1.060s] 
+[1.060s]     communicationConfig.cmake
+[1.060s]     communication-config.cmake
+[1.060s] 
+[1.060s]   Add the installation prefix of "communication" to CMAKE_PREFIX_PATH or set
+[1.060s]   "communication_DIR" to a directory containing one of the above files.  If
+[1.060s]   "communication" provides a separate development package or SDK, be sure it
+[1.060s]   has been installed.
+[1.060s] 
+[1.060s] [0m
+[1.061s] -- Configuring incomplete, errors occurred!
+[1.092s] gmake: *** [Makefile:606: cmake_check_build_system] Error 1
+[1.104s] Invoked command in '/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller -- -j14 -l14

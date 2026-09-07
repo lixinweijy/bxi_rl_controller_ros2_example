@@ -1,0 +1,1 @@
+rclcpp;rcl_interfaces;sensor_msgs;opencv;libusb-1.0;libudev-dev;ros2launch;ament_cmake_gtest

@@ -1,0 +1,14 @@
+package.xml
+setup.cfg
+setup.py
+../../build/remote_py_test/remote_py_test.egg-info/PKG-INFO
+../../build/remote_py_test/remote_py_test.egg-info/SOURCES.txt
+../../build/remote_py_test/remote_py_test.egg-info/dependency_links.txt
+../../build/remote_py_test/remote_py_test.egg-info/entry_points.txt
+../../build/remote_py_test/remote_py_test.egg-info/requires.txt
+../../build/remote_py_test/remote_py_test.egg-info/top_level.txt
+../../build/remote_py_test/remote_py_test.egg-info/zip-safe
+launch/launch.py
+remote_py_test/__init__.py
+remote_py_test/remote_py_test.py
+resource/remote_py_test

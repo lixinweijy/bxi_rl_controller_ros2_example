@@ -1,0 +1,18 @@
+gmake[2]: *** wait: No child processes.  Stop.
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[2]: *** wait: No child processes.  Stop.
+gmake[2]: *** [CMakeFiles/bxi_depth_camera_core.dir/build.make:104: CMakeFiles/bxi_depth_camera_core.dir/src/orbbec_camera.cpp.o] Interrupt
+gmake[2]: *** [CMakeFiles/cameras-fps-test.dir/build.make:76: CMakeFiles/cameras-fps-test.dir/src/inspect.cpp.o] Interrupt
+gmake[1]: *** [CMakeFiles/Makefile2:269: CMakeFiles/cameras-fps-test.dir/all] Interrupt
+gmake[2]: *** [gtest/CMakeFiles/gtest.dir/build.make:76: gtest/CMakeFiles/gtest.dir/src/gtest-all.cc.o] Interrupt
+gmake[2]: *** [CMakeFiles/bxi_depth_camera_core.dir/build.make:90: CMakeFiles/bxi_depth_camera_core.dir/src/manager.cpp.o] Interrupt
+gmake[2]: *** [CMakeFiles/bxi_depth_camera_core.dir/build.make:118: CMakeFiles/bxi_depth_camera_core.dir/src/realsense_camera.cpp.o] Interrupt
+gmake[2]: *** wait: No child processes.  Stop.
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[2]: *** wait: No child processes.  Stop.
+gmake[1]: *** [CMakeFiles/Makefile2:323: gtest/CMakeFiles/gtest.dir/all] Interrupt
+gmake[1]: *** [CMakeFiles/Makefile2:165: CMakeFiles/bxi_depth_camera_core.dir/all] Error 2
+gmake[1]: *** wait: No child processes.  Stop.
+gmake[1]: *** Waiting for unfinished jobs....
+gmake[1]: *** wait: No child processes.  Stop.
+gmake: *** [Makefile:146: all] Error 2

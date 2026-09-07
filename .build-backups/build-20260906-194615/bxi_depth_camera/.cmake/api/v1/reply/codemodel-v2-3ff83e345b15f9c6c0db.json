@@ -1,0 +1,175 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-4ea56016a7e9946b63c5.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						8,
+						9
+					]
+				},
+				{
+					"build" : "gtest",
+					"jsonFile" : "directory-gtest-Release-0908a8c91ddba5d6c989.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "/opt/ros/jazzy/src/gtest_vendor",
+					"targetIndexes" : 
+					[
+						6,
+						7
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "bxi_depth_camera",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						8,
+						9
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "gtest",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						6,
+						7
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "bxi_depth_camera_core::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-bxi_depth_camera_core-Release-5684911baa2c6b2794ae.json",
+					"name" : "bxi_depth_camera_core",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "bxi_depth_camera_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-bxi_depth_camera_uninstall-Release-ec8d1777fe526c5dd8f2.json",
+					"name" : "bxi_depth_camera_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "cameras::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-cameras-Release-8a368fd6ee9130054f31.json",
+					"name" : "cameras",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "cameras-fps-test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-cameras-fps-test-Release-61b7641513218d4dfbb5.json",
+					"name" : "cameras-fps-test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "cameras-inspect::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-cameras-inspect-Release-93e5a584edc6495d6ae5.json",
+					"name" : "cameras-inspect",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "cameras-validate::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-cameras-validate-Release-74294e61e40971a30099.json",
+					"name" : "cameras-validate",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "gtest::@0af4add9fe94340e763e",
+					"jsonFile" : "target-gtest-Release-43eeac1d542f8dab8372.json",
+					"name" : "gtest",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "gtest_main::@0af4add9fe94340e763e",
+					"jsonFile" : "target-gtest_main-Release-c15be6ea54a00f109a09.json",
+					"name" : "gtest_main",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_common::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_common-Release-4c4be1cdf0efdc0c9bf1.json",
+					"name" : "test_common",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Release-f2cf058fa4f80829b80b.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/bxi_depth_camera",
+		"source" : "/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/src/bxi_depth_camera"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

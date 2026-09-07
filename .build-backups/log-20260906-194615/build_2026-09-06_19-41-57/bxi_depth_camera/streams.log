@@ -1,0 +1,29 @@
+[0.023s] Invoking command in '/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/bxi_depth_camera': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/bxi_depth_camera -- -j14 -l14
+[0.361s] [ 15%] [32mBuilding CXX object gtest/CMakeFiles/gtest.dir/src/gtest-all.cc.o[0m
+[0.361s] [ 26%] [32mBuilding CXX object CMakeFiles/cameras-validate.dir/src/inspect.cpp.o[0m
+[0.361s] [ 26%] [32mBuilding CXX object CMakeFiles/bxi_depth_camera_core.dir/src/manager.cpp.o[0m
+[0.361s] [ 26%] [32mBuilding CXX object CMakeFiles/bxi_depth_camera_core.dir/src/realsense_camera.cpp.o[0m
+[0.361s] [ 26%] [32mBuilding CXX object CMakeFiles/bxi_depth_camera_core.dir/src/common.cpp.o[0m
+[0.361s] [ 36%] Built target gtest_main
+[0.361s] [ 42%] [32mBuilding CXX object CMakeFiles/bxi_depth_camera_core.dir/src/orbbec_camera.cpp.o[0m
+[0.361s] [ 47%] [32m[1mLinking CXX executable cameras-inspect[0m
+[0.362s] [ 52%] [32mBuilding CXX object CMakeFiles/cameras-fps-test.dir/src/inspect.cpp.o[0m
+[0.362s] [ 57%] Built target cameras-inspect
+[1.502s] gmake[2]: *** wait: No child processes.  Stop.
+[1.502s] gmake[2]: *** Waiting for unfinished jobs....
+[1.502s] gmake[2]: *** wait: No child processes.  Stop.
+[1.502s] gmake[2]: *** [CMakeFiles/bxi_depth_camera_core.dir/build.make:104: CMakeFiles/bxi_depth_camera_core.dir/src/orbbec_camera.cpp.o] Interrupt
+[1.502s] gmake[2]: *** [CMakeFiles/cameras-fps-test.dir/build.make:76: CMakeFiles/cameras-fps-test.dir/src/inspect.cpp.o] Interrupt
+[1.502s] gmake[1]: *** [CMakeFiles/Makefile2:269: CMakeFiles/cameras-fps-test.dir/all] Interrupt
+[1.503s] gmake[2]: *** [gtest/CMakeFiles/gtest.dir/build.make:76: gtest/CMakeFiles/gtest.dir/src/gtest-all.cc.o] Interrupt
+[1.503s] gmake[2]: *** [CMakeFiles/bxi_depth_camera_core.dir/build.make:90: CMakeFiles/bxi_depth_camera_core.dir/src/manager.cpp.o] Interrupt
+[1.503s] gmake[2]: *** [CMakeFiles/bxi_depth_camera_core.dir/build.make:118: CMakeFiles/bxi_depth_camera_core.dir/src/realsense_camera.cpp.o] Interrupt
+[1.503s] gmake[2]: *** wait: No child processes.  Stop.
+[1.503s] gmake[2]: *** Waiting for unfinished jobs....
+[1.503s] gmake[2]: *** wait: No child processes.  Stop.
+[1.503s] gmake[1]: *** [CMakeFiles/Makefile2:323: gtest/CMakeFiles/gtest.dir/all] Interrupt
+[1.503s] gmake[1]: *** [CMakeFiles/Makefile2:165: CMakeFiles/bxi_depth_camera_core.dir/all] Error 2
+[1.506s] gmake[1]: *** wait: No child processes.  Stop.
+[1.506s] gmake[1]: *** Waiting for unfinished jobs....
+[1.507s] gmake[1]: *** wait: No child processes.  Stop.
+[1.507s] gmake: *** [Makefile:146: all] Error 2

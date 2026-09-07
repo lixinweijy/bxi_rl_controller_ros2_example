@@ -1,0 +1,2 @@
+[console_scripts]
+bxi_example_bms = bxi_example_bms.bxi_example_bms:main

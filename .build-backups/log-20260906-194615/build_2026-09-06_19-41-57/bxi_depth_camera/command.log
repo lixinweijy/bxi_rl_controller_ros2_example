@@ -1,0 +1,1 @@
+Invoking command in '/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/bxi_depth_camera': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/bxi_depth_camera -- -j14 -l14

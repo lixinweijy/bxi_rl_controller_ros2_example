@@ -1,0 +1,13 @@
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/uninstall.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/remote_controller_uninstall.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/remote_controller_crsf_frame_parser_test.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/remote_controller_core.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/remote_controller_control_rules_test.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/remote_controller.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/test.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/edit_cache.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/rebuild_cache.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/list_install_components.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/install.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/install/local.dir
+/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/remote_controller/CMakeFiles/install/strip.dir

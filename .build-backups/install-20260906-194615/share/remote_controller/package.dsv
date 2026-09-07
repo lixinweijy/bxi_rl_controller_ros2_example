@@ -1,0 +1,8 @@
+source;share/remote_controller/hook/pythonpath.ps1
+source;share/remote_controller/hook/pythonpath.dsv
+source;share/remote_controller/hook/pythonpath.sh
+source;share/remote_controller/local_setup.bash
+source;share/remote_controller/local_setup.dsv
+source;share/remote_controller/local_setup.ps1
+source;share/remote_controller/local_setup.sh
+source;share/remote_controller/local_setup.zsh

@@ -1,0 +1,16 @@
+[1.434s] Invoking command in '/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/src/bxi_example_bms': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/bxi_example_bms/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/install/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/bxi_example_bms build --build-base /home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/bxi_example_bms/build install --record /home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/bxi_example_bms/install.log --install-scripts $base/lib/bxi_example_bms --single-version-externally-managed install_data
+[1.493s] Fatal Python error: init_import_site: Failed to import the site module
+[1.493s] Python runtime state: initialized
+[1.493s] Traceback (most recent call last):
+[1.493s]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[1.493s]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[1.494s]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[1.494s]   File "<frozen importlib._bootstrap>", line 1176, in exec_module
+[1.494s]   File "<frozen site>", line 643, in <module>
+[1.494s]   File "<frozen site>", line 630, in main
+[1.494s]   File "<frozen site>", line 413, in addsitepackages
+[1.494s]   File "<frozen site>", line 242, in addsitedir
+[1.494s]   File "<frozen site>", line 201, in addpackage
+[1.494s]   File "<string>", line 0, in <module>
+[1.494s] KeyboardInterrupt
+[1.501s] Invoked command in '/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/src/bxi_example_bms' returned '1': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/bxi_example_bms/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/install/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/bxi_example_bms build --build-base /home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/bxi_example_bms/build install --record /home/nvidia/bxi_ws/bxi_rl_controller_ros2_example/build/bxi_example_bms/install.log --install-scripts $base/lib/bxi_example_bms --single-version-externally-managed install_data
