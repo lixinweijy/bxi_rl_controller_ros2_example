@@ -73,3 +73,47 @@ class AmpRunState(RobotControlState, EntryFrameProvider, RunningFrameProvider):
             ctx.request_state("com.bxi.basic_actions/zero_torque", trigger="safety")
             return
         self._apply_frame(ctx, self.sample_running_frame(ctx, dt, advance=True))
+
+
+class AmpShuttleState(AmpRunState):
+    """Run the AMP policy with alternating forward/reverse commands."""
+
+    def __init__(
+        self,
+        name: str,
+        state_id: int,
+        policy: ResourceHandle[HumanoidGaitPolicyLiteIsaaclab],
+        *,
+        half_period: float = 1.0,
+        speed: float = 0.5,
+    ) -> None:
+        if half_period <= 0.0 or speed <= 0.0:
+            raise ValueError("half_period and speed must be positive")
+        super().__init__(name, state_id, policy)
+        self._half_period = half_period
+        self._speed = speed
+        self._elapsed = 0.0
+
+    def on_enter(self, ctx: RobotControlContext) -> None:
+        super().on_enter(ctx)
+        self._elapsed = 0.0
+
+    def _target_vx(self) -> float:
+        return (
+            self._speed
+            if int(self._elapsed / self._half_period) % 2 == 0
+            else -self._speed
+        )
+
+    def process_cmd_vel(
+        self,
+        ctx: RobotControlContext,
+        cmd_vel: NDArray[np.float32],
+    ) -> NDArray[np.float32]:
+        cmd_vel.fill(0.0)
+        cmd_vel[0] = self._target_vx()
+        return super().process_cmd_vel(ctx, cmd_vel)
+
+    def on_update(self, ctx: RobotControlContext, dt: float) -> None:
+        super().on_update(ctx, dt)
+        self._elapsed += max(0.0, dt)

@@ -939,6 +939,9 @@ outputs:
         - button.y_event
 
 
+    - output: btn_10=9
+      when: [trigger.left_event, trigger.right_event]
+
 #自定义命令
 system:
   start:

@@ -44,6 +44,9 @@ events:
   amp_run:
     slot: btn_8
     value: 1
+  amp_shuttle:
+    slot: btn_10
+    value: 9
   toggle_pause:
     slot: btn_9
     value: 1
@@ -130,6 +133,17 @@ states:
       confirm: true
       confirm_message: 高速跑步4m/s，没有越障能力
     speed_profile: amp_run
+  amp_shuttle:
+    manifest:
+      label: 前后往返
+      priority: 925
+      group: Advanced
+      icon: sync_alt
+      confirm: true
+      confirm_message: 每1秒切换前进/后退，请确保前后场地安全
+    params:
+      half_period: 1.0
+      speed: 0.5
   normal_run:
     manifest:
       label: 中速奔跑
@@ -241,6 +255,19 @@ routes:
     to: amp_run
     transition: soft_switch
   - from: amp_run
+    event: normal
+    to: normal
+    transition: soft_switch
+
+  - from: normal
+    event: amp_shuttle
+    to: amp_shuttle
+    transition: soft_switch
+  - from: amp_shuttle
+    event: amp_shuttle
+    to: normal
+    transition: soft_switch
+  - from: amp_shuttle
     event: normal
     to: normal
     transition: soft_switch

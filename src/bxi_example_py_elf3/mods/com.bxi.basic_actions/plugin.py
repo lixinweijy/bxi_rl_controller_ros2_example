@@ -12,7 +12,7 @@ from bxi_example_py_elf3.framework.mod_api import (
     ResourceLoadContext,
 )
 
-from .amp_run_state import AmpRunState
+from .amp_run_state import AmpRunState, AmpShuttleState
 from .applause_state import ApplauseState, PlaybackClip, load_clip
 from .dance_state import DanceState
 from .hello_state import HelloState
@@ -164,6 +164,13 @@ def create_mod(context: ModLoadContext) -> ModDefinition:
             ),
             "amp_run": lambda state: AmpRunState(
                 state.name, state.state_id, amp_run_policy
+            ),
+            "amp_shuttle": lambda state: AmpShuttleState(
+                state.name,
+                state.state_id,
+                amp_run_policy,
+                half_period=state.float_param("half_period", 1.0),
+                speed=state.float_param("speed", 0.5),
             ),
             "normal_run": lambda state: NormalRunState(
                 state.name, state.state_id, normal_run_policy
