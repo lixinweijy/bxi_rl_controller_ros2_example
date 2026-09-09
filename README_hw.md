@@ -44,3 +44,21 @@ python3 -B -c "import importlib.util; s = importlib.util.find_spec('bxi_example_
 
 上述语法和模块路径检查已通过；网关需要由操作人员在安全时机重新启动才能使用新环境。
 OTA 覆盖部署脚本后，应检查此修复是否仍保留。
+
+## 多线程控制器有序退出
+
+2026-09-09 修复：实机 ROM 与振动控制器共用
+`control/ros_runtime.py`，收到 SIGINT/SIGTERM 时停止调度，等待回调结束，
+再销毁节点及 ROS 上下文。安全故障仍锁定指令发布，但不再从工作线程直接关闭上下文。
+当前 NVIDIA 自带的 `rclpy` 未实现多线程线程池的关闭覆盖，因此在释放执行器资源前
+显式等待其线程池退出；升级 ROS 后需要复核此兼容处理。
+
+独立退出回归测试不创建机器人控制器、不发布电机话题；只向测试子进程发送信号：
+
+```bash
+source /opt/ros/jazzy/setup.bash
+python3 -B src/bxi_example_py_elf3/test/test_ros_runtime.py
+```
+
+覆盖 SIGINT、SIGTERM、安全退出、普通回调异常传播，以及停止后的控制/复位请求拦截。
+此修复处理退出竞态，不代表已查明最初停止信号的来源，也不处理 IMU 或 CAN 超时。

@@ -7,7 +7,6 @@ from threading import Event, Lock, RLock, Thread
 import numpy as np
 import rclpy
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
-from rclpy.executors import ExternalShutdownException, MultiThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, qos_profile_sensor_data
 
@@ -27,6 +26,7 @@ from .control.elf3 import (
     ROBOT_NAME,
 )
 from .control.remote import RemoteButtonEdge
+from .control.ros_runtime import run_controller
 
 
 MINIMUM_JERK_MAX_SLOPE = 1.875
@@ -38,6 +38,7 @@ class VibrationTestNode(Node):
 
     def __init__(self):
         super().__init__("bxi_example_py_elf3_vibration")
+        self.shutdown_requested = Event()
 
         self.topic_prefix = str(
             self.declare_parameter("topic_prefix", "simulation/").value
@@ -962,6 +963,8 @@ class VibrationTestNode(Node):
         now = time.monotonic()
 
         with self.state_lock:
+            if self.shutdown_requested.is_set():
+                return
             self._expire_joint_test_permission_locked(now)
             if self.safety_fault:
                 return
@@ -2063,7 +2066,7 @@ class VibrationTestNode(Node):
                 "shutting down the vibration controller so launch can stop "
                 "the hardware driver"
             )
-            rclpy.try_shutdown(context=self.context)
+            self.shutdown_requested.set()
 
     def _open_csv(self):
         with self.state_lock:
@@ -2366,7 +2369,7 @@ class VibrationTestNode(Node):
 
     def _publish_command(self, positions, kp, kd):
         with self.state_lock:
-            if self.safety_fault:
+            if self.safety_fault or self.shutdown_requested.is_set():
                 return False
             position_array = np.asarray(positions, dtype=np.float64)
             if not np.all(np.isfinite(position_array)):
@@ -2420,6 +2423,8 @@ class VibrationTestNode(Node):
         return False
 
     def _call_robot_reset(self, reset_step, release, now):
+        if self.shutdown_requested.is_set():
+            return False
         if self.reset_pending_step != 0 or now < self.reset_retry_after_at:
             return False
         if not rclpy.ok():
@@ -2508,35 +2513,7 @@ class VibrationTestNode(Node):
 
 
 def main(args=None):
-    node = None
-    executor = None
-    rclpy.init(args=args)
-    try:
-        node = VibrationTestNode()
-        executor = MultiThreadedExecutor(num_threads=3)
-        executor.add_node(node)
-        executor.spin()
-    except (KeyboardInterrupt, ExternalShutdownException):
-        pass
-    finally:
-        if node is not None:
-            try:
-                node.timer.cancel()
-                if node.publisher_watchdog_timer is not None:
-                    node.publisher_watchdog_timer.cancel()
-            except (Exception, KeyboardInterrupt):
-                pass
-        if executor is not None:
-            try:
-                executor.shutdown()
-            except (Exception, KeyboardInterrupt):
-                pass
-        if node is not None:
-            try:
-                node.destroy_node()
-            except (Exception, KeyboardInterrupt):
-                pass
-        rclpy.try_shutdown()
+    run_controller(VibrationTestNode, args=args)
 
 
 if __name__ == "__main__":

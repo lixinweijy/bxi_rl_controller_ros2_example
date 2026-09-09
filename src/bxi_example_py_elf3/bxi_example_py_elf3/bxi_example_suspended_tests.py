@@ -7,10 +7,10 @@ from pathlib import Path
 import numpy as np
 import rclpy
 from ament_index_python.packages import get_package_share_path
-from rclpy.executors import ExternalShutdownException, MultiThreadedExecutor
 from std_srvs.srv import SetBool
 
 from .bxi_example_vibration import VibrationTestNode
+from .control.ros_runtime import run_controller
 from .control.elf3 import (
     DOF_NUM,
     JOINT_KD,
@@ -1282,28 +1282,7 @@ class SuspendedTestNode(VibrationTestNode):
 
 
 def main(args=None):
-    node = None
-    executor = None
-    rclpy.init(args=args)
-    try:
-        node = SuspendedTestNode()
-        executor = MultiThreadedExecutor(num_threads=3)
-        executor.add_node(node)
-        executor.spin()
-    except (KeyboardInterrupt, ExternalShutdownException):
-        pass
-    finally:
-        if executor is not None:
-            try:
-                executor.shutdown()
-            except (Exception, KeyboardInterrupt):
-                pass
-        if node is not None:
-            try:
-                node.destroy_node()
-            except (Exception, KeyboardInterrupt):
-                pass
-        rclpy.try_shutdown()
+    run_controller(SuspendedTestNode, args=args)
 
 
 if __name__ == "__main__":
