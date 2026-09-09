@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import rclpy
 from ament_index_python.packages import get_package_share_path
-from rclpy.executors import ExternalShutdownException, SingleThreadedExecutor
+from rclpy.executors import ExternalShutdownException, MultiThreadedExecutor
 from std_srvs.srv import SetBool
 
 from .bxi_example_vibration import VibrationTestNode
@@ -1284,7 +1284,7 @@ def main(args=None):
     rclpy.init(args=args)
     try:
         node = SuspendedTestNode()
-        executor = SingleThreadedExecutor()
+        executor = MultiThreadedExecutor(num_threads=3)
         executor.add_node(node)
         executor.spin()
     except (KeyboardInterrupt, ExternalShutdownException):
