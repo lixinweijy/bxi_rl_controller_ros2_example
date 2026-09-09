@@ -309,7 +309,7 @@ def test_yamaxun_amp_contract_and_half_speed_shuttle():
     probe.inference_step = MethodType(walk.BxiExample.inference_step, probe)
     probe.act_pub = SimpleNamespace(publish=messages.append)
     probe.get_clock = lambda: SimpleNamespace(now=lambda: SimpleNamespace(to_msg=lambda: Time()))
-    for now, speed in ((100.0, 0.5), (100.99, 0.5), (101.0, -0.5), (101.99, -0.5), (102.0, 0.5)):
+    for now, speed in ((100.0, 0.5), (101.99, 0.5), (102.0, -0.5), (103.99, -0.5), (104.0, 0.5)):
         with patch.object(walk.time, "monotonic", return_value=now):
             walk.BxiExample.timer_callback(probe)
         np.testing.assert_array_equal(probe.input_buffer.reshape(10, 96)[-1, 6:9], [speed, 0, 0])
