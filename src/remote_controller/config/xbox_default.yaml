@@ -102,13 +102,15 @@ outputs:
 
   level:
     # Keep the suspended-tests button semantics unchanged:
-    # X -> btn_9, Y -> btn_10, A -> btn_7. B remains unused.
+    # X -> btn_9, Y -> btn_10, A -> btn_7, B -> btn_8.
     - output: btn_9=1
       when: [button.x_event]
     - output: btn_10=1
       when: [button.y_event]
     - output: btn_7=1
       when: [button.a_event]
+    - output: btn_8=1
+      when: [button.b_event]
 
 system:
   start:

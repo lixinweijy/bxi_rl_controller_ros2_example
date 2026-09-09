@@ -25,6 +25,8 @@ import onnx
 import ast
 from scipy.spatial.transform import Rotation
 
+from .control.remote import RemoteButtonEdge
+
 robot_name = "elf3"
 
 dof_num = 29
@@ -175,6 +177,9 @@ class BxiExample(Node):
         self.vx = 0.0
         self.vy = 0
         self.dyaw = 0
+        self.shuttle_button = RemoteButtonEdge("toggle", 0.5)
+        self.shuttle_enabled = False
+        self.shuttle_started_at = 0.0
 
         self.step = 0
         self.loop_count = 0
@@ -263,9 +268,15 @@ class BxiExample(Node):
                 quat = self.quat
                 omega = self.omega
                 
-                x_vel_cmd = self.vx
-                y_vel_cmd = self.vy
-                yaw_vel_cmd = self.dyaw
+                if self.shuttle_enabled:
+                    phase = (time.monotonic() - self.shuttle_started_at) % 2.0
+                    x_vel_cmd = 2.0 if phase < 1.0 else -2.0
+                    y_vel_cmd = 0.0
+                    yaw_vel_cmd = 0.0
+                else:
+                    x_vel_cmd = self.vx
+                    y_vel_cmd = self.vy
+                    yaw_vel_cmd = self.dyaw
             
             # count_lowlevel = self.loop_count
                     
@@ -371,11 +382,24 @@ class BxiExample(Node):
             self.qvel[:] = np.array(joint_vel[:])
 
     def joy_callback(self, msg):
+        now = time.monotonic()
+        shuttle_activated = self.shuttle_button.update(msg.btn_8 != 0, now)
         with self.lock_in:
-            self.vx = msg.vel_des.x * 3
-            self.vx = np.clip(self.vx, -2.0, 3.0)
-            self.vy = msg.vel_des.y * 2
-            self.dyaw = msg.yawdot_des * 2
+            if shuttle_activated:
+                self.shuttle_enabled = not self.shuttle_enabled
+                self.shuttle_started_at = now
+                if self.shuttle_enabled:
+                    self.get_logger().info(
+                        "B shuttle started: +2 m/s / -2 m/s, 1 second each"
+                    )
+                else:
+                    self.vx = self.vy = self.dyaw = 0.0
+                    self.get_logger().info("B shuttle stopped")
+            if not self.shuttle_enabled:
+                self.vx = msg.vel_des.x * 3
+                self.vx = np.clip(self.vx, -2.0, 3.0)
+                self.vy = msg.vel_des.y * 2
+                self.dyaw = msg.yawdot_des * 2
         
     def imu_callback(self, msg):
         quat = msg.orientation

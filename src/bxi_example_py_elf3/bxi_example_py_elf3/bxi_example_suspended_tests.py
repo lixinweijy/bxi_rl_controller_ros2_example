@@ -28,6 +28,10 @@ from .control.limb_sequence import (
 )
 from .control.trajectory import load_joint_trajectory, minimum_jerk_progress
 
+ARM_TEST_GROUPS = tuple(
+    group for group in WHOLE_BODY_TEST_GROUPS if group.category == "arms"
+)
+
 
 class SuspendedTestNode(VibrationTestNode):
     """Own the actuator topic while offering mutually exclusive test modes.
@@ -181,6 +185,10 @@ class SuspendedTestNode(VibrationTestNode):
             self.motion_button_mode,
             self.motion_command_resync_sec,
         )
+        self.arm_load_test_button = RemoteButtonEdge(
+            self.motion_button_mode,
+            self.motion_command_resync_sec,
+        )
         self.run_enabled = False
         self.run_phase = "idle"
         self.run_phase_started_at = 0.0
@@ -191,6 +199,7 @@ class SuspendedTestNode(VibrationTestNode):
         self.next_run_frame_at = 0.0
         self.last_run_settle_log_at = 0.0
         self.limb_test_running = False
+        self.active_limb_test_groups = WHOLE_BODY_TEST_GROUPS
         self.limb_test_phase = "idle"
         self.limb_test_group_index = 0
         self.limb_test_segment_index = 0
@@ -259,7 +268,8 @@ class SuspendedTestNode(VibrationTestNode):
     def _remote_help_message(self):
         return (
             "combined remote: X starts/pauses running; Y starts/stops "
-            "vibration directly; A tests arms, torso and legs in sequence; "
+            "vibration directly; A tests arms, torso and legs; B tests arms "
+            "with 5 kg per tool flange; "
             "modes are mutually exclusive (motion_button_mode=%s)"
             % self.motion_button_mode
         )
@@ -294,10 +304,15 @@ class SuspendedTestNode(VibrationTestNode):
                 msg.btn_7 != 0,
                 now,
             )
+            arm_load_test_activated = self.arm_load_test_button.update(
+                msg.btn_8 != 0,
+                now,
+            )
 
-        if sum((run_activated, vibration_activated, limb_test_activated)) > 1:
+        if sum((run_activated, vibration_activated, limb_test_activated,
+                arm_load_test_activated)) > 1:
             self.get_logger().error(
-                "multiple X/Y/A buttons changed in the same remote sample; "
+                "multiple X/Y/A/B buttons changed in the same remote sample; "
                 "all commands were ignored"
             )
             return
@@ -307,6 +322,8 @@ class SuspendedTestNode(VibrationTestNode):
             self._handle_vibration_button(now)
         elif limb_test_activated:
             self._handle_limb_test_button()
+        elif arm_load_test_activated:
+            self._handle_arm_load_test_button()
 
     def _handle_run_button(self):
         with self.state_lock:
@@ -417,7 +434,38 @@ class SuspendedTestNode(VibrationTestNode):
                     "A ignored while a mode transition is in progress"
                 )
                 return
-            self._prepare_limb_test_locked("remote A button")
+            self._prepare_limb_test_locked(
+                "remote A button", WHOLE_BODY_TEST_GROUPS
+            )
+
+    def _handle_arm_load_test_button(self):
+        with self.state_lock:
+            if self.safety_fault:
+                self.get_logger().error(
+                    "B rejected after a latched safety fault; restart required"
+                )
+                return
+            if self.reset_stage != 2:
+                self.get_logger().warning(
+                    "B ignored because robot initialization is incomplete"
+                )
+                return
+            if self.limb_test_running:
+                self._stop_limb_test_locked("remote B button")
+                return
+            if self.test_enabled or self.joint_test_running:
+                self.get_logger().warning(
+                    "B rejected while another test is active; stop it first"
+                )
+                return
+            if self.returning_to_center or self.pending_mode:
+                self.get_logger().warning(
+                    "B ignored while a mode transition is in progress"
+                )
+                return
+            self._prepare_limb_test_locked(
+                "remote B button (5 kg/tool flange)", ARM_TEST_GROUPS
+            )
 
     def _preflight_limb_plan(self):
         """Verify every full-range segment against model collision geoms."""
@@ -496,7 +544,7 @@ class SuspendedTestNode(VibrationTestNode):
                 return False, reason
         return True, ""
 
-    def _prepare_limb_test_locked(self, source):
+    def _prepare_limb_test_locked(self, source, groups=WHOLE_BODY_TEST_GROUPS):
         now = time.monotonic()
         if not self._joint_feedback_ready(now):
             self.get_logger().error(
@@ -523,6 +571,7 @@ class SuspendedTestNode(VibrationTestNode):
         self.joint_test_passed = False
         self.joint_test_passed_at = 0.0
         self.center_positions[:] = self.limb_test_center_positions
+        self.active_limb_test_groups = tuple(groups)
         self.pending_mode = "limb_test"
         transition_duration = velocity_limited_duration(
             self.last_command_positions,
@@ -583,14 +632,18 @@ class SuspendedTestNode(VibrationTestNode):
         self.limb_test_last_visual_check_at = 0.0
         self.limb_test_visual_check_measured_next = False
         self._load_limb_group_locked(now)
+        test_name = (
+            "双臂5 kg负载ROM测试（目标1小时）；B停止"
+            if self.active_limb_test_groups == ARM_TEST_GROUPS
+            else "全身ROM测试；A停止"
+        )
         self._queue_diagnostic_log(
-            "info",
-            "FULL-RANGE JOINT TEST STARTED: arms -> torso -> legs; A stops",
+            "info", "FULL-RANGE JOINT TEST STARTED: " + test_name
         )
         return True
 
     def _load_limb_group_locked(self, now):
-        group = WHOLE_BODY_TEST_GROUPS[self.limb_test_group_index]
+        group = self.active_limb_test_groups[self.limb_test_group_index]
         (
             self.limb_test_motion_names,
             self.limb_test_waypoints,
@@ -616,7 +669,7 @@ class SuspendedTestNode(VibrationTestNode):
             "joint test %d/%d %s started; segment 1/%d duration %.3f seconds"
             % (
                 self.limb_test_group_index + 1,
-                len(WHOLE_BODY_TEST_GROUPS),
+                len(self.active_limb_test_groups),
                 group.label,
                 len(self.limb_test_waypoints),
                 self.limb_test_segment_duration_sec,
@@ -626,16 +679,16 @@ class SuspendedTestNode(VibrationTestNode):
     def _start_next_limb_segment_locked(self, now):
         self.limb_test_segment_index += 1
         if self.limb_test_segment_index >= len(self.limb_test_waypoints):
-            completed = WHOLE_BODY_TEST_GROUPS[self.limb_test_group_index]
+            completed = self.active_limb_test_groups[self.limb_test_group_index]
             self._queue_diagnostic_log(
                 "info", "joint test group completed: %s" % completed.label
             )
             self.limb_test_group_index += 1
-            if self.limb_test_group_index >= len(WHOLE_BODY_TEST_GROUPS):
+            if self.limb_test_group_index >= len(self.active_limb_test_groups):
                 self._queue_diagnostic_log(
                     "info",
                     "FULL-RANGE JOINT TEST CYCLE COMPLETE: failures=%d; "
-                    "restarting from arms" % self.limb_test_failures,
+                    "restarting" % self.limb_test_failures,
                 )
                 self.limb_test_group_index = 0
             self._load_limb_group_locked(now)
