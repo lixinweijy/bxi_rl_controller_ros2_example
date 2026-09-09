@@ -31,6 +31,7 @@ def generate_launch_description(
     joint_test_required_default="true",
     allow_hardware_without_joint_test_default="false",
     start_remote_controller_default="true",
+    controller_localhost_only=False,
 ):
     workspace_config = Path(
         "src/bxi_example_py_elf3/config/suspended_tests.yaml"
@@ -89,6 +90,13 @@ def generate_launch_description(
         executable=controller_executable,
         name=controller_name,
         output="screen",
+        additional_env=(
+            {
+                "ROS_LOCALHOST_ONLY": "0",
+                "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+            }
+            if controller_localhost_only else None
+        ),
         parameters=[
             controller_config_file,
             {

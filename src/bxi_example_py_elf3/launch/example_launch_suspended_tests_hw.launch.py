@@ -26,4 +26,6 @@ def generate_launch_description():
         joint_test_required_default="false",
         allow_hardware_without_joint_test_default="true",
         start_remote_controller_default="false",
+        # The onboard receiver is local; ignore other robots' same-domain topics.
+        controller_localhost_only=True,
     )

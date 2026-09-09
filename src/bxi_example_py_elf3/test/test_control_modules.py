@@ -253,3 +253,28 @@ def test_a_rom_only_moves_arms_and_legs():
             current = target
     assert segments == 51
     assert np.isclose(total, 75.00104166666667)
+
+
+def test_only_suspended_hardware_controller_uses_local_discovery():
+    launch_dir = Path(__file__).parents[1] / "launch"
+    base = ast.parse((launch_dir / "example_launch_vibration_hw.launch.py").read_text())
+    function = next(n for n in base.body if isinstance(n, ast.FunctionDef)
+                    and n.name == "generate_launch_description")
+    defaults = dict(zip([a.arg for a in function.args.args][-len(function.args.defaults):],
+                        function.args.defaults))
+    assert ast.literal_eval(defaults["controller_localhost_only"]) is False
+    assignment = next(n for n in ast.walk(function) if isinstance(n, ast.Assign)
+                      and any(isinstance(t, ast.Name) and t.id == "vibration_node"
+                              for t in n.targets))
+    env = next(k.value for k in assignment.value.keywords if k.arg == "additional_env")
+    expression = compile(ast.Expression(env), "controller_env", "eval")
+    assert eval(expression, {"controller_localhost_only": True}) == {
+        "ROS_LOCALHOST_ONLY": "0", "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+    }
+    assert eval(expression, {"controller_localhost_only": False}) is None
+    wrapper = ast.parse((launch_dir / "example_launch_suspended_tests_hw.launch.py").read_text())
+    call = next(n for n in ast.walk(wrapper) if isinstance(n, ast.Call)
+                and isinstance(n.func, ast.Attribute)
+                and n.func.attr == "generate_launch_description")
+    assert any(k.arg == "controller_localhost_only" and ast.literal_eval(k.value) is True
+               for k in call.keywords)
