@@ -157,10 +157,55 @@ def test_walk_gravity_projection_preserves_rotation_and_validation():
             raise AssertionError("invalid quaternion accepted")
 
 
+def test_walk_accepts_31_joint_feedback_without_changing_policy_dimensions():
+    from threading import Lock
+    from types import SimpleNamespace
+    import numpy as np
+    from sensor_msgs.msg import JointState
+    from bxi_example_py_elf3.bxi_example_mjlab import BxiExample, joint_name
+
+    probe = SimpleNamespace(lock_in=Lock(), qpos=np.zeros(29), qvel=np.zeros(29))
+    names = ["head_z_joint"] + list(reversed(joint_name)) + ["head_y_joint"]
+    positions = {name: float(i) for i, name in enumerate(joint_name)}
+    positions.update(head_z_joint=1000.0, head_y_joint=2000.0)
+    message = JointState()
+    message.name = names
+    message.position = [positions[name] for name in names]
+    message.velocity = [-positions[name] for name in names]
+    BxiExample.joint_callback(probe, message)
+    np.testing.assert_array_equal(probe.qpos, np.arange(29))
+    np.testing.assert_array_equal(probe.qvel, -np.arange(29))
+    assert probe.qpos.shape == probe.qvel.shape == (29,)
+    legacy = JointState()
+    legacy.position = list(map(float, range(29)))
+    legacy.velocity = list(map(float, range(29)))
+    BxiExample.joint_callback(probe, legacy)
+    np.testing.assert_array_equal(probe.qvel, np.arange(29))
+
+    for bad in (
+        SimpleNamespace(name=[], position=list(message.position), velocity=list(message.velocity)),
+        SimpleNamespace(name=names[:-1], position=list(message.position), velocity=list(message.velocity)),
+        SimpleNamespace(name=[names[0]] + names[:-1], position=list(message.position), velocity=list(message.velocity)),
+        SimpleNamespace(name=["unknown"] + list(joint_name[1:]), position=list(legacy.position), velocity=list(legacy.velocity)),
+        SimpleNamespace(name=names, position=list(message.position), velocity=list(message.velocity)[:-1]),
+        SimpleNamespace(name=[], position=[float("nan")] + list(legacy.position)[1:], velocity=list(legacy.velocity)),
+    ):
+        before = (probe.qpos.copy(), probe.qvel.copy())
+        try:
+            BxiExample.joint_callback(probe, bad)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("invalid feedback accepted")
+        np.testing.assert_array_equal(probe.qpos, before[0])
+        np.testing.assert_array_equal(probe.qvel, before[1])
+
+
 if __name__ == "__main__":
     test_controller_exit_keeps_context_until_callbacks_finish()
     test_shutdown_blocks_control_publish_and_reset()
     test_remote_start_selects_single_threaded_walk()
     test_walk_model_loads_without_constructing_robot_node()
     test_walk_gravity_projection_preserves_rotation_and_validation()
+    test_walk_accepts_31_joint_feedback_without_changing_policy_dimensions()
     print("PASS: SIGINT, SIGTERM, safety exit and callback error propagation")

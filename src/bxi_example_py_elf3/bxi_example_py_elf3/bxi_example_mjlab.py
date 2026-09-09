@@ -361,13 +361,28 @@ class BxiExample(Node):
         self.sim_rest_srv.call_async(req)
     
     def joint_callback(self, msg):
-        joint_pos = msg.position
-        joint_vel = msg.velocity
-        joint_tor = msg.effort
-        
+        positions = np.asarray(msg.position, dtype=np.float64)
+        velocities = np.asarray(msg.velocity, dtype=np.float64)
+        if positions.shape not in ((dof_num,), (31,)) or velocities.shape != positions.shape:
+            raise ValueError("expected matching position/velocity feedback for 29 or 31 joints")
+        if msg.name:
+            if len(msg.name) != len(positions) or len(set(msg.name)) != len(msg.name):
+                raise ValueError("joint feedback names must be unique and match array lengths")
+            indices_by_name = {name: index for index, name in enumerate(msg.name)}
+            missing = [name for name in joint_name if name not in indices_by_name]
+            if missing:
+                raise ValueError("joint feedback missing model joints: " + ", ".join(missing))
+            # The 31-joint hardware includes two head joints; the policy still controls 29.
+            indices = [indices_by_name[name] for name in joint_name]
+            positions = positions[indices]
+            velocities = velocities[indices]
+        elif len(positions) != dof_num:
+            raise ValueError("31-joint feedback requires names to map the 29-joint policy safely")
+        if not np.all(np.isfinite(positions)) or not np.all(np.isfinite(velocities)):
+            raise ValueError("non-finite model joint feedback")
         with self.lock_in:
-            self.qpos[:] = np.array(joint_pos[:])
-            self.qvel[:] = np.array(joint_vel[:])
+            self.qpos[:] = positions
+            self.qvel[:] = velocities
 
     def joy_callback(self, msg):
         now = time.monotonic()
