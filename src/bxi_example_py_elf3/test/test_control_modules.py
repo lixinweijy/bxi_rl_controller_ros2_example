@@ -1,5 +1,7 @@
+import ast
 import inspect
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 
@@ -196,3 +198,35 @@ def test_trajectory_playback_wraps_without_aliasing_source_data():
     np.testing.assert_allclose(trajectory.next(), positions[1])
     assert trajectory.next_is_first_frame
     np.testing.assert_allclose(trajectory.next(), positions[0])
+
+
+def test_a_rom_is_faster_without_changing_b_or_peak_speed():
+    # Load only the pure duration method; never construct a ROS/hardware node.
+    path = Path(__file__).parents[1] / "bxi_example_py_elf3" / "bxi_example_suspended_tests.py"
+    tree = ast.parse(path.read_text())
+    controller = next(n for n in tree.body if isinstance(n, ast.ClassDef)
+                      and n.name == "SuspendedTestNode")
+    method = next(n for n in controller.body if isinstance(n, ast.FunctionDef)
+                  and n.name == "_limb_segment_duration")
+    namespace = dict(velocity_limited_duration=velocity_limited_duration,
+                     WHOLE_BODY_TEST_GROUPS=WHOLE_BODY_TEST_GROUPS)
+    exec(compile(ast.Module(body=[method], type_ignores=[]), str(path), "exec"), namespace)
+    duration = namespace["_limb_segment_duration"]
+    arms = tuple(g for g in WHOLE_BODY_TEST_GROUPS if g.category == "arms")
+    state = SimpleNamespace(
+        limb_test_segment_start=np.zeros(DOF_NUM),
+        limb_test_segment_target=np.zeros(DOF_NUM),
+        limb_test_motion_names=("waist_z_joint",),
+        whole_body_test_move_sec=1.3, limb_test_move_sec=1.5,
+        limb_test_range_speed_deg_s=180.0,
+        active_limb_test_groups=WHOLE_BODY_TEST_GROUPS,
+    )
+    index = JOINT_NAMES.index("waist_z_joint")
+    state.limb_test_segment_target[index] = np.deg2rad(30.0)
+    assert duration(state) == 1.3
+    state.active_limb_test_groups = arms
+    assert duration(state) == 1.5
+    state.limb_test_segment_target[index] = np.deg2rad(310.0)
+    for groups in (WHOLE_BODY_TEST_GROUPS, arms):
+        state.active_limb_test_groups = groups
+        assert np.isclose(1.875 * 310.0 / duration(state), 180.0)

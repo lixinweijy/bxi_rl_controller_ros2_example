@@ -53,6 +53,9 @@ class SuspendedTestNode(VibrationTestNode):
         self.limb_test_move_sec = float(
             self.declare_parameter("limb_test_move_sec", 1.5).value
         )
+        self.whole_body_test_move_sec = float(
+            self.declare_parameter("whole_body_test_move_sec", 1.3).value
+        )
         self.limb_test_hold_sec = float(
             self.declare_parameter("limb_test_hold_sec", 0.5).value
         )
@@ -114,6 +117,7 @@ class SuspendedTestNode(VibrationTestNode):
             raise ValueError("run_gain_ramp_sec must be finite and > 0")
         for name, value in (
             ("limb_test_move_sec", self.limb_test_move_sec),
+            ("whole_body_test_move_sec", self.whole_body_test_move_sec),
             (
                 "limb_test_tracking_tolerance_rad",
                 self.limb_test_tracking_tolerance_rad,
@@ -642,6 +646,17 @@ class SuspendedTestNode(VibrationTestNode):
         )
         return True
 
+    def _limb_segment_duration(self):
+        return velocity_limited_duration(
+            self.limb_test_segment_start,
+            self.limb_test_segment_target,
+            self.limb_test_motion_names,
+            self.whole_body_test_move_sec
+            if self.active_limb_test_groups == WHOLE_BODY_TEST_GROUPS
+            else self.limb_test_move_sec,
+            self.limb_test_range_speed_deg_s,
+        )
+
     def _load_limb_group_locked(self, now):
         group = self.active_limb_test_groups[self.limb_test_group_index]
         (
@@ -655,13 +670,7 @@ class SuspendedTestNode(VibrationTestNode):
         self.limb_test_segment_index = 0
         self.limb_test_segment_start[:] = self.last_command_positions
         self.limb_test_segment_target[:] = self.limb_test_waypoints[0]
-        self.limb_test_segment_duration_sec = velocity_limited_duration(
-            self.limb_test_segment_start,
-            self.limb_test_segment_target,
-            self.limb_test_motion_names,
-            self.limb_test_move_sec,
-            self.limb_test_range_speed_deg_s,
-        )
+        self.limb_test_segment_duration_sec = self._limb_segment_duration()
         self.limb_test_segment_started_at = now
         self.limb_test_phase = "move"
         self._queue_diagnostic_log(
@@ -697,13 +706,7 @@ class SuspendedTestNode(VibrationTestNode):
         self.limb_test_segment_target[:] = self.limb_test_waypoints[
             self.limb_test_segment_index
         ]
-        self.limb_test_segment_duration_sec = velocity_limited_duration(
-            self.limb_test_segment_start,
-            self.limb_test_segment_target,
-            self.limb_test_motion_names,
-            self.limb_test_move_sec,
-            self.limb_test_range_speed_deg_s,
-        )
+        self.limb_test_segment_duration_sec = self._limb_segment_duration()
         self.limb_test_segment_started_at = now
         self.limb_test_phase = "move"
 
