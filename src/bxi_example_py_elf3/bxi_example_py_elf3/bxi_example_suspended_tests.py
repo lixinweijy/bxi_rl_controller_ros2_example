@@ -21,7 +21,7 @@ from .control.elf3 import (
 )
 from .control.remote import RemoteButtonEdge
 from .control.limb_sequence import (
-    WHOLE_BODY_TEST_GROUPS,
+    LIMB_TEST_GROUPS,
     build_safe_ranges,
     full_range_waypoints,
     velocity_limited_duration,
@@ -29,7 +29,7 @@ from .control.limb_sequence import (
 from .control.trajectory import load_joint_trajectory, minimum_jerk_progress
 
 ARM_TEST_GROUPS = tuple(
-    group for group in WHOLE_BODY_TEST_GROUPS if group.category == "arms"
+    group for group in LIMB_TEST_GROUPS if group.category == "arms"
 )
 
 
@@ -37,7 +37,7 @@ class SuspendedTestNode(VibrationTestNode):
     """Own the actuator topic while offering mutually exclusive test modes.
 
     X controls the recorded running trajectory, Y controls vibration directly,
-    and A runs the collision-margined whole-body full-range sequence. Modes
+    and A runs the collision-margined arms-and-legs full-range sequence. Modes
     are mutually exclusive and share one actuator command publisher.
     """
 
@@ -203,7 +203,7 @@ class SuspendedTestNode(VibrationTestNode):
         self.next_run_frame_at = 0.0
         self.last_run_settle_log_at = 0.0
         self.limb_test_running = False
-        self.active_limb_test_groups = WHOLE_BODY_TEST_GROUPS
+        self.active_limb_test_groups = LIMB_TEST_GROUPS
         self.limb_test_phase = "idle"
         self.limb_test_group_index = 0
         self.limb_test_segment_index = 0
@@ -239,7 +239,7 @@ class SuspendedTestNode(VibrationTestNode):
         diagnostics = self.run_trajectory.diagnostics()
         self.get_logger().info(
             "combined suspended tests ready: X=running, Y=vibration, "
-            "A=arms/torso/legs joint test; "
+            "A=arms/legs joint test; "
             "run frames=%d run_rate=%.1f Hz max_step=%.6f rad "
             "(%.6f rad/s), loop_step=%.6f rad (%.6f rad/s), "
             "Kp=JOINT_KP[%.3f, %.3f]"
@@ -272,7 +272,7 @@ class SuspendedTestNode(VibrationTestNode):
     def _remote_help_message(self):
         return (
             "combined remote: X starts/pauses running; Y starts/stops "
-            "vibration directly; A tests arms, torso and legs; B tests arms "
+            "vibration directly; A tests arms and legs; B tests arms "
             "with 5 kg per tool flange; "
             "modes are mutually exclusive (motion_button_mode=%s)"
             % self.motion_button_mode
@@ -439,7 +439,7 @@ class SuspendedTestNode(VibrationTestNode):
                 )
                 return
             self._prepare_limb_test_locked(
-                "remote A button", WHOLE_BODY_TEST_GROUPS
+                "remote A button", LIMB_TEST_GROUPS
             )
 
     def _handle_arm_load_test_button(self):
@@ -481,7 +481,7 @@ class SuspendedTestNode(VibrationTestNode):
             raise ValueError(
                 "zero reference pose is not collision-free: " + reason
             )
-        for group in WHOLE_BODY_TEST_GROUPS:
+        for group in LIMB_TEST_GROUPS:
             motion_names, waypoints = full_range_waypoints(
                 self.limb_test_center_positions,
                 group,
@@ -548,7 +548,7 @@ class SuspendedTestNode(VibrationTestNode):
                 return False, reason
         return True, ""
 
-    def _prepare_limb_test_locked(self, source, groups=WHOLE_BODY_TEST_GROUPS):
+    def _prepare_limb_test_locked(self, source, groups=LIMB_TEST_GROUPS):
         now = time.monotonic()
         if not self._joint_feedback_ready(now):
             self.get_logger().error(
@@ -639,7 +639,7 @@ class SuspendedTestNode(VibrationTestNode):
         test_name = (
             "双臂5 kg负载ROM测试（目标1小时）；B停止"
             if self.active_limb_test_groups == ARM_TEST_GROUPS
-            else "全身ROM测试；A停止"
+            else "四肢ROM测试（不含腰部）；A停止"
         )
         self._queue_diagnostic_log(
             "info", "FULL-RANGE JOINT TEST STARTED: " + test_name
@@ -652,7 +652,7 @@ class SuspendedTestNode(VibrationTestNode):
             self.limb_test_segment_target,
             self.limb_test_motion_names,
             self.whole_body_test_move_sec
-            if self.active_limb_test_groups == WHOLE_BODY_TEST_GROUPS
+            if self.active_limb_test_groups == LIMB_TEST_GROUPS
             else self.limb_test_move_sec,
             self.limb_test_range_speed_deg_s,
         )

@@ -102,6 +102,12 @@ WHOLE_BODY_TEST_GROUPS = (
 )
 
 
+LIMB_TEST_GROUPS = tuple(
+    group for group in WHOLE_BODY_TEST_GROUPS
+    if group.category in ("arms", "legs")
+)
+
+
 def joint_suffix(joint_name):
     return joint_name[2:] if joint_name[:2] in ("l_", "r_") else joint_name
 

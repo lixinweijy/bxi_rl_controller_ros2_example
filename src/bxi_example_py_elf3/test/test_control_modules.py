@@ -19,6 +19,7 @@ from bxi_example_py_elf3.control.elf3 import (
 from bxi_example_py_elf3.control.remote import RemoteButtonEdge
 from bxi_example_py_elf3.control.limb_sequence import (
     WHOLE_BODY_TEST_GROUPS,
+    LIMB_TEST_GROUPS,
     build_safe_ranges,
     compact_posture,
     full_range_waypoints,
@@ -209,24 +210,46 @@ def test_a_rom_is_faster_without_changing_b_or_peak_speed():
     method = next(n for n in controller.body if isinstance(n, ast.FunctionDef)
                   and n.name == "_limb_segment_duration")
     namespace = dict(velocity_limited_duration=velocity_limited_duration,
-                     WHOLE_BODY_TEST_GROUPS=WHOLE_BODY_TEST_GROUPS)
+                     LIMB_TEST_GROUPS=LIMB_TEST_GROUPS)
     exec(compile(ast.Module(body=[method], type_ignores=[]), str(path), "exec"), namespace)
     duration = namespace["_limb_segment_duration"]
-    arms = tuple(g for g in WHOLE_BODY_TEST_GROUPS if g.category == "arms")
+    arms = tuple(g for g in LIMB_TEST_GROUPS if g.category == "arms")
     state = SimpleNamespace(
         limb_test_segment_start=np.zeros(DOF_NUM),
         limb_test_segment_target=np.zeros(DOF_NUM),
-        limb_test_motion_names=("waist_z_joint",),
+        limb_test_motion_names=("l_wrist_x_joint",),
         whole_body_test_move_sec=1.3, limb_test_move_sec=1.5,
         limb_test_range_speed_deg_s=180.0,
-        active_limb_test_groups=WHOLE_BODY_TEST_GROUPS,
+        active_limb_test_groups=LIMB_TEST_GROUPS,
     )
-    index = JOINT_NAMES.index("waist_z_joint")
+    index = JOINT_NAMES.index("l_wrist_x_joint")
     state.limb_test_segment_target[index] = np.deg2rad(30.0)
     assert duration(state) == 1.3
     state.active_limb_test_groups = arms
     assert duration(state) == 1.5
     state.limb_test_segment_target[index] = np.deg2rad(310.0)
-    for groups in (WHOLE_BODY_TEST_GROUPS, arms):
+    for groups in (LIMB_TEST_GROUPS, arms):
         state.active_limb_test_groups = groups
         assert np.isclose(1.875 * 310.0 / duration(state), 180.0)
+
+
+def test_a_rom_only_moves_arms_and_legs():
+    assert len(LIMB_TEST_GROUPS) == 13
+    assert sum(g.category == "arms" for g in LIMB_TEST_GROUPS) == 7
+    assert sum(g.category == "legs" for g in LIMB_TEST_GROUPS) == 6
+    waist_indices = [i for i, name in enumerate(JOINT_NAMES) if name.startswith("waist_")]
+    center = np.zeros(DOF_NUM)
+    ranges = build_safe_ranges(collision_margin_deg=10.0, mechanical_margin_deg=2.0)
+    total = 0.0
+    segments = 0
+    current = center.copy()
+    for group in LIMB_TEST_GROUPS:
+        names, waypoints = full_range_waypoints(center, group, ranges)
+        assert not any(name.startswith("waist_") for name in names)
+        for target in waypoints:
+            np.testing.assert_array_equal(target[waist_indices], center[waist_indices])
+            total += velocity_limited_duration(current, target, names, 1.3, 180.0) + 0.2
+            segments += 1
+            current = target
+    assert segments == 51
+    assert np.isclose(total, 86.615625)
