@@ -218,13 +218,13 @@ def test_a_rom_is_faster_without_changing_b_or_peak_speed():
         limb_test_segment_start=np.zeros(DOF_NUM),
         limb_test_segment_target=np.zeros(DOF_NUM),
         limb_test_motion_names=("l_wrist_x_joint",),
-        whole_body_test_move_sec=1.3, limb_test_move_sec=1.5,
+        whole_body_test_move_sec=0.9, limb_test_move_sec=1.5,
         limb_test_range_speed_deg_s=180.0,
         active_limb_test_groups=LIMB_TEST_GROUPS,
     )
     index = JOINT_NAMES.index("l_wrist_x_joint")
     state.limb_test_segment_target[index] = np.deg2rad(30.0)
-    assert duration(state) == 1.3
+    assert duration(state) == 0.9
     state.active_limb_test_groups = arms
     assert duration(state) == 1.5
     state.limb_test_segment_target[index] = np.deg2rad(310.0)
@@ -248,8 +248,8 @@ def test_a_rom_only_moves_arms_and_legs():
         assert not any(name.startswith("waist_") for name in names)
         for target in waypoints:
             np.testing.assert_array_equal(target[waist_indices], center[waist_indices])
-            total += velocity_limited_duration(current, target, names, 1.3, 180.0) + 0.2
+            total += velocity_limited_duration(current, target, names, 0.9, 180.0) + 0.2
             segments += 1
             current = target
     assert segments == 51
-    assert np.isclose(total, 86.615625)
+    assert np.isclose(total, 75.00104166666667)

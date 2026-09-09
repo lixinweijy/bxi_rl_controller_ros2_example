@@ -54,7 +54,7 @@ class SuspendedTestNode(VibrationTestNode):
             self.declare_parameter("limb_test_move_sec", 1.5).value
         )
         self.whole_body_test_move_sec = float(
-            self.declare_parameter("whole_body_test_move_sec", 1.3).value
+            self.declare_parameter("whole_body_test_move_sec", 0.9).value
         )
         self.limb_test_hold_sec = float(
             self.declare_parameter("limb_test_hold_sec", 0.5).value
