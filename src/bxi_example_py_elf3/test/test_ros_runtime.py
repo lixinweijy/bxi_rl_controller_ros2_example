@@ -97,6 +97,10 @@ def test_remote_start_selects_single_threaded_walk():
 
     source_root = Path(__file__).parents[2]
     config = yaml.safe_load((source_root / "remote_controller/config/xbox_default.yaml").read_text())
+    signals = config["sources"]["gamepad"]["signals"]
+    assert signals["gamepad.lb"]["from"] == "js.button.6"
+    assert signals["gamepad.rb"]["from"] == "js.button.7"
+    assert config["outputs"]["publish_on_change"] is False
     commands = config["system"]
     assert any("ros2 launch bxi_example_py_elf3 example_walk_hw.launch.py " in command
                for command in commands["start"])
@@ -201,6 +205,60 @@ def test_walk_accepts_31_joint_feedback_without_changing_policy_dimensions():
         np.testing.assert_array_equal(probe.qvel, before[1])
 
 
+def test_walk_buttons_toggle_once_per_press_with_idle_heartbeat():
+    import ast
+    from threading import Lock
+    from types import SimpleNamespace
+    from unittest.mock import patch
+    import numpy as np
+    from bxi_example_py_elf3 import bxi_example_mjlab as walk
+
+    logs = []
+    probe = SimpleNamespace(lock_in=Lock(), walk_test_mode=0, sprint_remote_mode=False,
+                            shuttle_started_at=0.0, vx=0.0, vy=0.0, dyaw=0.0,
+                            get_logger=lambda: SimpleNamespace(info=logs.append))
+    # Use the real constructor's button settings without constructing a ROS node.
+    tree = ast.parse(Path(walk.__file__).read_text())
+    cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == "BxiExample")
+    init = next(n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == "__init__")
+    assignments = [n for n in init.body if isinstance(n, ast.Assign)
+                   and any(isinstance(t, ast.Attribute) and t.attr in
+                           ("shuttle_button", "sprint_button") for t in n.targets)]
+    assert len(assignments) == 2
+    exec(compile(ast.Module(body=assignments, type_ignores=[]), str(walk.__file__), "exec"),
+         {"self": probe, "RemoteButtonEdge": walk.RemoteButtonEdge})
+
+    def feed(now, lb=0, rb=0):
+        message = SimpleNamespace(btn_5=lb, btn_6=rb,
+                                  vel_des=SimpleNamespace(x=0.0, y=0.0), yawdot_des=0.0)
+        with patch.object(walk.time, "monotonic", return_value=now):
+            walk.BxiExample.joy_callback(probe, message)
+
+    feed(1.0, lb=1, rb=1)  # An initially held button must not start motion.
+    feed(1.1)
+    for now in np.arange(1.2, 11.2, 0.01):
+        feed(float(now))
+    assert not logs and probe.walk_test_mode == 0 and not probe.sprint_remote_mode
+    feed(11.21, lb=1)
+    assert probe.walk_test_mode == 1
+    feed(11.22, lb=1)
+    feed(11.23)
+    assert probe.walk_test_mode == 1 and len(logs) == 1
+    feed(11.24, lb=1)
+    feed(11.25)
+    assert probe.walk_test_mode == 0 and len(logs) == 2
+    feed(11.26, rb=1)
+    feed(11.27, rb=1)
+    feed(11.28)
+    assert probe.sprint_remote_mode and len(logs) == 3
+    feed(11.29, rb=1)
+    feed(11.30)
+    assert not probe.sprint_remote_mode and len(logs) == 4
+    feed(13.0, lb=1, rb=1)  # A real publisher gap still resynchronizes safely.
+    feed(13.1)
+    assert probe.walk_test_mode == 0 and not probe.sprint_remote_mode and len(logs) == 4
+
+
 if __name__ == "__main__":
     test_controller_exit_keeps_context_until_callbacks_finish()
     test_shutdown_blocks_control_publish_and_reset()
@@ -208,4 +266,5 @@ if __name__ == "__main__":
     test_walk_model_loads_without_constructing_robot_node()
     test_walk_gravity_projection_preserves_rotation_and_validation()
     test_walk_accepts_31_joint_feedback_without_changing_policy_dimensions()
+    test_walk_buttons_toggle_once_per_press_with_idle_heartbeat()
     print("PASS: SIGINT, SIGTERM, safety exit and callback error propagation")

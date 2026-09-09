@@ -22,8 +22,8 @@ sources:
       gamepad.b: {from: js.button.1}
       gamepad.x: {from: js.button.3}
       gamepad.y: {from: js.button.4}
-      gamepad.lb: {from: js.button.5}
-      gamepad.rb: {from: js.button.6}
+      gamepad.lb: {from: js.button.6}
+      gamepad.rb: {from: js.button.7}
 
 curves:
   vx_suspended:
@@ -87,7 +87,8 @@ controls:
 
 outputs:
   conflict_policy: first_wins
-  publish_on_change: true
+  # Keep idle samples flowing so button resynchronization detects actual gaps.
+  publish_on_change: false
 
   analog:
     vx: move.vx

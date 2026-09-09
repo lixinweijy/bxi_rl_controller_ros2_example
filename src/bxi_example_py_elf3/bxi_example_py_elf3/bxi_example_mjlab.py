@@ -162,8 +162,8 @@ class BxiExample(Node):
         self.vx = 0.0
         self.vy = 0
         self.dyaw = 0
-        self.shuttle_button = RemoteButtonEdge("toggle", 0.5)
-        self.sprint_button = RemoteButtonEdge("toggle", 0.5)
+        self.shuttle_button = RemoteButtonEdge("momentary", 0.5)
+        self.sprint_button = RemoteButtonEdge("momentary", 0.5)
         self.walk_test_mode = 0
         self.sprint_remote_mode = False
         self.shuttle_started_at = 0.0
