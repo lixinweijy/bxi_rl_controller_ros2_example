@@ -12,7 +12,7 @@ import os
 import signal
 import sys
 import time
-from threading import Event
+from threading import Event, current_thread, main_thread
 import rclpy
 from rclpy.node import Node
 from bxi_example_py_elf3.control.ros_runtime import run_controller
@@ -27,6 +27,7 @@ class Probe(Node):
         self.timer = self.create_timer(0.01, self.callback)
 
     def callback(self):
+        assert current_thread() is main_thread(), "controller must use a single-threaded executor"
         self.timer.cancel()
         try:
             if mode == "error":
