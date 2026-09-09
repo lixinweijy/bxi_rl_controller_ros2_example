@@ -259,6 +259,64 @@ def test_walk_buttons_toggle_once_per_press_with_idle_heartbeat():
     assert probe.walk_test_mode == 0 and not probe.sprint_remote_mode and len(logs) == 4
 
 
+def test_yamaxun_amp_contract_and_half_speed_shuttle():
+    import hashlib
+    from threading import Lock
+    from types import SimpleNamespace, MethodType
+    from unittest.mock import patch
+    import numpy as np
+    from builtin_interfaces.msg import Time
+    from bxi_example_py_elf3 import bxi_example_mjlab as walk
+    from bxi_example_py_elf3.control.yamaxun_joints import ELF3_ISAAC_PARAMETERS
+
+    path = Path(__file__).parents[1] / "data/amp_terrain.onnx"
+    blob = path.read_bytes()
+    assert hashlib.sha1(b"blob " + str(len(blob)).encode() + b"\0" + blob).hexdigest() == "f5240049e219780dce176fd62c63351fe1dea230"
+    probe = SimpleNamespace()
+    walk.BxiExample.initialize_onnx(probe, str(path))
+    assert probe.num_obs == 960 and probe.output_info.shape == [1, 32]
+    probe.action = np.zeros(29, dtype=np.float32)
+    native = ELF3_ISAAC_PARAMETERS
+    indices = [walk.joint_name.index(name) for name in native.layout.names]
+    history = []
+    for step in range(12):
+        q = probe.default_joint_pos + np.arange(29, dtype=np.float32) * (step / 10000.0)
+        dq = np.arange(29, dtype=np.float32) * 0.01
+        command = [0.5 if step % 2 == 0 else -0.5, 0.0, 0.0]
+        expected = np.concatenate(([0.1, 0.2, 0.3], [0, 0, -1], command,
+                                   q[indices] - native.default_position, dq[indices],
+                                   probe.action[indices])).astype(np.float32)
+        history = [expected.copy()] * 10 if step == 0 else history[1:] + [expected.copy()]
+        actual = walk.BxiExample.build_policy_input(probe, q, dq, [0, 0, 0, 1],
+                                                    [0.1, 0.2, 0.3], command, reset_history=step == 0)
+        np.testing.assert_allclose(actual, np.asarray(history).reshape(1, 960), atol=1e-7)
+        raw = probe.session.run([probe.output_info.name], {probe.input_info.name: actual})[0][0]
+        probe.action[:] = walk.BxiExample.inference_step(probe, actual)
+        np.testing.assert_allclose(probe.action[indices], raw[:29], atol=1e-7)
+        target = probe.default_joint_pos + probe.action_scale * probe.action
+        np.testing.assert_allclose(target[indices], native.default_position + native.action_scale * raw[:29], atol=1e-7)
+        np.testing.assert_allclose(probe.joint_stiffness[indices], native.kp)
+        np.testing.assert_allclose(probe.joint_damping[indices], native.kd)
+
+    messages = []
+    probe.step = 2
+    probe.loop_count = 0
+    probe.lock_in = Lock()
+    probe.qpos, probe.qvel = probe.default_joint_pos.copy(), np.zeros(29)
+    probe.quat, probe.omega = np.array([0, 0, 0, 1]), np.zeros(3)
+    probe.walk_test_mode, probe.shuttle_started_at = 1, 100.0
+    probe.build_policy_input = MethodType(walk.BxiExample.build_policy_input, probe)
+    probe.inference_step = MethodType(walk.BxiExample.inference_step, probe)
+    probe.act_pub = SimpleNamespace(publish=messages.append)
+    probe.get_clock = lambda: SimpleNamespace(now=lambda: SimpleNamespace(to_msg=lambda: Time()))
+    for now, speed in ((100.0, 0.5), (100.99, 0.5), (101.0, -0.5), (101.99, -0.5), (102.0, 0.5)):
+        with patch.object(walk.time, "monotonic", return_value=now):
+            walk.BxiExample.timer_callback(probe)
+        np.testing.assert_array_equal(probe.input_buffer.reshape(10, 96)[-1, 6:9], [speed, 0, 0])
+        assert tuple(messages[-1].actuators_name) == walk.joint_name
+        assert len(messages[-1].pos) == 29 and np.all(np.isfinite(messages[-1].pos))
+
+
 if __name__ == "__main__":
     test_controller_exit_keeps_context_until_callbacks_finish()
     test_shutdown_blocks_control_publish_and_reset()
@@ -267,4 +325,5 @@ if __name__ == "__main__":
     test_walk_gravity_projection_preserves_rotation_and_validation()
     test_walk_accepts_31_joint_feedback_without_changing_policy_dimensions()
     test_walk_buttons_toggle_once_per_press_with_idle_heartbeat()
+    test_yamaxun_amp_contract_and_half_speed_shuttle()
     print("PASS: SIGINT, SIGTERM, safety exit and callback error propagation")

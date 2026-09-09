@@ -129,21 +129,6 @@ class BxiExample(Node):
         self.timer_callback_group_1 = MutuallyExclusiveCallbackGroup()
         
         self.initialize_onnx(self.onnx_file)
-        metadata = self.session.get_modelmeta().custom_metadata_map
-        # print(model.metadata_props)
-        
-        self.num_action = dof_num
-        self.num_obs = 96
-        
-        print(metadata)
-        self.joint_names = metadata["joint_names"]
-        self.joint_stiffness = np.array(ast.literal_eval(metadata["joint_stiffness"]), dtype=np.float32)
-        self.joint_damping = np.array(ast.literal_eval(metadata["joint_damping"]), dtype=np.float32)
-        self.action_scale = np.array(ast.literal_eval(metadata["action_scale"]), dtype=np.float32)
-        self.default_joint_pos = np.array(ast.literal_eval(metadata["default_joint_pos"]), dtype=np.float32)
-        # self.default_joint_pos[[7,13]] += 0.05
-        # exit()
-
         self.lock_in = Lock()
         self.lock_ou = self.lock_in #Lock()
         self.qpos = np.zeros(self.num_action,dtype=np.double)
@@ -157,7 +142,9 @@ class BxiExample(Node):
         policy_input = np.zeros([1, self.num_obs], dtype=np.float32)
         print("policy test")
 
-        self.action[:] = self.inference_step(policy_input)
+        warm_action = self.inference_step(policy_input)
+        if self.num_obs == 96:
+            self.action[:] = warm_action
 
         self.vx = 0.0
         self.vy = 0
@@ -203,17 +190,71 @@ class BxiExample(Node):
             dtype=np.float32
         )
 
+        self.num_action = dof_num
+        self.num_obs = self.input_info.shape[-1]
+        if self.input_info.shape == [1, 960] and self.output_info.shape == [1, 32]:
+            from .control.yamaxun_joints import ELF3_ISAAC_PARAMETERS, ELF3_POLICY_JOINTS
+            native = ELF3_ISAAC_PARAMETERS
+            canonical = native.select(ELF3_POLICY_JOINTS)
+            self._isaac_indices = [joint_name.index(name) for name in native.layout.names]
+            self._hardware_indices = [native.layout.names.index(name) for name in joint_name]
+            self.default_joint_pos = canonical.default_position.copy()
+            self.joint_stiffness = canonical.kp.copy()
+            self.joint_damping = canonical.kd.copy()
+            self.action_scale = canonical.action_scale.copy()
+            self._history = np.zeros((10, 96), dtype=np.float32)
+        elif self.input_info.shape == [1, 96] and self.output_info.shape == [1, 29]:
+            metadata = self.session.get_modelmeta().custom_metadata_map
+            if tuple(metadata["joint_names"].split(",")) != joint_name:
+                raise ValueError("model joint order does not match the controller")
+            self.default_joint_pos = np.asarray(ast.literal_eval(metadata["default_joint_pos"]), dtype=np.float32)
+            self.joint_stiffness = np.asarray(ast.literal_eval(metadata["joint_stiffness"]), dtype=np.float32)
+            self.joint_damping = np.asarray(ast.literal_eval(metadata["joint_damping"]), dtype=np.float32)
+            self.action_scale = np.asarray(ast.literal_eval(metadata["action_scale"]), dtype=np.float32)
+        else:
+            raise ValueError("unsupported walking model input/output dimensions")
+
+    def build_policy_input(self, q, dq, quat, omega, command, reset_history=False):
+        gravity = projected_gravity_from_quat(quat, np.array([0, 0, -1]))
+        single = np.zeros(96, dtype=np.float32)
+        single[:3] = omega
+        single[3:6] = gravity
+        if self.num_obs == 960:
+            # yamaxun AMP: Isaac joint order, command first, oldest-to-newest history.
+            indices = self._isaac_indices
+            single[6:9] = command
+            single[9:38] = np.asarray(q, dtype=np.float32)[indices] - self.default_joint_pos[indices]
+            single[38:67] = np.asarray(dq)[indices]
+            single[67:96] = self.action[indices]
+            if reset_history:
+                self._history[:] = single
+            else:
+                self._history[:-1] = self._history[1:]
+                self._history[-1] = single
+            return self._history.reshape(1, 960)
+        single[6:35] = q - self.default_joint_pos
+        single[35:64] = dq
+        single[64:93] = self.action
+        single[93:96] = command
+        return single.reshape(1, 96)
+
     # 循环推理部分（极速版）
     def inference_step(self, obs_data):
         # 使用预分配内存（如果适用）
         np.copyto(self.input_buffer, obs_data)  # 比直接赋值更安全
         
         # 极简推理（比原版快5-15%）
-        return self.session.run(
-            [self.output_info.name], 
+        output = self.session.run(
+            [self.output_info.name],
             {self.input_info.name: self.input_buffer}
-        )[0][0]  # 直接获取第一个输出的第一个样本
- 
+        )[0][0]
+        if self.num_obs == 960:
+            # The final three AMP outputs estimate velocity, not additional joints.
+            output = output[:29][self._hardware_indices]
+        if output.shape != (29,) or not np.all(np.isfinite(output)):
+            raise ValueError("invalid walking policy actions")
+        return output
+
     def timer_callback(self):
         
         # ptyhon 与 rclpy 多线程不太友好，这里使用定时间+简易状态机运行a
@@ -257,7 +298,7 @@ class BxiExample(Node):
                 
                 if self.walk_test_mode:
                     phase = (time.monotonic() - self.shuttle_started_at) % 2.0
-                    speed = 1.0 if self.walk_test_mode == 1 else 2.2
+                    speed = 0.5
                     x_vel_cmd = speed if phase < 1.0 else -speed
                     y_vel_cmd = 0.0
                     yaw_vel_cmd = 0.0
@@ -266,39 +307,15 @@ class BxiExample(Node):
                     y_vel_cmd = self.vy
                     yaw_vel_cmd = self.dyaw
             
-            # count_lowlevel = self.loop_count
-                    
-            obs = np.zeros([1, self.num_obs], dtype=np.float32)
-            
             eu_ang = quaternion_to_euler_array(quat)
             eu_ang[eu_ang > math.pi] -= 2 * math.pi
-            
-            projected_gravity = projected_gravity_from_quat(quat, np.array([0, 0, -1]))
-            
-            #check safe
             if (np.abs(eu_ang[0]) > (math.pi/3.0)) or (np.abs(eu_ang[1]) > (math.pi/3.0)):
-                print("check safe error, exit!")
-                os._exit()
+                raise RuntimeError("walking tilt safety limit exceeded")
+            policy_input = self.build_policy_input(
+                q, dq, quat, omega, (x_vel_cmd, y_vel_cmd, yaw_vel_cmd),
+                reset_history=self.loop_count == 0,
+            )
 
-            obs[0, :3] = omega
-            obs[0, 3:6] = projected_gravity
-            obs[0, 6:6+self.num_action] = (q-self.default_joint_pos)
-            obs[0, 6+(self.num_action*1):6+(self.num_action*2)] = dq
-            obs[0, 6+(self.num_action*2):6+(self.num_action*3)] = self.action
-
-            obs[0, -3] = x_vel_cmd 
-            obs[0, -2] = y_vel_cmd
-            obs[0, -1] = yaw_vel_cmd
-            
-            # obs = np.clip(obs, -env_cfg.normalization.clip_observations, env_cfg.normalization.clip_observations)
-
-            # self.hist_obs.append(obs)
-            # self.hist_obs.popleft()
-
-            policy_input = np.zeros([1, self.num_obs], dtype=np.float32)
-
-            policy_input = obs
-            
             self.action[:] = self.inference_step(policy_input)
             # self.action = np.clip(self.action, -env_cfg.normalization.clip_actions, env_cfg.normalization.clip_actions)
             self.target_q = self.action * self.action_scale
@@ -393,7 +410,7 @@ class BxiExample(Node):
                 self.walk_test_mode = 0 if self.walk_test_mode == 1 else 1
                 self.shuttle_started_at = now
                 self.get_logger().info(
-                    "1 m/s shuttle %s" % ("started" if self.walk_test_mode else "stopped")
+                    "0.5 m/s shuttle %s" % ("started" if self.walk_test_mode else "stopped")
                 )
             if sprint_activated:
                 self.sprint_remote_mode = not self.sprint_remote_mode

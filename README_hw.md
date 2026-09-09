@@ -78,7 +78,7 @@ ONNX Runtime 原有的推理线程配置保持不变，单线程指 ROS 回调�
 四元数逆旋转函数，保留 xyzw→wxyz 顺序转换、归一化和无效四元数拒绝，不改系统包。
 
 操作顺序：摇杆回中并确认机器人支撑及活动空间安全，按 Start，等待原有初始化完成，
-再按 LB 开始 ±1 m/s、每方向 1 秒的往复；再按 LB 回到摇杆控制。
+再按 LB 开始 ±0.5 m/s、每方向 1 秒的往复；再按 LB 回到摇杆控制。
 RB 切换纵向摇杆指令上限 2.5 m/s 模式，不代表已验证实际速度。
 A-ROM 程序及参数未改，仍可通过 `example_launch_suspended_tests_hw.launch.py` 单独启动；
 不要同时运行 ROM 和行走控制器。
@@ -123,3 +123,22 @@ sudo systemctl restart ros_elf_launch.service
 RB 只切换摇杆纵向速度档，不会自动发起前进。
 回归测试通过合成消息验证启动按住、长时间静置、按住/松开、二次按下和断流后重同步；
 没有使用真实遥控按键驱动机器人进行验证。
+
+## yamaxun 走路模型与 0.5 m/s 往复
+
+2026-09-09：源分支 `yamaxun`（`c2ddd2b`）的普通“走路”使用
+`mods/com.bxi.basic_actions/assets/amp_terrain.onnx`；`model_normal.onnx` 用于“中速奔跑”，
+其内容与此前 robot_test 使用的模型相同。本次将普通走路模型原样复制到
+`data/amp_terrain.onnx`，行走 launch 改为加载该文件。
+模型 Git blob：`f5240049e219780dce176fd62c63351fe1dea230`。
+
+关节参数原样来自该分支 `policies/joints.py`，保存为 `control/yamaxun_joints.py`。
+接口按该分支 `policies/amp.py` 适配：Isaac 关节顺序、10 帧从旧到新的历史、
+每帧命令放在索引 6–8、相同默认姿态/Kp/Kd/action scale。模型输入 960 维，
+32 维输出的前 29 个是关节动作、后 3 个是速度估计，不能当成头部动作。
+保留原 96 维模型接口供旧入口使用，ROM 程序不变。
+
+LB 往复命令改为 +0.5/-0.5 m/s，每方向 1 秒。RB 的遥控纵向速度档仍为 2.5 m/s，
+本次未改；指令速度不代表已测量的实际速度。单线程、31 关节反馈适配和按键修复保留。
+验证涵盖模型 blob 一致性、历史顺序、关节和参数映射、真实离线推理及往复换向边界；
+没有启动机器人，不代表实机稳定性验证通过。
