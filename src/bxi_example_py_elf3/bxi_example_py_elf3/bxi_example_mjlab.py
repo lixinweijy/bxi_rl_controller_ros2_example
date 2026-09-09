@@ -178,7 +178,8 @@ class BxiExample(Node):
         self.vy = 0
         self.dyaw = 0
         self.shuttle_button = RemoteButtonEdge("toggle", 0.5)
-        self.shuttle_enabled = False
+        self.sprint_button = RemoteButtonEdge("toggle", 0.5)
+        self.walk_test_mode = 0
         self.shuttle_started_at = 0.0
 
         self.step = 0
@@ -268,9 +269,10 @@ class BxiExample(Node):
                 quat = self.quat
                 omega = self.omega
                 
-                if self.shuttle_enabled:
+                if self.walk_test_mode:
                     phase = (time.monotonic() - self.shuttle_started_at) % 2.0
-                    x_vel_cmd = 2.0 if phase < 1.0 else -2.0
+                    speed = 1.0 if self.walk_test_mode == 1 else 2.2
+                    x_vel_cmd = speed if phase < 1.0 else -speed
                     y_vel_cmd = 0.0
                     yaw_vel_cmd = 0.0
                 else:
@@ -383,19 +385,25 @@ class BxiExample(Node):
 
     def joy_callback(self, msg):
         now = time.monotonic()
-        shuttle_activated = self.shuttle_button.update(msg.btn_8 != 0, now)
+        shuttle_activated = self.shuttle_button.update(msg.btn_5 != 0, now)
+        sprint_activated = self.sprint_button.update(msg.btn_6 != 0, now)
         with self.lock_in:
-            if shuttle_activated:
-                self.shuttle_enabled = not self.shuttle_enabled
-                self.shuttle_started_at = now
-                if self.shuttle_enabled:
-                    self.get_logger().info(
-                        "B shuttle started: +2 m/s / -2 m/s, 1 second each"
-                    )
-                else:
+            if shuttle_activated or sprint_activated:
+                if shuttle_activated and sprint_activated:
+                    return
+                requested_mode = 1 if shuttle_activated else 2
+                if self.walk_test_mode == requested_mode:
+                    self.walk_test_mode = 0
                     self.vx = self.vy = self.dyaw = 0.0
-                    self.get_logger().info("B shuttle stopped")
-            if not self.shuttle_enabled:
+                    self.get_logger().info("walking test stopped")
+                else:
+                    self.walk_test_mode = requested_mode
+                    self.shuttle_started_at = now
+                    speed = 1.0 if requested_mode == 1 else 2.2
+                    self.get_logger().info(
+                        "walking test started: +/-%.1f m/s, 1 second each" % speed
+                    )
+            if not self.walk_test_mode:
                 self.vx = msg.vel_des.x * 3
                 self.vx = np.clip(self.vx, -2.0, 3.0)
                 self.vy = msg.vel_des.y * 2

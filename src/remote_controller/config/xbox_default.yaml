@@ -22,6 +22,8 @@ sources:
       gamepad.b: {from: js.button.1}
       gamepad.x: {from: js.button.3}
       gamepad.y: {from: js.button.4}
+      gamepad.lb: {from: js.button.5}
+      gamepad.rb: {from: js.button.6}
 
 curves:
   vx_suspended:
@@ -80,6 +82,8 @@ controls:
   button.b_event: {type: bool, inputs: [{source: gamepad.b}]}
   button.x_event: {type: bool, inputs: [{source: gamepad.x}]}
   button.y_event: {type: bool, inputs: [{source: gamepad.y}]}
+  button.lb_event: {type: bool, inputs: [{source: gamepad.lb}]}
+  button.rb_event: {type: bool, inputs: [{source: gamepad.rb}]}
 
 outputs:
   conflict_policy: first_wins
@@ -102,7 +106,7 @@ outputs:
 
   level:
     # Keep the suspended-tests button semantics unchanged:
-    # X -> btn_9, Y -> btn_10, A -> btn_7, B -> btn_8.
+    # X -> btn_9, Y -> btn_10, A -> btn_7, B -> btn_8, LB -> btn_5, RB -> btn_6.
     - output: btn_9=1
       when: [button.x_event]
     - output: btn_10=1
@@ -111,6 +115,10 @@ outputs:
       when: [button.a_event]
     - output: btn_8=1
       when: [button.b_event]
+    - output: btn_5=1
+      when: [button.lb_event]
+    - output: btn_6=1
+      when: [button.rb_event]
 
 system:
   start:
