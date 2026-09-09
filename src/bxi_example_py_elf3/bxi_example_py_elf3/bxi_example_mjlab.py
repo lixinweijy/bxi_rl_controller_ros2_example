@@ -297,9 +297,9 @@ class BxiExample(Node):
                 omega = self.omega
                 
                 if self.walk_test_mode:
-                    phase = (time.monotonic() - self.shuttle_started_at) % 4.0
+                    phase = (time.monotonic() - self.shuttle_started_at) % 2.8
                     speed = 0.5
-                    x_vel_cmd = speed if phase < 2.0 else -speed
+                    x_vel_cmd = speed if phase < 1.5 else -speed
                     y_vel_cmd = 0.0
                     yaw_vel_cmd = 0.0
                 else:
@@ -410,7 +410,7 @@ class BxiExample(Node):
                 self.walk_test_mode = 0 if self.walk_test_mode == 1 else 1
                 self.shuttle_started_at = now
                 self.get_logger().info(
-                    "0.5 m/s shuttle (2 s each direction) %s" % ("started" if self.walk_test_mode else "stopped")
+                    "0.5 m/s shuttle (forward 1.5 s, reverse 1.3 s) %s" % ("started" if self.walk_test_mode else "stopped")
                 )
             if sprint_activated:
                 self.sprint_remote_mode = not self.sprint_remote_mode

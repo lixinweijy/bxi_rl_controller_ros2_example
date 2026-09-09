@@ -309,7 +309,14 @@ def test_yamaxun_amp_contract_and_half_speed_shuttle():
     probe.inference_step = MethodType(walk.BxiExample.inference_step, probe)
     probe.act_pub = SimpleNamespace(publish=messages.append)
     probe.get_clock = lambda: SimpleNamespace(now=lambda: SimpleNamespace(to_msg=lambda: Time()))
-    for now, speed in ((100.0, 0.5), (101.99, 0.5), (102.0, -0.5), (103.99, -0.5), (104.0, 0.5)):
+    # Decimal subtraction can put 102.8 - 100 just below 2.8.
+    # Check both sides of each boundary instead of assuming decimal arithmetic.
+    for now, speed in (
+        (100.0, 0.5), (101.49, 0.5), (101.5, -0.5),
+        (np.nextafter(102.8, -np.inf), -0.5),
+        (np.nextafter(102.8, np.inf), 0.5),
+        (104.29, 0.5), (104.31, -0.5), (105.59, -0.5), (105.61, 0.5),
+    ):
         with patch.object(walk.time, "monotonic", return_value=now):
             walk.BxiExample.timer_callback(probe)
         np.testing.assert_array_equal(probe.input_buffer.reshape(10, 96)[-1, 6:9], [speed, 0, 0])
