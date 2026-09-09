@@ -632,15 +632,12 @@ class SuspendedTestNode(VibrationTestNode):
             )
             self.limb_test_group_index += 1
             if self.limb_test_group_index >= len(WHOLE_BODY_TEST_GROUPS):
-                self.limb_test_running = False
-                self.limb_test_phase = "idle"
-                self.center_positions[:] = self.limb_test_center_positions
                 self._queue_diagnostic_log(
                     "info",
-                    "FULL-RANGE JOINT TEST COMPLETE: failures=%d; holding the "
-                    "zero reference pose" % self.limb_test_failures,
+                    "FULL-RANGE JOINT TEST CYCLE COMPLETE: failures=%d; "
+                    "restarting from arms" % self.limb_test_failures,
                 )
-                return
+                self.limb_test_group_index = 0
             self._load_limb_group_locked(now)
             return
         self.limb_test_segment_start[:] = self.limb_test_segment_target
