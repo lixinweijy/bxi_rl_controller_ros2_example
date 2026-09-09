@@ -123,10 +123,10 @@ outputs:
 system:
   start:
     - "mkdir -p /var/log/bxi_log"
-    - "ros2 launch bxi_example_py_elf3 example_launch_suspended_tests_hw.launch.py start_remote_controller:=false > /var/log/bxi_log/$(date +%Y-%m-%d_%H-%M-%S)_elf.log 2>&1 &"
+    - "ros2 launch bxi_example_py_elf3 example_walk_hw.launch.py > /var/log/bxi_log/$(date +%Y-%m-%d_%H-%M-%S)_elf.log 2>&1 &"
     - "ros2 launch bxi_example_bms bms.launch.py > /var/log/bxi_log/bms_$(date +%Y-%m-%d_%H-%M-%S)_bms.log 2>&1 &"
   stop:
-    - "killall -SIGINT hardware_elf3 bxi_example_hw bxi_example_py_elf3 bxi_example_py_elf3_demo bxi_example_py_elf3_vibration bxi_example_py_elf3_suspended_tests bxi_bms bxi_example_bms 2>/dev/null"
+    - "killall -SIGINT hardware_elf3 bxi_example_hw bxi_example_py_elf3 bxi_example_py_elf3_demo bxi_example_py_elf3_vibration bxi_example_py_elf3_suspended_tests bxi_example_py_elf3_mjlab bxi_bms bxi_example_bms 2>/dev/null"
     - "sleep 1"
 
 system_mutexes:

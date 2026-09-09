@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
-from rclpy.executors import MultiThreadedExecutor
+from rclpy.executors import SingleThreadedExecutor
 from rclpy.qos import QoSProfile, qos_profile_sensor_data
 from rclpy.time import Time
 import communication.msg as bxiMsg
@@ -21,9 +21,8 @@ from geometry_msgs.msg import Pose
 from sensor_msgs.msg import JointState
 
 import onnxruntime as ort
-import onnx
 import ast
-from scipy.spatial.transform import Rotation
+from .utils.tfs import quat_rotate_inverse
 
 from .control.remote import RemoteButtonEdge
 
@@ -90,25 +89,14 @@ def quaternion_to_euler_array(quat):
     return np.array([roll_x, pitch_y, yaw_z])
 
 def projected_gravity_from_quat(quaternion, gravity=np.array([0, 0, -9.81])):
-    """
-    计算重力在机体坐标系中的投影
-    
-    参数:
-        quaternion: 四元数 [w, x, y, z] 或 [x, y, z, w]
-        gravity: 世界坐标系中的重力向量 [x, y, z]，默认 [0, 0, -9.81]
-    
-    返回:
-        重力在机体坐标系中的投影向量 [x, y, z]
-    """
-    # 创建旋转对象（自动处理四元数顺序）
-    rot = Rotation.from_quat(quaternion)
-    
-    rot_inv = rot.inv()
-    
-    # 将重力向量从世界坐标系转换到机体坐标系
-    # apply方法将向量从世界系旋转到机体系
-    return rot_inv.apply(gravity)
-    # return gravity
+    """Project world gravity into the body using an [x, y, z, w] quaternion."""
+    q = np.asarray(quaternion, dtype=np.float64)
+    norm = np.linalg.norm(q)
+    if q.shape != (4,) or not np.isfinite(norm) or norm <= 0.0:
+        raise ValueError("expected a finite, nonzero quaternion with shape (4,)")
+    # Match Rotation.from_quat normalization; the existing helper uses [w, x, y, z].
+    return quat_rotate_inverse((q / norm)[[3, 0, 1, 2]], gravity)
+
 
 class BxiExample(Node):
 
@@ -140,10 +128,8 @@ class BxiExample(Node):
         
         self.timer_callback_group_1 = MutuallyExclusiveCallbackGroup()
         
-        model = onnx.load(self.onnx_file)
-        metadata = {}
-        for prop in model.metadata_props:
-            metadata[prop.key] = prop.value
+        self.initialize_onnx(self.onnx_file)
+        metadata = self.session.get_modelmeta().custom_metadata_map
         # print(model.metadata_props)
         
         self.num_action = dof_num
@@ -171,7 +157,6 @@ class BxiExample(Node):
         policy_input = np.zeros([1, self.num_obs], dtype=np.float32)
         print("policy test")
 
-        self.initialize_onnx(self.onnx_file)
         self.action[:] = self.inference_step(policy_input)
 
         self.vx = 0.0
@@ -434,7 +419,7 @@ def main(args=None):
     rclpy.init(args=args)
     node = BxiExample()
     
-    executor = MultiThreadedExecutor(num_threads=3)
+    executor = SingleThreadedExecutor()
     executor.add_node(node)
     
     try:

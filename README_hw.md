@@ -64,3 +64,31 @@ python3 -B src/bxi_example_py_elf3/test/test_ros_runtime.py
 2026-09-09 17:21:02 启动日志中，发布间隔 74.485 ms 超过 50 ms 保护阈值，
 控制器主动退出后 launch 停止硬件；具体的多线程延迟来源尚未定位。
 离线测试不等同于实机或长时间稳定性验证，也不证明 IMU 或 CAN 超时已解决。
+
+## 遥控 Start 启动行走程序
+
+2026-09-09：`src/remote_controller/config/xbox_default.yaml` 的 `system.start`
+改为启动 `example_walk_hw.launch.py`，仍复用原来的 Start/Stop 按键、启动互斥和 BMS 命令。
+Stop 命令补充 `bxi_example_py_elf3_mjlab`；行走 launch 中任一节点退出时关闭整组进程。
+行走控制器 ROS 执行器改为 `SingleThreadedExecutor`，模型及 50 Hz 控制频率不变；
+ONNX Runtime 原有的推理线程配置保持不变，单线程指 ROS 回调执行器。
+设备未安装 `onnx` 包，模型元数据改为从已有的 ONNX Runtime 会话读取，避免入口导入失败；
+模型文件不变，不新增依赖。
+设备上的 SciPy 与 NumPy 2.4.4 二进制不兼容；重力投影复用仓库的 `utils/tfs.py`
+四元数逆旋转函数，保留 xyzw→wxyz 顺序转换、归一化和无效四元数拒绝，不改系统包。
+
+操作顺序：摇杆回中并确认机器人支撑及活动空间安全，按 Start，等待原有初始化完成，
+再按 LB 开始 ±1 m/s、每方向 1 秒的往复；再按 LB 回到摇杆控制。
+RB 切换纵向摇杆指令上限 2.5 m/s 模式，不代表已验证实际速度。
+A-ROM 程序及参数未改，仍可通过 `example_launch_suspended_tests_hw.launch.py` 单独启动；
+不要同时运行 ROM 和行走控制器。
+
+遥控配置只在 `remote_controller` 启动时加载。构建不会改变当前遥控进程内存中的映射，
+需要操作人员确认机器人安全停止后自行执行：
+
+```bash
+sudo systemctl restart ros_elf_launch.service
+```
+
+此命令重启遥控接收服务，之后按 Start 才启动行走。不要在机器人运动中重启。
+本次只做离线检查与构建，不代替操作人员重启服务，也不进行实机行走测试。
