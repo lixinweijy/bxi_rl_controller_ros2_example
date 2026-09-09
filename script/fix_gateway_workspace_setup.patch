@@ -1,0 +1,11 @@
+--- a/bxi_rc_ros2_start.sh
++++ b/bxi_rc_ros2_start.sh
+@@ -5,7 +5,7 @@
+ INSTALL_DIR="/opt/bxi/bxi_rc_ros2"
+ BACKEND_SETUP="${INSTALL_DIR}/setup.bash"
+ RL_CONTROLLER_ROOT="/opt/bxi/bxi_rl_controller_ros2_example"
+-OPTIONAL_WORKSPACE_SETUP="${RL_CONTROLLER_ROOT}/setup.bash"
++OPTIONAL_WORKSPACE_SETUP="${RL_CONTROLLER_ROOT}/install/setup.bash"
+ RL_CONTROLLER_DEPLOYER="${RL_CONTROLLER_ROOT}/deploy_environment.sh"
+ RL_CONTROLLER_STAMP="/var/lib/bxi_ota/bxi_rl_controller_ros2_example.postinstall.version"
+ RC_POSTINSTALL_STAMP="/var/lib/bxi_ota/bxi_rc_ros2.postinstall.version"
