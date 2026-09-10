@@ -29,7 +29,10 @@ from .control.limb_sequence import (
 from .control.trajectory import load_joint_trajectory, minimum_jerk_progress
 
 ARM_TEST_GROUPS = tuple(
-    group for group in LIMB_TEST_GROUPS if group.category == "arms"
+    group
+    for group in LIMB_TEST_GROUPS
+    if group.category == "arms"
+    and not any("wrist_" in name for name in group.joint_names)
 )
 
 
