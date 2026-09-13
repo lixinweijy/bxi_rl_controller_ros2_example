@@ -278,3 +278,87 @@ def test_only_suspended_hardware_controller_uses_local_discovery():
                 and n.func.attr == "generate_launch_description")
     assert any(k.arg == "controller_localhost_only" and ast.literal_eval(k.value) is True
                for k in call.keywords)
+
+
+def test_b_load_waypoints_match_xml_geometry_and_leave_a_unchanged():
+    import xml.etree.ElementTree as ET
+    from bxi_example_py_elf3.control.limb_sequence import (
+        ARM_LOAD_TEST_GROUPS, arm_load_rest_pose, arm_load_waypoints,
+    )
+    xml = ET.parse(Path(__file__).parents[1] / "data/elf3.xml")
+
+    def directions(pose, side):
+        # Read the actual model's axes and link offsets; no ROS or motors.
+        body = xml.find(".//body[@name='%s_shoulder_y_link']" % side)
+        rotation, position, origins = np.eye(3), np.zeros(3), []
+        for suffix in ("shoulder_y", "shoulder_x", "shoulder_z", "elbow_y", "wrist_x"):
+            assert body.attrib["name"] == side + "_" + suffix + "_link"
+            assert not any(k in body.attrib for k in ("quat", "euler", "axisangle"))
+            position = position + rotation @ np.fromstring(body.get("pos", "0 0 0"), sep=" ")
+            origins.append(position.copy())
+            joint = body.find("joint")
+            axis = np.fromstring(joint.attrib["axis"], sep=" ")
+            axis /= np.linalg.norm(axis)
+            x, y, z = axis
+            skew = np.array([[0, -z, y], [z, 0, -x], [-y, x, 0]])
+            angle = pose[JOINT_NAMES.index(joint.attrib["name"])]
+            rotation = rotation @ (np.eye(3) + np.sin(angle)*skew + (1-np.cos(angle))*(skew@skew))
+            body = body.find("body")
+        upper, fore = origins[3]-origins[0], origins[4]-origins[3]
+        return upper/np.linalg.norm(upper), fore/np.linalg.norm(fore), rotation[:, 2]
+
+    base = JOINT_NOMINAL_POS.copy()
+    # Prove helpers preserve non-moving joint commands, not just zero values.
+    base[JOINT_NAMES.index("l_wrist_z_joint")] = 0.1
+    unchanged = base.copy()
+    rest = arm_load_rest_pose(base)
+    assert len(ARM_LOAD_TEST_GROUPS) == 2
+    all_points = []
+    seconds = 0.0
+    current = rest
+    for group in ARM_LOAD_TEST_GROUPS:
+        names, points = arm_load_waypoints(rest, group)
+        indices = [JOINT_NAMES.index(n) for n in names]
+        other = [i for i in range(DOF_NUM) if i not in indices]
+        assert all("wrist" not in n for n in names)
+        for target in points:
+            np.testing.assert_array_equal(target[other], base[other])
+            assert not position_limit_violations(target, np.deg2rad(2.0))
+            seconds += velocity_limited_duration(current, target, names, 2.0, 180.0) + 0.2
+            for fraction in np.linspace(0, 1, 31):
+                pose = current + minimum_jerk_progress(fraction) * (target-current)
+                assert not position_limit_violations(pose, np.deg2rad(2.0))
+            current = target
+        np.testing.assert_array_equal(points[-1], rest)
+        all_points.extend(points)
+    assert len(all_points) == 6
+    assert abs(seconds - 13.2) < 1e-9
+    for side, sign in (("l", 1), ("r", -1)):
+        upper, fore, normal = directions(rest, side)
+        np.testing.assert_allclose(upper, (0, sign*np.sin(np.deg2rad(10)), -np.cos(np.deg2rad(10))), atol=1e-12)
+        np.testing.assert_allclose(fore, upper, atol=1e-12)
+        upper, fore, normal = directions(all_points[0], side)
+        np.testing.assert_allclose(normal, (0, -sign*np.sin(np.deg2rad(10)), np.cos(np.deg2rad(10))), atol=1e-12)
+        # Command adds 10 degrees above model-horizontal; physical level needs calibration.
+        np.testing.assert_allclose(upper, (0, sign*np.cos(np.deg2rad(10)), np.sin(np.deg2rad(10))), atol=1e-12)
+        np.testing.assert_allclose(fore, upper, atol=1e-12)
+        diagonal = (.5, sign*.5, -np.sqrt(.5))
+        upper, fore, _ = directions(all_points[2], side)
+        np.testing.assert_allclose(upper, diagonal, atol=1e-12)
+        np.testing.assert_allclose(fore, upper, atol=1e-12)
+        upper_bent, fore_bent, _ = directions(all_points[3], side)
+        np.testing.assert_allclose(upper_bent, diagonal, atol=1e-12)
+        np.testing.assert_allclose(fore_bent, (0, 0, 1), atol=1e-12)
+        internal_angle = np.rad2deg(np.arccos(np.clip(np.dot(-upper_bent, fore_bent), -1, 1)))
+        assert abs(internal_angle - 45.0) < 1e-10
+    np.testing.assert_array_equal(base, unchanged)
+    assert len(LIMB_TEST_GROUPS) == 13
+    assert sum(len(full_range_waypoints(np.zeros(DOF_NUM), g, build_safe_ranges())[1])
+               for g in LIMB_TEST_GROUPS) == 51
+    for bad_center in (np.full(DOF_NUM, np.nan), np.full(DOF_NUM, 100.0)):
+        try:
+            arm_load_waypoints(bad_center, ARM_LOAD_TEST_GROUPS[0])
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("invalid B pose accepted")

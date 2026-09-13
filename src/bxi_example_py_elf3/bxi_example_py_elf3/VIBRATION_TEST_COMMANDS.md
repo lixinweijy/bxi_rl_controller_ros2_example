@@ -116,7 +116,7 @@ end_frequency_hz        结束频率，单位 Hz
 duration_sec            持续时间；0 表示连续运行
 control_rate_hz         指令发布频率，默认 200 Hz
 stop_ramp_sec           正常停止后的平滑回中时间，默认 0.5 秒
-motion_button_mode      C++ 手柄用 toggle；按下/松开型键盘源用 momentary
+motion_button_mode      遥控器电平输出用 momentary；仅旧式翻转事件源用 toggle
 joint_test_required     是否强制先完成 29 关节转动预检
 joint_test_amplitude_rad 预检正、反方向振幅，默认 0.03 rad
 joint_test_move_sec     每段平滑转动时间，默认 0.4 秒
@@ -271,11 +271,10 @@ ros2 service call /vibration_test_enable std_srvs/srv/SetBool "{data: true}"
 必须重新完成预检。手柄操作时，第一次按 X 可启动预检，预检通过后再次按 X
 才会启动振动；预检运行中按 X 会取消并平滑回中。
 
-默认 `motion_button_mode:=toggle` 与本工程的 C++ `remote_controller` 一致。
-如果 `btn_9` 来源是按下发 1、松开发 0 的键盘/通用手柄映射，启动 launch 时改用：
+默认 `motion_button_mode:=momentary`，因为当前 `remote_controller` 的 `outputs.level` 按住输出 1、松开输出 0。只有来源确实是每次按键翻转一次数值时才使用 `toggle`：
 
 ```bash
-motion_button_mode:=momentary
+motion_button_mode:=toggle
 ```
 
 正常停止振动并平滑返回中心姿态：

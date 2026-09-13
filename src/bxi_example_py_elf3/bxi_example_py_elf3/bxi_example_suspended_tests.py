@@ -22,19 +22,14 @@ from .control.elf3 import (
 from .control.remote import RemoteButtonEdge
 from .control.limb_sequence import (
     LIMB_TEST_GROUPS,
+    ARM_LOAD_TEST_GROUPS as ARM_TEST_GROUPS,
+    arm_load_rest_pose,
+    arm_load_waypoints,
     build_safe_ranges,
     full_range_waypoints,
     velocity_limited_duration,
 )
 from .control.trajectory import load_joint_trajectory, minimum_jerk_progress
-
-ARM_TEST_GROUPS = tuple(
-    group
-    for group in LIMB_TEST_GROUPS
-    if group.category == "arms"
-    and not any("wrist_" in name for name in group.joint_names)
-)
-
 
 class SuspendedTestNode(VibrationTestNode):
     """Own the actuator topic while offering mutually exclusive test modes.
@@ -54,7 +49,7 @@ class SuspendedTestNode(VibrationTestNode):
             self.declare_parameter("run_gain_ramp_sec", 2.0).value
         )
         self.limb_test_move_sec = float(
-            self.declare_parameter("limb_test_move_sec", 1.5).value
+            self.declare_parameter("limb_test_move_sec", 2.0).value
         )
         self.whole_body_test_move_sec = float(
             self.declare_parameter("whole_body_test_move_sec", 0.9).value
@@ -193,7 +188,7 @@ class SuspendedTestNode(VibrationTestNode):
             self.motion_command_resync_sec,
         )
         self.arm_load_test_button = RemoteButtonEdge(
-            self.motion_button_mode,
+            "momentary",
             self.motion_command_resync_sec,
         )
         self.run_enabled = False
@@ -242,7 +237,7 @@ class SuspendedTestNode(VibrationTestNode):
         diagnostics = self.run_trajectory.diagnostics()
         self.get_logger().info(
             "combined suspended tests ready: X=running, Y=vibration, "
-            "A=arms/legs joint test; "
+            "A=arms/legs joint test; B=two-motion arm load loop; "
             "run frames=%d run_rate=%.1f Hz max_step=%.6f rad "
             "(%.6f rad/s), loop_step=%.6f rad (%.6f rad/s), "
             "Kp=JOINT_KP[%.3f, %.3f]"
@@ -267,7 +262,7 @@ class SuspendedTestNode(VibrationTestNode):
             )
         )
         self.get_logger().warning(
-            "A-key MuJoCo collision checks are disabled; joint tests will "
+            "A/B MuJoCo collision checks are disabled; joint tests will "
             "use configured joint limits, feedback freshness, start "
             "tolerance and tracking checks only"
         )
@@ -275,8 +270,8 @@ class SuspendedTestNode(VibrationTestNode):
     def _remote_help_message(self):
         return (
             "combined remote: X starts/pauses running; Y starts/stops "
-            "vibration directly; A tests arms and legs; B tests arms "
-            "with 5 kg per tool flange; "
+            "vibration directly; A tests arms and legs; B loops lateral raises "
+            "and diagonal 45-degree raises with 90-degree elbow bends (5 kg/flange); "
             "modes are mutually exclusive (motion_button_mode=%s)"
             % self.motion_button_mode
         )
@@ -555,7 +550,7 @@ class SuspendedTestNode(VibrationTestNode):
         now = time.monotonic()
         if not self._joint_feedback_ready(now):
             self.get_logger().error(
-                "A rejected because complete fresh joint feedback is required"
+                "%s rejected because complete fresh joint feedback is required" % source
             )
             return False
         with self.feedback_lock:
@@ -564,9 +559,10 @@ class SuspendedTestNode(VibrationTestNode):
         worst_index = int(np.argmax(start_error))
         if start_error[worst_index] > self.limb_test_start_tolerance_rad:
             self.get_logger().error(
-                "A rejected because %s feedback differs from the hold command "
+                "%s rejected because %s feedback differs from the hold command "
                 "by %.3f deg (limit %.3f deg)"
                 % (
+                    source,
                     JOINT_NAMES[worst_index],
                     math.degrees(start_error[worst_index]),
                     math.degrees(self.limb_test_start_tolerance_rad),
@@ -577,6 +573,12 @@ class SuspendedTestNode(VibrationTestNode):
         self.run_phase = "idle"
         self.joint_test_passed = False
         self.joint_test_passed_at = 0.0
+        # Restore A's original zero reference after a B session.
+        self.limb_test_center_positions[:] = 0.0
+        if tuple(groups) == ARM_TEST_GROUPS:
+            self.limb_test_center_positions[:] = arm_load_rest_pose(
+                self.limb_test_center_positions
+            )
         self.center_positions[:] = self.limb_test_center_positions
         self.active_limb_test_groups = tuple(groups)
         self.pending_mode = "limb_test"
@@ -640,7 +642,7 @@ class SuspendedTestNode(VibrationTestNode):
         self.limb_test_visual_check_measured_next = False
         self._load_limb_group_locked(now)
         test_name = (
-            "双臂5 kg负载ROM测试（目标1小时）；B停止"
+            "双臂5 kg负载双动作循环（侧平举、前外侧45度斜举屈肘）；B停止"
             if self.active_limb_test_groups == ARM_TEST_GROUPS
             else "四肢ROM测试（不含腰部）；A停止"
         )
@@ -662,14 +664,16 @@ class SuspendedTestNode(VibrationTestNode):
 
     def _load_limb_group_locked(self, now):
         group = self.active_limb_test_groups[self.limb_test_group_index]
-        (
-            self.limb_test_motion_names,
-            self.limb_test_waypoints,
-        ) = full_range_waypoints(
-            self.limb_test_center_positions,
-            group,
-            self.limb_test_target_ranges,
-        )
+        if self.active_limb_test_groups == ARM_TEST_GROUPS:
+            motion_names, waypoints = arm_load_waypoints(
+                self.limb_test_center_positions, group
+            )
+        else:
+            motion_names, waypoints = full_range_waypoints(
+                self.limb_test_center_positions, group, self.limb_test_target_ranges
+            )
+        self.limb_test_motion_names = motion_names
+        self.limb_test_waypoints = waypoints
         self.limb_test_segment_index = 0
         self.limb_test_segment_start[:] = self.last_command_positions
         self.limb_test_segment_target[:] = self.limb_test_waypoints[0]

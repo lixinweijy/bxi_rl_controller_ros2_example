@@ -1,4 +1,6 @@
 import os
+import subprocess
+import logging
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_path
@@ -9,7 +11,7 @@ from launch.actions import (
     OpaqueFunction,
     RegisterEventHandler,
 )
-from launch.event_handlers import OnProcessExit
+from launch.event_handlers import OnProcessExit, OnShutdown
 from launch.events import Shutdown
 from launch.substitutions import LaunchConfiguration
 from launch.conditions import IfCondition
@@ -25,6 +27,16 @@ def _require_root(_context):
     return []
 
 
+def _power_off_on_shutdown(_context):
+    # A new ExecuteProcess is skipped once launch is shutting down. Execute the
+    # bounded cleanup directly, even when a controller crashes or SIGINT arrives.
+    try:
+        subprocess.run(['/usr/local/sbin/bxi-motor-power', 'off'], check=True, timeout=5)
+    except (OSError, subprocess.SubprocessError) as exc:
+        logging.getLogger('launch').error('Motor power-off failed: %s', exc)
+    return []
+
+
 def generate_launch_description(
     controller_executable_default="bxi_example_py_elf3_vibration",
     controller_name_default="bxi_example_py_elf3_vibration",
@@ -32,6 +44,7 @@ def generate_launch_description(
     allow_hardware_without_joint_test_default="false",
     start_remote_controller_default="true",
     controller_localhost_only=False,
+    control_rate_hz_default="100.0",
 ):
     workspace_config = Path(
         "src/bxi_example_py_elf3/config/suspended_tests.yaml"
@@ -210,7 +223,7 @@ def generate_launch_description(
             ),
             DeclareLaunchArgument(
                 "control_rate_hz",
-                default_value="200.0",
+                default_value=control_rate_hz_default,
                 description="Hardware actuator command publishing rate",
             ),
             DeclareLaunchArgument(
@@ -220,10 +233,10 @@ def generate_launch_description(
             ),
             DeclareLaunchArgument(
                 "motion_button_mode",
-                default_value="toggle",
+                default_value="momentary",
                 description=(
-                    "btn_9 source mode: toggle for the C++ gamepad, "
-                    "momentary for keyboard-style press/release sources"
+                    "Remote controller level outputs are pressed=1/released=0; "
+                    "use momentary edge handling"
                 ),
             ),
             DeclareLaunchArgument(
@@ -311,6 +324,16 @@ def generate_launch_description(
                             event=Shutdown(reason="vibration controller exited")
                         )
                     ],
+                )
+            ),
+            # Direct `sudo ros2 launch` runs outside the wrapper, so the
+            # launch itself must cut motor power on normal, signal, or crash
+            # shutdown. The launch is root-guarded above.
+            RegisterEventHandler(
+                OnShutdown(
+                    on_shutdown=[
+                        OpaqueFunction(function=_power_off_on_shutdown)
+                    ]
                 )
             ),
             hardware_node,

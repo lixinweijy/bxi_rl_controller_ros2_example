@@ -91,7 +91,7 @@ def test_shutdown_blocks_control_publish_and_reset():
     assert namespace["_call_robot_reset"](node, 1, False, 0.0) is False
 
 
-def test_remote_start_selects_single_threaded_walk():
+def test_remote_start_selects_unified_controller():
     import ast
     import yaml
 
@@ -102,7 +102,7 @@ def test_remote_start_selects_single_threaded_walk():
     assert signals["gamepad.rb"]["from"] == "js.button.7"
     assert config["outputs"]["publish_on_change"] is False
     commands = config["system"]
-    assert any("ros2 launch bxi_example_py_elf3 example_walk_hw.launch.py " in command
+    assert any("ros2 launch bxi_example_py_elf3 example_launch_unified_hw.launch.py " in command
                for command in commands["start"])
     assert any("bxi_example_py_elf3_mjlab" in command for command in commands["stop"])
     assert {"output": "btn_5=1", "when": ["button.lb_event"]} in config["outputs"]["level"]
@@ -327,10 +327,64 @@ def test_yamaxun_amp_contract_and_half_speed_shuttle():
 if __name__ == "__main__":
     test_controller_exit_keeps_context_until_callbacks_finish()
     test_shutdown_blocks_control_publish_and_reset()
-    test_remote_start_selects_single_threaded_walk()
+    test_remote_start_selects_unified_controller()
     test_walk_model_loads_without_constructing_robot_node()
     test_walk_gravity_projection_preserves_rotation_and_validation()
     test_walk_accepts_31_joint_feedback_without_changing_policy_dimensions()
     test_walk_buttons_toggle_once_per_press_with_idle_heartbeat()
     test_yamaxun_amp_contract_and_half_speed_shuttle()
     print("PASS: SIGINT, SIGTERM, safety exit and callback error propagation")
+
+
+def test_b_two_motion_loop_stop_and_return_to_a():
+    from types import SimpleNamespace, MethodType
+    from threading import RLock
+    import inspect
+    import numpy as np
+    from bxi_example_py_elf3.bxi_example_suspended_tests import SuspendedTestNode, ARM_TEST_GROUPS
+    from bxi_example_py_elf3.control.elf3 import DOF_NUM, JOINT_NAMES
+    from bxi_example_py_elf3.control.limb_sequence import LIMB_TEST_GROUPS, build_safe_ranges
+    from bxi_example_py_elf3.control.remote import RemoteButtonEdge
+
+    assert 'self.arm_load_test_button = RemoteButtonEdge(\n            "momentary"' in inspect.getsource(SuspendedTestNode)
+    button = RemoteButtonEdge("momentary", .5)
+    assert [button.update(v, t) for v,t in ((0,1.),(1,1.1),(1,1.2),(0,1.3),(1,1.4))] == [False, True, False, False, True]
+    errors, logs, returns = [], [], []
+    state = SimpleNamespace(
+        feedback_lock=RLock(), measured_positions=np.zeros(DOF_NUM),
+        last_command_positions=np.zeros(DOF_NUM), limb_test_center_positions=np.zeros(DOF_NUM),
+        center_positions=np.zeros(DOF_NUM), limb_test_start_tolerance_rad=np.deg2rad(10),
+        limb_test_move_sec=2.0, whole_body_test_move_sec=.9, limb_test_range_speed_deg_s=180.,
+        limb_test_target_ranges=build_safe_ranges(), limb_test_group_index=0, limb_test_failures=0,
+        limb_test_segment_start=np.zeros(DOF_NUM), limb_test_segment_target=np.zeros(DOF_NUM),
+        _joint_feedback_ready=lambda now: True,
+        get_logger=lambda: SimpleNamespace(error=errors.append),
+        _queue_diagnostic_log=lambda level,msg: logs.append(msg),
+        _begin_smooth_return_locked=lambda owner,duration_sec: returns.append((owner,duration_sec)),
+    )
+    for name in ("_limb_segment_duration", "_load_limb_group_locked"):
+        setattr(state, name, MethodType(getattr(SuspendedTestNode, name), state))
+    assert SuspendedTestNode._prepare_limb_test_locked(state, "remote B", ARM_TEST_GROUPS)
+    assert state.active_limb_test_groups == ARM_TEST_GROUPS
+    for side in ("l", "r"):
+        assert state.limb_test_center_positions[JOINT_NAMES.index(side+"_elbow_y_joint")] == np.pi/2
+    state.last_command_positions[:] = state.limb_test_center_positions
+    state._load_limb_group_locked(1.)
+    assert state.limb_test_segment_duration_sec == 2.0
+    for tick in range(18):  # Three complete cycles, same state machine as A.
+        assert len(state.limb_test_waypoints) == (2 if state.limb_test_group_index == 0 else 4)
+        state.last_command_positions[:] = state.limb_test_segment_target
+        SuspendedTestNode._start_next_limb_segment_locked(state, 2.+tick)
+    assert state.limb_test_group_index == 0 and state.limb_test_segment_index == 0
+    assert sum("CYCLE COMPLETE" in msg for msg in logs) == 3
+    SuspendedTestNode._stop_limb_test_locked(state, "remote B")
+    assert not state.limb_test_running and state.pending_mode == ""
+    assert returns[-1][0] == "limb_test_stop"
+    np.testing.assert_array_equal(state.center_positions, state.limb_test_center_positions)
+    state.measured_positions[:] = state.last_command_positions
+    assert SuspendedTestNode._prepare_limb_test_locked(state, "remote A", LIMB_TEST_GROUPS)
+    np.testing.assert_array_equal(state.limb_test_center_positions, np.zeros(DOF_NUM))
+    assert state.active_limb_test_groups == LIMB_TEST_GROUPS
+    state.measured_positions[JOINT_NAMES.index("l_elbow_y_joint")] += np.deg2rad(11)
+    assert not SuspendedTestNode._prepare_limb_test_locked(state, "remote B", ARM_TEST_GROUPS)
+    assert errors[-1].startswith("remote B rejected")

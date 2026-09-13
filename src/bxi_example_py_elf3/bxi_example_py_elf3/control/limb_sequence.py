@@ -14,6 +14,7 @@ from .elf3 import (
     JOINT_POSITION_MAX,
     JOINT_POSITION_MIN,
     validate_joint_vector,
+    position_limit_violations,
 )
 
 
@@ -106,6 +107,63 @@ LIMB_TEST_GROUPS = tuple(
     group for group in WHOLE_BODY_TEST_GROUPS
     if group.category in ("arms", "legs")
 )
+
+
+# B uses two coordinated load-test motions, not A's single-joint ROM scan.
+ARM_LOAD_JOINT_NAMES = tuple(
+    name for name in JOINT_NAMES if "shoulder_" in name or "elbow_" in name
+)
+# Field-tunable shoulder target: 90 is model-horizontal; 100 adds 10 deg
+# for the reported physical shortfall. Actual leveling must be checked on site.
+ARM_LOAD_LATERAL_RAISE_DEG = 100.0
+ARM_LOAD_TEST_GROUPS = (
+    JointMotionGroup("arm_load", "双臂手背朝上侧平举后放下", ARM_LOAD_JOINT_NAMES),
+    JointMotionGroup("arm_load", "前外侧斜举45度并屈肘至夹角45度后放下", ARM_LOAD_JOINT_NAMES),
+)
+
+
+def arm_load_rest_pose(base_positions):
+    """Arms straight, 10 degrees away from torso; preserve wrist commands."""
+    rest = validate_joint_vector("arm load rest", base_positions).copy()
+    for name in ARM_LOAD_JOINT_NAMES:
+        # elf3.xml: elbow=0 is a right angle; elbow=pi/2 is straight.
+        rest[JOINT_NAMES.index(name)] = np.pi / 2 if "elbow_" in name else 0.0
+    for side, sign in (("l", 1), ("r", -1)):
+        rest[JOINT_NAMES.index(side + "_shoulder_x_joint")] = sign * np.deg2rad(10.0)
+    return rest
+
+
+def arm_load_waypoints(center_positions, group):
+    """Torso upright: outward azimuth 45 deg, upper arm 45 deg below level."""
+    if group not in ARM_LOAD_TEST_GROUPS:
+        raise ValueError("unknown B load-test motion")
+    rest = arm_load_rest_pose(center_positions)
+    raised = rest.copy()
+    for side, sign in (("l", 1), ("r", -1)):
+        if group == ARM_LOAD_TEST_GROUPS[0]:
+            raised[JOINT_NAMES.index(side + "_shoulder_x_joint")] = sign * np.deg2rad(ARM_LOAD_LATERAL_RAISE_DEG)
+            # At straight elbow, this turns wrist +Z toward the upper side.
+            raised[JOINT_NAMES.index(side + "_shoulder_z_joint")] = sign * np.pi / 2
+        else:
+            # Ry(y) Rx(x) Rz(z), upper arm along local -Z.
+            # Direction = (1/2, +/-1/2, -sqrt(1/2)); twist makes elbow bend up.
+            diagonal = np.arctan(1.0 / np.sqrt(2.0))
+            raised[JOINT_NAMES.index(side + "_shoulder_y_joint")] = -diagonal
+            raised[JOINT_NAMES.index(side + "_shoulder_x_joint")] = sign * np.pi / 6
+            raised[JOINT_NAMES.index(side + "_shoulder_z_joint")] = sign * diagonal
+    if group == ARM_LOAD_TEST_GROUPS[0]:
+        waypoints = (raised, rest)
+    else:
+        bent = raised.copy()
+        for side in ("l", "r"):
+            # Elbow -45 deg gives a 45-degree internal arm angle.
+            bent[JOINT_NAMES.index(side + "_elbow_y_joint")] = np.deg2rad(-45.0)
+        waypoints = (raised, bent, raised.copy(), rest)
+    for pose in waypoints:
+        violations = position_limit_violations(pose, margin_rad=np.deg2rad(2.0))
+        if violations:
+            raise ValueError("unsafe B load-test pose: " + "; ".join(violations))
+    return group.joint_names, waypoints
 
 
 def joint_suffix(joint_name):

@@ -26,7 +26,10 @@ def get_launch_files():
 
     # 遍历源目录下的所有文件和子目录
     for root, dirs, files in os.walk(source_dir):
+        dirs[:] = [directory for directory in dirs if directory != "__pycache__"]
         for file in files:
+            if file.endswith((".pyc", ".pyo")):
+                continue
             file_path = os.path.join(root, file)
             # 计算相对于源目录的相对路径，以保持子目录结构
             relative_path = os.path.relpath(root, source_dir)
@@ -81,6 +84,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'bxi_example_py_elf3_unified = bxi_example_py_elf3.bxi_example_unified:main',
             'bxi_example_py_elf3_run = bxi_example_py_elf3.bxi_example_run:main',
             'bxi_example_py_elf3_mjlab = bxi_example_py_elf3.bxi_example_mjlab:main',
             'bxi_example_py_elf3_demo = bxi_example_py_elf3.bxi_example_demo:main',

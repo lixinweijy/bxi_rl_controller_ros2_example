@@ -1,11 +1,11 @@
 /**:
   ros__parameters:
-    # A/B 全行程测试共用的峰值关节速度，单位：度/秒。
+    # A 全行程/B 双动作负载测试共用的峰值关节速度，单位：度/秒。
     # 越小越慢；仿真调试上限 1000.0，实机上限为 180.0。
     limb_test_range_speed_deg_s: 180.0
 
-    # B 负载ROM和模式切换回零的最短移动时间，保持原速度。
-    limb_test_move_sec: 1.5
+    # B 双动作负载测试和模式切换回参考姿态的最短移动时间。
+    limb_test_move_sec: 2.0
 
     # 仅 A 四肢ROM（不含腰部）的小行程段加快；大行程仍按峰值速度限制延长。
     whole_body_test_move_sec: 0.9

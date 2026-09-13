@@ -960,6 +960,25 @@ class VibrationTestNode(Node):
         return response
 
     def _timer_callback(self):
+        """Run one control tick; never let a callback exception escape ROS."""
+        if self.shutdown_requested.is_set():
+            return
+        try:
+            self._timer_callback_impl()
+        except Exception as exc:
+            # A failed tick must fail closed: stop publishing and let launch
+            # shut down the hardware driver, whose exit hook cuts motor power.
+            try:
+                self.get_logger().fatal(
+                    "unhandled vibration control exception; stopping: %s: %s"
+                    % (type(exc).__name__, exc)
+                )
+            except Exception:
+                pass
+            finally:
+                self.shutdown_requested.set()
+
+    def _timer_callback_impl(self):
         now = time.monotonic()
 
         with self.state_lock:
@@ -999,11 +1018,7 @@ class VibrationTestNode(Node):
             if self.reset_stage == 1:
                 elapsed = now - self.initialization_started_at
                 ramp = min(elapsed / self.initialization_sec, 1.0)
-                if not self._publish_command(
-                    JOINT_NOMINAL_POS,
-                    JOINT_KP * ramp,
-                    JOINT_KD,
-                ):
+                if not self._publish_command(*self._initialization_command(ramp)):
                     return
 
                 if elapsed >= self.initialization_sec:
@@ -1065,6 +1080,9 @@ class VibrationTestNode(Node):
                 and log_sample
             ):
                 self._write_csv(log_sample[0], log_sample[1], command, now)
+
+    def _initialization_command(self, ramp):
+        return JOINT_NOMINAL_POS, JOINT_KP * ramp, JOINT_KD
 
     def _idle_command(self, _now):
         """Return the command held when vibration and precheck are inactive.
