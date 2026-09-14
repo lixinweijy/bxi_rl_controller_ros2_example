@@ -166,3 +166,51 @@ B 的参考姿态是双臂伸直并各外展 10°（肩 x 左右 ±10°、肘读
 模型角度/软件限位检查不能替代实机碰撞和承载验证；当前未安装 MuJoCo，未做网格碰撞验证。
 先空载短时检查动作方向，再按现场规范逐步加载；不要直接把离线检查当作 5 kg 实机验收。
 构建不会重启正在运行的控制器，需操作人员安全停机后重新启动 ROM，不能与行走并行运行。
+
+## 蓝牙手柄重启后没有输入设备
+
+2026-09-14 在 NVIDIA 02（Ubuntu 24.04、6.8.12-tegra、BlueZ 5.72）验证：
+重启后 `uhid` 未加载、`/dev/uhid` 不存在，手柄虽然能建立蓝牙连接，
+BlueZ 却报 `input-hog profile accept failed`，未生成 joystick 设备。
+加载 `uhid` 并重新连接后，日志出现 `HoG created uHID device`，
+`/dev/input/js0` 和稳定链接 `/dev/input/jsBattleDragon -> /dev/input/js0` 恢复。
+遥控服务随后记录 `accepting commands: gamepad` 和真实按键事件。
+
+只执行 `modprobe uhid` 不会跨重启保存；仓库提供 `script/bxi-hid.conf`，
+由 systemd 在开机时加载模块。遥控配置使用 `/dev/input/jsBattleDragon`，
+用于避免 joystick 编号变化；稳定链接不能解决缺少 HID 设备的问题。
+
+### 部署
+
+从本仓库根目录执行。以下命令修改系统模块加载配置；已有文件先备份，
+不启动机器人动作。02 已应用，无须重复部署。
+
+```bash
+modinfo uhid
+sudo mkdir -p /etc/modules-load.d
+if [ -f /etc/modules-load.d/bxi-hid.conf ]; then
+    sudo cp -pn /etc/modules-load.d/bxi-hid.conf /etc/modules-load.d/bxi-hid.conf.before-bxi
+fi
+sudo install -m 0644 script/bxi-hid.conf /etc/modules-load.d/bxi-hid.conf
+sudo modprobe uhid
+```
+
+稳定链接依赖系统已安装的 `script/bxi-dev.rules` 和
+`script/bxi-battle-dragon-link`。02 的蓝牙设备匹配
+`20d6 / Battle Dragon Adv / abs=30627`；USB 接收器可能采用不同属性，
+应按实际 `udevadm info` 输出核对，不能套用蓝牙映射。
+
+### 检查
+
+```bash
+cat /etc/modules-load.d/bxi-hid.conf
+ls -l /dev/uhid /dev/input/jsBattleDragon
+bluetoothctl devices Connected
+sudo journalctl -b -u bluetooth --no-pager -g 'input-hog|HoG|uhid'
+sudo journalctl -b -u ros_elf_launch.service --no-pager -g 'joystick|gamepad|btn_'
+```
+
+手柄关闭或断开时 joystick 节点消失属于正常行为；02 已验证后续连接时
+遥控服务能自动重新打开稳定路径，无需每次重启服务。
+先确认手柄开启且蓝牙连接恢复，再判断输入故障；`Connected: yes`
+本身不能证明 HoG 注册成功。未执行整机重启验收，须在下次正常重启后复查模块及输入。
