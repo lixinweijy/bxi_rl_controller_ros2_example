@@ -6,7 +6,7 @@ inputs:
 sources:
   gamepad:
     type: joystick
-    device: /dev/input/js0
+    device: /dev/input/jsBattleDragon
     priority: 50
     ready_timeout_ms: 1000
     loss_timeout_ms: 300
