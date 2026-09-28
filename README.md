@@ -23,6 +23,7 @@ src/
 
 ## Documentation
 
+- **[BXI ELF3 ROS 2 integration](integrations/bxi_ros2/README.md)** - `robot_test` controls on Holosoma inference, including PD, walking, ROM, vibration, remote control and BMS
 - **[Training Guide](src/holosoma/README.md)** - Train locomotion and whole-body tracking policies in IsaacGym/IsaacSim
 - **[Inference & Deployment Guide](src/holosoma_inference/README.md)** - Deploy policies to real robots or evaluate in MuJoCo simulation
 - **[Retargeting Guide](src/holosoma_retargeting/holosoma_retargeting/README.md)** - Convert human motion capture data to robot motions
