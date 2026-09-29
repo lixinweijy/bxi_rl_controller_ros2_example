@@ -1,0 +1,1 @@
+nvidia ALL=(root) NOPASSWD: /usr/local/sbin/bxi-motor-power on, /usr/local/sbin/bxi-motor-power off

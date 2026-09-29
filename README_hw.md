@@ -1,5 +1,7 @@
 # NVIDIA 实机启动环境
 
+遥控器自启与串口电源的部署入口为 [script/README.md](script/README.md)，所需脚本和 NVIDIA service 均保存在 `script/`。
+
 ## 网关启动时找不到 ROM 控制器模块
 
 2026-09-09 在 NVIDIA 设备验证：网关启动脚本

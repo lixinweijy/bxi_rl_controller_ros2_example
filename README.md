@@ -35,6 +35,8 @@ The binary ROS2 packages of ROS2 environment and mujoco can be find here:[`bxi_r
 5. There is `touch_sensor` in the simulation env, while the real foot touch sensor is under developement. Although `hardware` publishes touch forces, they are rough estimates. For higher precision requirements, estimation can be performed using the ground contact state estimation algorithm in quadruped robots.       
 
 ### System Environment Setup   
+NVIDIA Jetson（Ubuntu 24.04 / ROS 2 Jazzy）的遥控器自启、串口电源脚本及完整部署步骤见 [script/README.md](script/README.md)。以下 Humble 模板不适用于 NVIDIA。
+
 1. `Ubuntu 22.04`，with ROS2 version `humble`. `mujoco` requires `libglfw3-dev`.       
 2. Copy `./script/bxi-dev.rules` to `/etc/udev/rules.d/`
 3. To set up remote controller auto-start, edit `./script/ros_elf_launch.service`, copy to `/etc/systemd/system/`, and used the `systemctl` tool to enable the auto-start service.  
