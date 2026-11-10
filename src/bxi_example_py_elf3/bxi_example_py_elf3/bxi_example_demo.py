@@ -465,7 +465,7 @@ class BxiExample(Node):
         """Convert a framework motor frame into the ELF3 ROS command message."""
         state_name = self.runtime.framework.current_state_name
         override_permitted = self.motor_override_allow_in_zero_torque or (
-            state_name != "com.bxi.basic_actions/zero_torque"
+            state_name not in ("com.bxi.basic_actions/zero_torque", "com.bxi.basic_actions/startup")
         )
         frame = self._motor_override.apply(
             frame,

@@ -23,6 +23,7 @@ events:
     slot: btn_4
     value: 1
 states:
+  startup: {}
   zero_torque: {}
   zero_position:
     manifest:
@@ -41,6 +42,14 @@ states:
       confirm: true
       confirm_message: 机器人将进入初始姿态，所有电机进入PD制动模式，失去支撑能力，请确保机器人处于安全状态
 routes:
+- from: startup
+  event: zero_position
+  to: zero_position
+  transition: first_frame_switch
+- from: startup
+  event: pd_brake
+  to: pd_brake
+  transition: first_frame_switch
 - from: zero_torque
   event: zero_position
   to: zero_position
