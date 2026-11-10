@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "profile_id": "elf3_bxi85_20261101",
+  "source": "2026-11-01 hardware replacement; BXI85 runtime gains and limits inherited from existing hip X configuration",
+  "torque_policy": "min(joint_required_peak_nm, motor_peak_nm) for confirmed motor specs; inherit ELF3 where limit_policy is elf3",
+  "speed_policy": "Maximum listed output-shaft rpm converted to rad/s for confirmed motor specs; inherit ELF3 where limit_policy is elf3",
+  "gain_profiles": {
+    "kaixuan": {
+      "stiffness": 50.0,
+      "damping": 10.0
+    },
+    "bxi85": {
+      "stiffness": 176.421,
+      "damping": 11.231
+    }
+  },
+  "joint_families": {
+    "waist_y": {
+      "motor": "BXI70 elongated",
+      "gain_profile": "elf3",
+      "joint_required_peak_nm": 120,
+      "motor_peak_nm": 100,
+      "output_rpm_range": [
+        100,
+        150
+      ]
+    },
+    "waist_x": {
+      "motor": "BXI70 elongated",
+      "gain_profile": "elf3",
+      "joint_required_peak_nm": 120,
+      "motor_peak_nm": 100,
+      "output_rpm_range": [
+        100,
+        150
+      ]
+    },
+    "waist_z": {
+      "motor": "BXI85",
+      "gain_profile": "elf3",
+      "joint_required_peak_nm": 100,
+      "motor_peak_nm": 150,
+      "output_rpm_range": [
+        100,
+        150
+      ]
+    },
+    "hip_y": {
+      "motor": "BXI85",
+      "gain_profile": "bxi85",
+      "joint_required_peak_nm": 300,
+      "motor_peak_nm": 150,
+      "output_rpm_range": [
+        100,
+        150
+      ]
+    },
+    "hip_x": {
+      "motor": "BXI85 revised",
+      "gain_profile": "elf3",
+      "joint_required_peak_nm": 220,
+      "motor_peak_nm": 250,
+      "output_rpm_range": [
+        100,
+        150
+      ]
+    },
+    "hip_z": {
+      "motor": "BXI70 elongated",
+      "gain_profile": "elf3",
+      "joint_required_peak_nm": 60,
+      "motor_peak_nm": 100,
+      "output_rpm_range": [
+        100,
+        150
+      ]
+    },
+    "knee_y": {
+      "motor": "BXI85",
+      "gain_profile": "bxi85",
+      "joint_required_peak_nm": 300,
+      "motor_peak_nm": 150,
+      "output_rpm_range": [
+        100,
+        150
+      ]
+    },
+    "ankle_y": {
+      "motor": "BXI-50L",
+      "gain_profile": "elf3",
+      "joint_required_peak_nm": 45,
+      "motor_peak_nm": null,
+      "output_rpm_range": null,
+      "limit_policy": "elf3",
+      "limit_source": "User authorized retaining ELF3 parameters for unspecified motor characteristics"
+    },
+    "ankle_x": {
+      "motor": "BXI-50L",
+      "gain_profile": "elf3",
+      "joint_required_peak_nm": 45,
+      "motor_peak_nm": null,
+      "output_rpm_range": null,
+      "limit_policy": "elf3",
+      "limit_source": "User authorized retaining ELF3 parameters for unspecified motor characteristics"
+    },
+    "shoulder_y": {
+      "motor": "KGU-17CLOCD-A192",
+      "gain_profile": "kaixuan",
+      "joint_required_peak_nm": 60,
+      "motor_peak_nm": 78,
+      "output_rpm_range": [
+        30,
+        30
+      ]
+    },
+    "shoulder_x": {
+      "motor": "KGU-17CLOCD-A192",
+      "gain_profile": "kaixuan",
+      "joint_required_peak_nm": 60,
+      "motor_peak_nm": 78,
+      "output_rpm_range": [
+        32,
+        32
+      ]
+    },
+    "shoulder_z": {
+      "motor": "KGU-14BLOCD-A192",
+      "gain_profile": "kaixuan",
+      "joint_required_peak_nm": 35,
+      "motor_peak_nm": 50,
+      "output_rpm_range": [
+        32,
+        32
+      ]
+    },
+    "elbow_y": {
+      "motor": "KGU-14BLOCD-A192",
+      "gain_profile": "kaixuan",
+      "joint_required_peak_nm": 45,
+      "motor_peak_nm": 50,
+      "output_rpm_range": [
+        32,
+        32
+      ]
+    },
+    "wrist_x": {
+      "motor": "KGU-11CLOCC-A065",
+      "gain_profile": "kaixuan",
+      "joint_required_peak_nm": 21,
+      "motor_peak_nm": 30,
+      "output_rpm_range": [
+        32,
+        32
+      ]
+    },
+    "wrist_y": {
+      "motor": "KGU-08CLOEC-A065",
+      "gain_profile": "kaixuan",
+      "joint_required_peak_nm": 15,
+      "motor_peak_nm": 16,
+      "output_rpm_range": [
+        35,
+        35
+      ]
+    },
+    "wrist_z": {
+      "motor": "KGU-08CLOEC-A065",
+      "gain_profile": "kaixuan",
+      "joint_required_peak_nm": 15,
+      "motor_peak_nm": 16,
+      "output_rpm_range": [
+        35,
+        35
+      ]
+    }
+  },
+  "notes": [
+    "Ankle motors are BXI-50L. Per user authorization, unspecified limits inherit ELF3: ankle Y 50 Nm, ankle X 20 Nm, both 20 rad/s. These inherited values are simulation settings, not claimed BXI-50L hardware specifications.",
+    "Waist X/Y requirement 120 Nm exceeds the selected motor's 100 Nm capability, so the simulation limit is 100 Nm.",
+    "Unspecified BXI gains, action scaling, default joint positions, geometry, mass, inertia and source URDF remain inherited or unchanged.",
+    "Peak torque and maximum speed are separate rectangular simulation limits, not a measured torque-speed curve or continuous-duty rating."
+  ]
+}
