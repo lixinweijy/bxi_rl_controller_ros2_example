@@ -403,10 +403,51 @@ void test_xbox_elrs_crsf_buttons_use_bit_packed_sources()
     }
 }
 
+
+void test_arm08_only_pd_and_elf4_bindings()
+{
+    const RemoteConfig config = remote_controller::load_remote_config(ARM08_CONFIG_PATH);
+    const std::vector<std::vector<std::string>> sources = {
+        {"js.button.6", "js.button.7", "js.axis.5", "js.axis.4",
+         "js.button.0", "js.button.1", "js.button.3", "js.button.4"},
+        {"crsf.xbox.button.lb", "crsf.xbox.button.rb", "crsf.xbox.trigger_left",
+         "crsf.xbox.trigger_right", "crsf.xbox.button.a", "crsf.xbox.button.b",
+         "crsf.xbox.button.x", "crsf.xbox.button.y"},
+    };
+    for (const auto &source : sources) {
+        for (int mask = 0; mask < 256; ++mask) {
+            InputMapper mapper(config);
+            for (int bit = 0; bit < 8; ++bit)
+                mapper.set_signal(source[bit], (mask & (1 << bit)) ? 1.0 : 0.0);
+            communication::msg::MotionCommands msg;
+            mapper.fill_message(msg);
+            expect(msg.btn_3 == (mask == ((1 << 1) | (1 << 5)) ? 1 : 0));
+            expect(msg.btn_1 == (mask == ((1 << 1) | (1 << 6)) ? 1 : 0));
+            expect(msg.btn_10 == (mask == ((1 << 1) | (1 << 4)) ? 41 :
+                                  mask == ((1 << 0) | (1 << 5)) ? 40 : 0));
+            expect(msg.btn_4 == (mask == ((1 << 1) | (1 << 7)) ? 1 : 0));
+            expect(msg.btn_2 == (mask == ((1 << 3) | (1 << 6)) ? 1 : 0));
+            expect(msg.btn_5 == 0 && msg.btn_6 == 0 &&
+                   msg.btn_7 == 0 && msg.btn_8 == 0 && msg.btn_9 == 0);
+        }
+    }
+    for (const auto &source : {"js.button.11", "crsf.xbox.button.back"}) {
+        InputMapper mapper(config);
+        const auto outputs = mapper.set_signal(source, 1.0);
+        expect(std::find(outputs.begin(), outputs.end(), "system.stop") != outputs.end());
+    }
+    for (const auto &source : {"js.button.14", "crsf.xbox.button.start"}) {
+        InputMapper mapper(config);
+        const auto outputs = mapper.set_signal(source, 1.0);
+        expect(std::find(outputs.begin(), outputs.end(), "system.start") != outputs.end());
+    }
+}
+
 }  // namespace
 
 int main()
 {
+    test_arm08_only_pd_and_elf4_bindings();
     test_enum_conditions_are_independent_of_raw_gaps();
     test_priority_preempts_lower_active_inputs();
     test_bool_all_keeps_inactive_raw_inputs_in_the_selected_group();

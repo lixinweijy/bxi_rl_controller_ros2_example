@@ -71,7 +71,8 @@ if(BUILD_TESTING)
   )
   target_include_directories(${PROJECT_NAME}_control_rules_test PRIVATE include)
   target_compile_definitions(${PROJECT_NAME}_control_rules_test PRIVATE
-    REMOTE_CONTROLLER_TEST_CONFIG_PATH="${CMAKE_CURRENT_SOURCE_DIR}/config/xbox_default.yaml"
+    REMOTE_CONTROLLER_TEST_CONFIG_PATH="${CMAKE_CURRENT_SOURCE_DIR}/test/xbox_full_fixture.yaml"
+    ARM08_CONFIG_PATH="${CMAKE_CURRENT_SOURCE_DIR}/config/xbox_default.yaml"
   )
   ament_target_dependencies(${PROJECT_NAME}_control_rules_test communication)
   target_link_libraries(${PROJECT_NAME}_control_rules_test ${PROJECT_NAME}_core)
