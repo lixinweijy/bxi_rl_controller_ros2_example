@@ -8,7 +8,7 @@ _CPU_AFFINITY_PLAN = bootstrap_process_scheduling()
 import rclpy
 from rclpy.node import Node
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
-from rclpy.executors import MultiThreadedExecutor
+from rclpy.executors import SingleThreadedExecutor
 from rclpy.qos import QoSProfile, qos_profile_sensor_data
 import communication.msg as bxiMsg
 import communication.srv as bxiSrv
@@ -151,6 +151,9 @@ class BxiExample(Node):
         # 控制循环初始化
         self.step = 0
         self._second_reset_at = 0.0
+        self._reset_future = None
+        self._reset_deadline = 0.0
+        self._next_reset_service_warning = 0.0
         self.runtime = RobotControlRuntime(
             self.state_machine_config,
             built_in_mod_root=self.package_share / "mods",
@@ -344,7 +347,7 @@ class BxiExample(Node):
             return False
         if self.step == 0:
             if self.robot_reset(1, False):
-                self.get_logger().info("robot reset step 1 requested")
+                self.get_logger().info("robot reset step 1 confirmed")
                 self._second_reset_at = now + 1.0
                 self.step = 1
             return False
@@ -353,7 +356,7 @@ class BxiExample(Node):
                 return False
             if not self.robot_reset(2, True):
                 return False
-            self.get_logger().info("robot reset step 2 requested")
+            self.get_logger().info("robot reset step 2 confirmed")
             self.step = 2
             if self.topic_prefix.find("simulation") != -1:
                 self.runtime.request_state(
@@ -501,18 +504,32 @@ class BxiExample(Node):
         self.state_machine_info_pub.publish(msg)
 
     def robot_reset(self, reset_step, release):
+        if self._shutting_down.is_set() or not rclpy.ok():
+            return False
+        now = time.monotonic()
+        if self._reset_future is not None:
+            if not self._reset_future.done():
+                if now >= self._reset_deadline:
+                    raise RuntimeError(f"robot reset step {reset_step} reply timed out")
+                return False
+            response = self._reset_future.result()
+            self._reset_future = None
+            if response is None or not response.is_success:
+                raise RuntimeError(f"robot reset step {reset_step} rejected by hardware")
+            return True
+        if not self.rest_srv.wait_for_service(timeout_sec=0.0):
+            if now >= self._next_reset_service_warning:
+                self.get_logger().info("robot reset service not available; waiting")
+                self._next_reset_service_warning = now + 2.0
+            return False
         req = bxiSrv.RobotReset.Request()
         req.reset_step = reset_step
         req.release = release
         req.header.frame_id = robot_name
 
-        while not self.rest_srv.wait_for_service(timeout_sec=0.2):
-            if self._shutting_down.is_set() or not rclpy.ok():
-                return False
-            self.get_logger().info("robot reset service not available; waiting")
-
-        self.rest_srv.call_async(req)
-        return True
+        self._reset_future = self.rest_srv.call_async(req)
+        self._reset_deadline = now + 5.0
+        return False
 
     def sim_robot_reset(self):
         req = bxiSrv.SimulationReset.Request()
@@ -720,7 +737,7 @@ def main(args=None):
     rclpy.init(args=args)
     node = BxiExample(cpu_affinity_plan=_CPU_AFFINITY_PLAN)
 
-    executor = MultiThreadedExecutor(num_threads=3)
+    executor = SingleThreadedExecutor()
     try:
         executor.add_node(node)
         node.runtime.attach_executor(executor)
