@@ -1,0 +1,272 @@
+{
+  "source_run": "no_arm_27k.onnx (training config not supplied)",
+  "source_urdf": "legged_lab/assets/elf4/urdf/elf4.urdf",
+  "policy_disabled_joints": [],
+  "joint_order": [
+    "l_shoulder_y_joint",
+    "r_shoulder_y_joint",
+    "waist_y_joint",
+    "l_shoulder_x_joint",
+    "r_shoulder_x_joint",
+    "waist_x_joint",
+    "l_shoulder_z_joint",
+    "r_shoulder_z_joint",
+    "waist_z_joint",
+    "l_elbow_y_joint",
+    "r_elbow_y_joint",
+    "l_hip_y_joint",
+    "r_hip_y_joint",
+    "l_wrist_x_joint",
+    "r_wrist_x_joint",
+    "l_hip_x_joint",
+    "r_hip_x_joint",
+    "l_wrist_y_joint",
+    "r_wrist_y_joint",
+    "l_hip_z_joint",
+    "r_hip_z_joint",
+    "l_wrist_z_joint",
+    "r_wrist_z_joint",
+    "l_knee_y_joint",
+    "r_knee_y_joint",
+    "l_ankle_y_joint",
+    "r_ankle_y_joint",
+    "l_ankle_x_joint",
+    "r_ankle_x_joint"
+  ],
+  "default_joint_pos": {
+    "waist_y_joint": 0.0,
+    "waist_x_joint": 0.0,
+    "waist_z_joint": 0.0,
+    "l_hip_y_joint": -0.3095,
+    "l_hip_x_joint": -0.0117,
+    "l_hip_z_joint": -0.0772,
+    "l_knee_y_joint": 0.6,
+    "l_ankle_y_joint": -0.3,
+    "l_ankle_x_joint": 0.0,
+    "r_hip_y_joint": -0.3095,
+    "r_hip_x_joint": 0.0117,
+    "r_hip_z_joint": 0.0772,
+    "r_knee_y_joint": 0.6,
+    "r_ankle_y_joint": -0.3,
+    "r_ankle_x_joint": 0.0,
+    "l_shoulder_y_joint": 0.2,
+    "l_shoulder_x_joint": 0.2,
+    "l_shoulder_z_joint": 0.0,
+    "l_elbow_y_joint": 0.6,
+    "l_wrist_x_joint": 0.0,
+    "l_wrist_y_joint": 0.0,
+    "l_wrist_z_joint": 0.0,
+    "r_shoulder_y_joint": 0.2,
+    "r_shoulder_x_joint": -0.2,
+    "r_shoulder_z_joint": 0.0,
+    "r_elbow_y_joint": 0.6,
+    "r_wrist_x_joint": 0.0,
+    "r_wrist_y_joint": 0.0,
+    "r_wrist_z_joint": 0.0
+  },
+  "joint_control": {
+    "l_shoulder_y_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 60,
+      "velocity_limit": 3.14
+    },
+    "r_shoulder_y_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 60,
+      "velocity_limit": 3.14
+    },
+    "waist_y_joint": {
+      "stiffness": 108.448,
+      "damping": 6.904,
+      "effort_limit": 90,
+      "velocity_limit": 20
+    },
+    "l_shoulder_x_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 60,
+      "velocity_limit": 3.14
+    },
+    "r_shoulder_x_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 60,
+      "velocity_limit": 3.14
+    },
+    "waist_x_joint": {
+      "stiffness": 162.672,
+      "damping": 10.356,
+      "effort_limit": 100,
+      "velocity_limit": 20
+    },
+    "l_shoulder_z_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 35,
+      "velocity_limit": 3.14
+    },
+    "r_shoulder_z_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 35,
+      "velocity_limit": 3.14
+    },
+    "waist_z_joint": {
+      "stiffness": 176.421,
+      "damping": 11.231,
+      "effort_limit": 150,
+      "velocity_limit": 20
+    },
+    "l_elbow_y_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 45,
+      "velocity_limit": 3.14
+    },
+    "r_elbow_y_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 45,
+      "velocity_limit": 3.14
+    },
+    "l_hip_y_joint": {
+      "stiffness": 176.421,
+      "damping": 11.231,
+      "effort_limit": 150,
+      "velocity_limit": 20
+    },
+    "r_hip_y_joint": {
+      "stiffness": 176.421,
+      "damping": 11.231,
+      "effort_limit": 150,
+      "velocity_limit": 20
+    },
+    "l_wrist_x_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 21,
+      "velocity_limit": 3.14
+    },
+    "r_wrist_x_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 21,
+      "velocity_limit": 3.14
+    },
+    "l_hip_x_joint": {
+      "stiffness": 176.421,
+      "damping": 11.231,
+      "effort_limit": 150,
+      "velocity_limit": 20
+    },
+    "r_hip_x_joint": {
+      "stiffness": 176.421,
+      "damping": 11.231,
+      "effort_limit": 150,
+      "velocity_limit": 20
+    },
+    "l_wrist_y_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 15,
+      "velocity_limit": 3.14
+    },
+    "r_wrist_y_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 15,
+      "velocity_limit": 3.14
+    },
+    "l_hip_z_joint": {
+      "stiffness": 54.224,
+      "damping": 3.452,
+      "effort_limit": 45,
+      "velocity_limit": 20
+    },
+    "r_hip_z_joint": {
+      "stiffness": 54.224,
+      "damping": 3.452,
+      "effort_limit": 45,
+      "velocity_limit": 20
+    },
+    "l_wrist_z_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 15,
+      "velocity_limit": 3.14
+    },
+    "r_wrist_z_joint": {
+      "stiffness": 50,
+      "damping": 10,
+      "effort_limit": 15,
+      "velocity_limit": 3.14
+    },
+    "l_knee_y_joint": {
+      "stiffness": 176.421,
+      "damping": 11.231,
+      "effort_limit": 150,
+      "velocity_limit": 20
+    },
+    "r_knee_y_joint": {
+      "stiffness": 176.421,
+      "damping": 11.231,
+      "effort_limit": 150,
+      "velocity_limit": 20
+    },
+    "l_ankle_y_joint": {
+      "stiffness": 33.493,
+      "damping": 2.132,
+      "effort_limit": 50,
+      "velocity_limit": 20
+    },
+    "r_ankle_y_joint": {
+      "stiffness": 33.493,
+      "damping": 2.132,
+      "effort_limit": 50,
+      "velocity_limit": 20
+    },
+    "l_ankle_x_joint": {
+      "stiffness": 21.771,
+      "damping": 1.386,
+      "effort_limit": 20,
+      "velocity_limit": 10
+    },
+    "r_ankle_x_joint": {
+      "stiffness": 21.771,
+      "damping": 1.386,
+      "effort_limit": 20,
+      "velocity_limit": 10
+    }
+  },
+  "physics_dt": 0.005,
+  "decimation": 4,
+  "action_scale": 0.23,
+  "clip_actions": 100.0,
+  "clip_observations": 100.0,
+  "actor_history": 10,
+  "obs_scales": {
+    "ang_vel": 1.0,
+    "projected_gravity": 1.0,
+    "commands": 1.0,
+    "joint_pos": 1.0,
+    "joint_vel": 1.0,
+    "actions": 1.0
+  },
+  "command_ranges": {
+    "lin_vel_x": [
+      -1.0,
+      1.5
+    ],
+    "lin_vel_y": [
+      -0.5,
+      0.5
+    ],
+    "ang_vel_z": [
+      -1.57,
+      1.57
+    ]
+  },
+  "max_tilt_angle_rad": 1.0
+}
