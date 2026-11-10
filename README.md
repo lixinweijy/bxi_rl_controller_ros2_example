@@ -1,3 +1,5 @@
+> ARM-08 2026-10-26部署配置：只保留RB+B原PD与RB+X的xmz ELF4策略，Start/Stop仍负责程序启停。原PD的实现、初始角和增益不变；以下其他模型/动作说明为上游通用文档，不适用于本设备。硬件入口为`ros2 launch bxi_example_py_elf3 example_demo_hw.launch.py`，组合17槽位腰腿驱动、两侧EtherCAT臂、独立IMU与29关节反馈合并；必须有全部真实反馈。模型来源`/media/lxw/软件/项目/xmz/elf4`，50Hz CPU ONNX。部署只验证离线接口，尚未验收真机运动，已有仿真偏航和限幅边界仍存在。
+
 # bxi_rl_controller_ros2_example
 
 [English](./README.en.md)

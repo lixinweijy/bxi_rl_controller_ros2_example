@@ -58,3 +58,10 @@ htmlcov/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# ARM deployment caches, runtime captures and local backup copies
+/install
+/build_*/
+/install_*/
+/diagnostics/
+*.before_*
