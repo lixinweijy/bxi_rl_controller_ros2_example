@@ -1,8 +1,8 @@
 from bxi_example_py_elf3.framework.mod_api import ModDefinition, ModLoadContext
 
-from .initial_pos_state import InitialPosState
 from .pd_brake_state import PdBrakeState
 from .zero_torque_state import ZeroTorqueState
+from .zero_position_state import ZeroPositionState
 
 
 def create_mod(context: ModLoadContext) -> ModDefinition:
@@ -12,8 +12,6 @@ def create_mod(context: ModLoadContext) -> ModDefinition:
                 state.name, state.state_id
             ),
             "pd_brake": lambda state: PdBrakeState(state.name, state.state_id),
-            "initial_pos": lambda state: InitialPosState(
-                state.name, state.state_id
-            ),
+            "zero_position": lambda state: ZeroPositionState(state.name, state.state_id),
         }
     )

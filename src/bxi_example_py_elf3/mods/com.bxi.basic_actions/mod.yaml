@@ -2,7 +2,7 @@ schema: 1
 id: com.bxi.basic_actions
 name: 基础动作
 version: 1.0.0
-api: ">=4,<5"
+api: '>=4,<5'
 enable: true
 entrypoint: plugin:create_mod
 visibility: public
@@ -12,30 +12,26 @@ python_exports: []
 runtime_requirements:
   python: []
   ros:
-    - package: rclpy
-    - package: geometry_msgs
+  - package: rclpy
+  - package: geometry_msgs
   system: []
-
 events:
-  zero_torque:
-    slot: btn_2
-    value: 1
   pd_brake:
     slot: btn_3
     value: 1
-  initial_pos:
+  zero_position:
     slot: btn_4
     value: 1
-
 states:
-  zero_torque:
+  zero_torque: {}
+  zero_position:
     manifest:
-      label: 零力矩
-      priority: 990
+      label: 零位
+      priority: 979
       group: Base
-      icon: do_not_disturb_on
+      icon: accessibility_new
       confirm: true
-      confirm_message: 所有电机进入零力矩模式，机器人将完全失去支撑能力，请确保机器人处于安全状态
+      confirm_message: 机器人将通过PD保持所有受控关节在0rad，请确保机器人处于吊装或保护架
   pd_brake:
     manifest:
       label: 初始姿态
@@ -44,33 +40,20 @@ states:
       icon: settings_backup_restore
       confirm: true
       confirm_message: 机器人将进入初始姿态，所有电机进入PD制动模式，失去支撑能力，请确保机器人处于安全状态
-  initial_pos:
-    manifest:
-      label: 零位模式
-      priority: 960
-      group: Base
-      icon: anchor
-
 routes:
-  - from: pd_brake
-    event: zero_torque
-    to: zero_torque
-  - from: initial_pos
-    event: zero_torque
-    to: zero_torque
-  - from: zero_torque
-    event: pd_brake
-    to: pd_brake
-    transition: first_frame_switch
-  - from: initial_pos
-    event: pd_brake
-    to: pd_brake
-    transition: first_frame_switch
-  - from: zero_torque
-    event: initial_pos
-    to: initial_pos
-    transition: first_frame_switch
-  - from: pd_brake
-    event: initial_pos
-    to: initial_pos
-    transition: first_frame_switch
+- from: zero_torque
+  event: zero_position
+  to: zero_position
+  transition: first_frame_switch
+- from: pd_brake
+  event: zero_position
+  to: zero_position
+  transition: first_frame_switch
+- from: zero_position
+  event: pd_brake
+  to: pd_brake
+  transition: first_frame_switch
+- from: zero_torque
+  event: pd_brake
+  to: pd_brake
+  transition: first_frame_switch
