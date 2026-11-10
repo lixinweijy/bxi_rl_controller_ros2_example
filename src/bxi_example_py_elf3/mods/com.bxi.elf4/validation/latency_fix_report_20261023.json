@@ -1,0 +1,886 @@
+{
+  "date": "2026-10-23",
+  "mod_version": "1.2.1",
+  "scope": "Local ROS/MuJoCo simulation only; no real robot actions.",
+  "symptom": "After movement, simulation realtime factor falls and display/control feel delayed.",
+  "root_cause": "The mass-weighted speed projection uses small dense linear solves. NumPy OpenBLAS selected 16 threads by default, introducing severe scheduling overhead when speed limits become active.",
+  "unchanged_physics": "Same repaired ONNX, PD/contact settings, discrete integrator and speed-projection algorithm. The numerical thread comparison used the same recorded poses and mass matrices.",
+  "changes": [
+    "Only ELF4 ExecuteProcess sets OPENBLAS_NUM_THREADS=1, OMP_NUM_THREADS=1 and MKL_NUM_THREADS=1 before Python imports NumPy.",
+    "Viewer uses a private model/data and dedicated latest-state worker; sync and forward do not hold the physics/command lock.",
+    "Only explicit GUI pose/equality edits and fresh mouse forces merge back; generation rejects stale reset results and forces expire after 200 ms.",
+    "ROS observation messages are built under lock and published outside it.",
+    "Camera snapshots copy the complete integration state rather than full MjData, and RGB/depth queues retain one latest frame."
+  ],
+  "before_reproduction": {
+    "realtime_factor_samples": [
+      0.852,
+      0.766,
+      0.187,
+      0.19,
+      0.218,
+      0.263
+    ],
+    "timings": {
+      "step": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 1037,
+          "mean_ms": 0.45166909919194914,
+          "p95_ms": 1.0531938634812825,
+          "p99_ms": 2.528832405805594,
+          "maximum_ms": 17.157146241515875
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 2000,
+          "mean_ms": 0.4357426487840712,
+          "p95_ms": 0.7437643362209201,
+          "p99_ms": 2.821447607129811,
+          "maximum_ms": 37.847823929041624
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 825,
+          "mean_ms": 20.55854887955568,
+          "p95_ms": 39.31354992091656,
+          "p99_ms": 45.261132940649986,
+          "maximum_ms": 57.00214160606265
+        },
+        {
+          "wall_start": 40,
+          "wall_end": 80,
+          "samples": 1158,
+          "mean_ms": 17.580440639886547,
+          "p95_ms": 33.697597682476015,
+          "p99_ms": 42.87974974606193,
+          "maximum_ms": 53.28526208177209
+        }
+      ],
+      "publish_observations": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 1034,
+          "mean_ms": 0.6250851856079853,
+          "p95_ms": 1.259405282326042,
+          "p99_ms": 2.366957501508287,
+          "maximum_ms": 13.305150903761387
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 2000,
+          "mean_ms": 0.6530456067994237,
+          "p95_ms": 1.3742159120738506,
+          "p99_ms": 2.7389779314398752,
+          "maximum_ms": 4.928031004965305
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 826,
+          "mean_ms": 2.7045665424966567,
+          "p95_ms": 7.719233399257064,
+          "p99_ms": 10.478173848241568,
+          "maximum_ms": 12.376019731163979
+        },
+        {
+          "wall_start": 40,
+          "wall_end": 80,
+          "samples": 1158,
+          "mean_ms": 2.9779163330780514,
+          "p95_ms": 8.793025673367074,
+          "p99_ms": 11.250013061799113,
+          "maximum_ms": 22.40555826574564
+        }
+      ],
+      "viewer_sync": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 307,
+          "mean_ms": 0.19336157821191638,
+          "p95_ms": 0.4651196766644711,
+          "p99_ms": 0.9428878314793109,
+          "maximum_ms": 1.5224721282720566
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 591,
+          "mean_ms": 0.2767751544915682,
+          "p95_ms": 0.6256734486669302,
+          "p99_ms": 2.294514188542964,
+          "maximum_ms": 3.44947911798954
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 847,
+          "mean_ms": 0.3478181275727124,
+          "p95_ms": 1.2004621792584647,
+          "p99_ms": 4.680643333122128,
+          "maximum_ms": 10.688245296478271
+        },
+        {
+          "wall_start": 40,
+          "wall_end": 80,
+          "samples": 1119,
+          "mean_ms": 0.32212948667965796,
+          "p95_ms": 1.0143535211682295,
+          "p99_ms": 3.6921058408915983,
+          "maximum_ms": 10.943550150841475
+        }
+      ],
+      "receive_command": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 67,
+          "mean_ms": 0.20684436686448196,
+          "p95_ms": 0.8379942737519731,
+          "p99_ms": 1.3492483459413083,
+          "maximum_ms": 1.9503412768244743
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 500,
+          "mean_ms": 0.3883961047977209,
+          "p95_ms": 0.7216133177280423,
+          "p99_ms": 7.415446843951918,
+          "maximum_ms": 34.22683198004961
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 997,
+          "mean_ms": 12.57108969458845,
+          "p95_ms": 38.65737020969391,
+          "p99_ms": 57.86458209156985,
+          "maximum_ms": 83.65808613598347
+        },
+        {
+          "wall_start": 40,
+          "wall_end": 80,
+          "samples": 1224,
+          "mean_ms": 10.383167575353914,
+          "p95_ms": 31.337115610949688,
+          "p99_ms": 42.84066431224345,
+          "maximum_ms": 88.67781097069383
+        }
+      ]
+    },
+    "runtime": {
+      "mujoco": "3.17.0",
+      "message_age_ms": {
+        "joints": {
+          "samples": 3830,
+          "p50": 0.6883094796142578,
+          "p95": 4.007319253149385,
+          "p99": 6.073949730820273,
+          "maximum": 14.468697987060548
+        },
+        "imu": {
+          "samples": 3829,
+          "p50": 1.2828151158447154,
+          "p95": 4.500691646484345,
+          "p99": 6.640352720375963,
+          "maximum": 14.71021600769043
+        },
+        "color": {
+          "samples": 988,
+          "p50": 8.792029703186024,
+          "p95": 17.72439253870237,
+          "p99": 29.78368666118766,
+          "maximum": 70.44515160461422
+        },
+        "depth": {
+          "samples": 1008,
+          "p50": 16.42618774389648,
+          "p95": 29.924442442285102,
+          "p99": 55.64593534285746,
+          "maximum": 89.4986107720947
+        }
+      },
+      "ankle_width_after_target": {
+        "samples": 2927,
+        "maximum_m": 0.6401353678130267,
+        "last_ten_second_mean_m": 0.2111571686852146,
+        "last_m": 0.2018566661173911
+      },
+      "robot": "elf4",
+      "target_state": "com.bxi.elf4/elf4",
+      "target_observed": true,
+      "states": {
+        "com.bxi.basic_actions/zero_torque": 10,
+        "com.bxi.elf4/elf4": 556
+      },
+      "first_state_seconds": {
+        "com.bxi.basic_actions/zero_torque": 8.249167724978179,
+        "com.bxi.elf4/elf4": 9.2588547100313
+      },
+      "camera_info_publication": {
+        "color": {
+          "samples": 1568,
+          "hz": 29.18040422810636,
+          "p95_interval_ms": 51.80207407101989
+        },
+        "depth": {
+          "samples": 1567,
+          "hz": 29.161765764110147,
+          "p95_interval_ms": 51.88404070213437
+        }
+      },
+      "root_height_after_target": {
+        "samples": 4228,
+        "minimum": 0.07764362725974194,
+        "last": 0.1017010949321196
+      },
+      "images": {
+        "color": {
+          "samples": 988,
+          "hz": 18.370747493789413,
+          "p95_interval_ms": 136.73728285357356,
+          "width": 1280,
+          "height": 720,
+          "encoding": "rgb8",
+          "bytes": 2764800,
+          "step": 3840
+        },
+        "depth": {
+          "samples": 1008,
+          "hz": 18.74436623845405,
+          "p95_interval_ms": 135.4576158337295,
+          "width": 848,
+          "height": 480,
+          "encoding": "16UC1",
+          "bytes": 814080,
+          "step": 1696
+        }
+      },
+      "max_tilt_degrees_after_target": 96.36790179223523,
+      "max_joint_speed_after_settle": 20.00000000000017,
+      "command_rate": {
+        "samples": 2687,
+        "hz": 50.00025301977977,
+        "p95_interval_ms": 23.678552825003862
+      },
+      "control_timing": {
+        "compute_budget_ms": 5.0,
+        "fatal_error": null,
+        "last_miss": {
+          "count": 59,
+          "cycle_ms": 1.779613,
+          "finish_late_ms": 0.0,
+          "period_ms": 20.0,
+          "state": "com.bxi.elf4/elf4",
+          "wake_late_ms": 1.196391
+        },
+        "period_ms": 20.0,
+        "state": "com.bxi.elf4/elf4",
+        "total_budget_overruns": 28,
+        "total_cycles": 2789,
+        "total_deadline_misses": 59,
+        "total_skipped_periods": 0
+      },
+      "launch_log": "/tmp/elf4_lag_20261023/elf4_launch.log",
+      "passive_observation": false,
+      "scope": "Actual local ROS simulation and GUI; observer only subscribed to simulation topics. No hardware node or real robot action."
+    },
+    "comparison_limit": "Input motion trace was not recorded in this reproduction; use the identical-pose projection benchmark for controlled timing/numerical comparison."
+  },
+  "controlled_projection_benchmark": {
+    "method": "Pure project_velocity benchmark, 24 recorded joint poses after 23 s; observed joint velocities multiplied by 1.2; actual MuJoCo 3.17 mass matrices; 12 samples/pose plus 5 warmups. No mj_step, ROS or GUI.",
+    "numpy": "1.26.4",
+    "threads_16": {
+      "actual": 16,
+      "mean_ms": 1.265967722222222,
+      "worst_pose_mean_ms": 13.471751083333332,
+      "max_ms": 25.941933
+    },
+    "threads_1": {
+      "actual": 1,
+      "mean_ms": 0.1553145034722222,
+      "worst_pose_mean_ms": 0.2312686666666667,
+      "max_ms": 0.241769
+    },
+    "max_projected_diff": 8.43769498715119e-15,
+    "max_impulse_diff": 1.1796119636642288e-16
+  },
+  "slow_viewer_fault_injection": {
+    "injected_delay_seconds_per_sync": 0.25,
+    "realtime_factor_samples": [
+      0.848,
+      1.0
+    ],
+    "timings": {
+      "step": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 1005,
+          "mean_ms": 0.453534075499174,
+          "p95_ms": 0.9654682129621496,
+          "p99_ms": 2.6078442484140427,
+          "maximum_ms": 26.376273948699236
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 2000,
+          "mean_ms": 0.3801666679792106,
+          "p95_ms": 0.7527522742748259,
+          "p99_ms": 2.124787336215377,
+          "maximum_ms": 12.514771893620491
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 2298,
+          "mean_ms": 0.38870672749645613,
+          "p95_ms": 0.748382625170052,
+          "p99_ms": 2.0559675805270703,
+          "maximum_ms": 8.702768944203854
+        }
+      ],
+      "publish_observations": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 1003,
+          "mean_ms": 0.8084466146975607,
+          "p95_ms": 1.2470586225390434,
+          "p99_ms": 2.2580057382583636,
+          "maximum_ms": 210.95901587978005
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 2000,
+          "mean_ms": 0.6243962892331183,
+          "p95_ms": 1.2044352246448398,
+          "p99_ms": 1.6533395228907464,
+          "maximum_ms": 5.335846915841103
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 2298,
+          "mean_ms": 0.6899357436174565,
+          "p95_ms": 1.3178240507841117,
+          "p99_ms": 1.86353276483716,
+          "maximum_ms": 7.089093793183565
+        }
+      ],
+      "viewer_sync": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 22,
+          "mean_ms": 297.76453766548497,
+          "p95_ms": 675.751247652806,
+          "p99_ms": 808.2430580630897,
+          "maximum_ms": 837.5352956354618
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 39,
+          "mean_ms": 250.6611841277052,
+          "p95_ms": 251.65580711327493,
+          "p99_ms": 252.11341774091125,
+          "maximum_ms": 252.25380063056946
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 46,
+          "mean_ms": 250.64995327114087,
+          "p95_ms": 251.36869121342897,
+          "p99_ms": 251.59076179843396,
+          "maximum_ms": 251.65015365928411
+        }
+      ],
+      "receive_command": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 64,
+          "mean_ms": 0.20432442397577688,
+          "p95_ms": 0.632009655237197,
+          "p99_ms": 0.8336695842444888,
+          "maximum_ms": 1.0618618689477444
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 500,
+          "mean_ms": 0.2576571339741349,
+          "p95_ms": 0.8872345555573695,
+          "p99_ms": 1.5154000790789706,
+          "maximum_ms": 4.541195929050446
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 574,
+          "mean_ms": 0.2346460387850576,
+          "p95_ms": 0.7162179797887807,
+          "p99_ms": 1.5068172477185702,
+          "maximum_ms": 4.627506248652935
+        }
+      ]
+    },
+    "command_hz": 49.990894357887655
+  },
+  "after_walking_verification": {
+    "duration_wall_seconds": 75,
+    "model_runtime": "MuJoCo 3.17.0, numpy 1.26.4, ELF4 ROS Python 3.10",
+    "realtime_factor_samples": [
+      0.852,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "timings": {
+      "mujoco_step": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 1061,
+          "mean_ms": 0.216266541925244,
+          "p95_ms": 0.43643079698085785,
+          "p99_ms": 1.7798870801925906,
+          "maximum_ms": 4.736196715384722
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 2000,
+          "mean_ms": 0.22843889519572258,
+          "p95_ms": 0.4212015075609085,
+          "p99_ms": 1.7402020236477254,
+          "maximum_ms": 4.072415642440319
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 4000,
+          "mean_ms": 0.23888490861281753,
+          "p95_ms": 0.4243187140673398,
+          "p99_ms": 1.9876340311020555,
+          "maximum_ms": 4.7378200106322765
+        },
+        {
+          "wall_start": 40,
+          "wall_end": 80,
+          "samples": 6911,
+          "mean_ms": 0.22801424568968284,
+          "p95_ms": 0.4341830499470234,
+          "p99_ms": 1.08454683795571,
+          "maximum_ms": 5.1281447522342205
+        }
+      ],
+      "step": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 1061,
+          "mean_ms": 0.45331222339621924,
+          "p95_ms": 1.075821928679943,
+          "p99_ms": 2.938245516270434,
+          "maximum_ms": 5.622883792966604
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 2000,
+          "mean_ms": 0.33323869784362614,
+          "p95_ms": 0.6844828138127923,
+          "p99_ms": 1.84282342903316,
+          "maximum_ms": 4.177482798695564
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 4000,
+          "mean_ms": 0.3517640770878643,
+          "p95_ms": 0.679962965659797,
+          "p99_ms": 2.3613552190363385,
+          "maximum_ms": 5.05016278475523
+        },
+        {
+          "wall_start": 40,
+          "wall_end": 80,
+          "samples": 6911,
+          "mean_ms": 0.8459707241380867,
+          "p95_ms": 2.500732196494937,
+          "p99_ms": 4.609895544126628,
+          "maximum_ms": 9.713440667837858
+        }
+      ],
+      "publish_observations": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 1059,
+          "mean_ms": 0.6269503057678428,
+          "p95_ms": 1.3410025741904967,
+          "p99_ms": 2.521335231140257,
+          "maximum_ms": 20.288194995373487
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 2000,
+          "mean_ms": 0.5752109694294631,
+          "p95_ms": 1.0815515415742993,
+          "p99_ms": 1.6093917144462466,
+          "maximum_ms": 5.630790255963802
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 4000,
+          "mean_ms": 0.6152852778322995,
+          "p95_ms": 1.1717872926965351,
+          "p99_ms": 2.004603920504428,
+          "maximum_ms": 9.141702204942703
+        },
+        {
+          "wall_start": 40,
+          "wall_end": 80,
+          "samples": 6911,
+          "mean_ms": 0.6150220257474421,
+          "p95_ms": 1.209864392876625,
+          "p99_ms": 1.9417717121541482,
+          "maximum_ms": 10.299914982169867
+        }
+      ],
+      "viewer_sync": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 315,
+          "mean_ms": 0.23490798674405566,
+          "p95_ms": 0.5839380901306868,
+          "p99_ms": 1.7881098203361043,
+          "maximum_ms": 3.0338987708091736
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 594,
+          "mean_ms": 0.2527342049361078,
+          "p95_ms": 0.5624880082905295,
+          "p99_ms": 1.3268031133338825,
+          "maximum_ms": 3.120454028248787
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 1185,
+          "mean_ms": 0.24268942048089415,
+          "p95_ms": 0.5351992323994635,
+          "p99_ms": 1.0621475800871858,
+          "maximum_ms": 3.5604629665613174
+        },
+        {
+          "wall_start": 40,
+          "wall_end": 80,
+          "samples": 2044,
+          "mean_ms": 0.26846102939156813,
+          "p95_ms": 0.6655240664258598,
+          "p99_ms": 1.6754806460812677,
+          "maximum_ms": 4.099590238183737
+        }
+      ],
+      "receive_command": [
+        {
+          "wall_start": 0,
+          "wall_end": 10,
+          "samples": 70,
+          "mean_ms": 0.16017163039318152,
+          "p95_ms": 0.33964826725423325,
+          "p99_ms": 0.8351518260315088,
+          "maximum_ms": 1.6708113253116608
+        },
+        {
+          "wall_start": 10,
+          "wall_end": 20,
+          "samples": 500,
+          "mean_ms": 0.16068735904991627,
+          "p95_ms": 0.3617431037127961,
+          "p99_ms": 1.042383895255625,
+          "maximum_ms": 2.142643090337515
+        },
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 1000,
+          "mean_ms": 0.1787624852731824,
+          "p95_ms": 0.5025241756811736,
+          "p99_ms": 1.2835604418069122,
+          "maximum_ms": 3.1386297196149826
+        },
+        {
+          "wall_start": 40,
+          "wall_end": 80,
+          "samples": 1728,
+          "mean_ms": 0.34536162247941654,
+          "p95_ms": 1.7104228958487508,
+          "p99_ms": 3.4763713972643018,
+          "maximum_ms": 16.382645815610886
+        }
+      ],
+      "velocity_projection": [
+        {
+          "wall_start": 20,
+          "wall_end": 40,
+          "samples": 4,
+          "mean_ms": 0.46527874656021595,
+          "p95_ms": 0.8485580328851936,
+          "p99_ms": 0.9245891589671372,
+          "maximum_ms": 0.9435969404876232
+        },
+        {
+          "wall_start": 40,
+          "wall_end": 80,
+          "samples": 3004,
+          "mean_ms": 0.8832581284531602,
+          "p95_ms": 1.9276313949376345,
+          "p99_ms": 3.9184384141117174,
+          "maximum_ms": 6.843032315373421
+        }
+      ]
+    },
+    "runtime": {
+      "mujoco": "3.17.0",
+      "simulation_only_motion_probe": {
+        "topic": "/elf4_lag_probe_walking_2/motion_commands",
+        "controller_input_remapped": true,
+        "commands_published": 1436,
+        "observed_velocity_by_phase": {
+          "(12, 22)": [
+            0.6045749698298827,
+            -0.05178827605554079,
+            -0.022507633645809128
+          ],
+          "(22, 32)": [
+            0.8810934364701853,
+            -0.1132756989616643,
+            -0.029714976572848033
+          ],
+          "(32, 42)": [
+            -0.11551301605564042,
+            0.2762914180952568,
+            -0.03856993530740258
+          ],
+          "(42, 52)": [
+            -0.09781578068764629,
+            -0.1736750777055325,
+            -0.00424601644113073
+          ],
+          "(52, 62)": [
+            0.6798933966266861,
+            -0.07001960907837354,
+            0.33896835732107433
+          ],
+          "(62, 75)": [
+            0.06553480623104556,
+            0.2366127816709789,
+            -0.20489015030186578
+          ]
+        },
+        "schedule": [
+          [
+            0,
+            12,
+            0,
+            0,
+            0
+          ],
+          [
+            12,
+            22,
+            0.6,
+            0,
+            0
+          ],
+          [
+            22,
+            32,
+            0.8,
+            0,
+            0
+          ],
+          [
+            32,
+            42,
+            0,
+            0.35,
+            0
+          ],
+          [
+            42,
+            52,
+            0,
+            -0.35,
+            0
+          ],
+          [
+            52,
+            62,
+            0.5,
+            0,
+            0.5
+          ],
+          [
+            62,
+            75,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "message_age_ms": {
+        "joints": {
+          "samples": 12737,
+          "p50": 0.5468378432617049,
+          "p95": 1.747891056957995,
+          "p99": 3.181523591835908,
+          "maximum": 23.026523507202135
+        },
+        "imu": {
+          "samples": 12736,
+          "p50": 0.9529194454955536,
+          "p95": 2.275645697387677,
+          "p99": 3.625968778161605,
+          "maximum": 23.277816689575182
+        },
+        "color": {
+          "samples": 1839,
+          "p50": 7.866192885986223,
+          "p95": 11.907938024707013,
+          "p99": 34.96185165741204,
+          "maximum": 95.48955601171872
+        },
+        "depth": {
+          "samples": 1817,
+          "p50": 14.918634876953107,
+          "p95": 23.537670457763646,
+          "p99": 52.18637575788072,
+          "maximum": 96.07105892614743
+        }
+      },
+      "ankle_width_after_target": {
+        "samples": 5978,
+        "maximum_m": 1.4312808121624774,
+        "last_ten_second_mean_m": 0.348033807269715,
+        "last_m": 0.08272715983625333
+      },
+      "robot": "elf4",
+      "target_state": "com.bxi.elf4/elf4",
+      "target_observed": true,
+      "states": {
+        "com.bxi.basic_actions/zero_torque": 11,
+        "com.bxi.elf4/elf4": 656
+      },
+      "first_state_seconds": {
+        "com.bxi.basic_actions/zero_torque": 8.137266597244889,
+        "com.bxi.elf4/elf4": 9.230847512371838
+      },
+      "camera_info_publication": {
+        "color": {
+          "samples": 1913,
+          "hz": 30.00080624257836,
+          "p95_interval_ms": 34.66122830286622
+        },
+        "depth": {
+          "samples": 1913,
+          "hz": 30.00067593656257,
+          "p95_interval_ms": 34.65460380539298
+        }
+      },
+      "root_height_after_target": {
+        "samples": 13136,
+        "minimum": 0.07562423054385478,
+        "last": 0.13775393679588055
+      },
+      "images": {
+        "color": {
+          "samples": 1839,
+          "hz": 28.8414320909445,
+          "p95_interval_ms": 38.64786168560386,
+          "width": 1280,
+          "height": 720,
+          "encoding": "rgb8",
+          "bytes": 2764800,
+          "step": 3840
+        },
+        "depth": {
+          "samples": 1817,
+          "hz": 28.51048936126463,
+          "p95_interval_ms": 53.22846118360758,
+          "width": 848,
+          "height": 480,
+          "encoding": "16UC1",
+          "bytes": 814080,
+          "step": 1696
+        }
+      },
+      "max_tilt_degrees_after_target": 179.05815225139116,
+      "max_joint_speed_after_settle": 20.00000000000017,
+      "command_rate": {
+        "samples": 3189,
+        "hz": 50.00001453967905,
+        "p95_interval_ms": 22.096223197877407
+      },
+      "control_timing": {
+        "compute_budget_ms": 5.0,
+        "fatal_error": null,
+        "last_miss": {
+          "count": 11,
+          "cycle_ms": 6.751779,
+          "finish_late_ms": 0.0,
+          "period_ms": 20.0,
+          "state": "com.bxi.elf4/elf4",
+          "wake_late_ms": 1.153632
+        },
+        "period_ms": 20.0,
+        "state": "com.bxi.elf4/elf4",
+        "total_budget_overruns": 14,
+        "total_cycles": 3294,
+        "total_deadline_misses": 11,
+        "total_skipped_periods": 0
+      },
+      "launch_log": "/tmp/elf4_lag_20261023/elf4_launch.log",
+      "passive_observation": false,
+      "scope": "Actual local ROS simulation and GUI; observer only subscribed to simulation topics. No hardware node or real robot action."
+    },
+    "performance_passed": true,
+    "stability_passed": false,
+    "first_observed_torso_tilt_above_45_degrees_wall_seconds": 60.261493479367346,
+    "stability_limit": "The long continuous turn ended in a fall around 60.26 s in the default terrain. Terrain/contact versus policy cause has not been isolated; performance remained realtime through the fall. This is not a successful stability test.",
+    "viewer_fps_limit": "Camera image publication rates and GUI state-sync durations were measured; native viewer swap/display FPS was not measured."
+  },
+  "automated_checks": {
+    "adapter_and_robot_tests_passed": 11,
+    "viewer_and_launch_tests_passed": 33
+  },
+  "elf3_preservation": {
+    "xml_sha256": "dfc675de4584279241a57efbacf8170269b9c00a2745a20a292b4c910e23ba10",
+    "state_machine_sha256": "684b462c09021d21ca15e436d680c548d07e107da67dd7ad2a99f219cf6be664",
+    "statement": "These match the values before this latency fix; BLAS environment override is scoped only to ELF4 simulation."
+  },
+  "real_robot_tested": false
+}

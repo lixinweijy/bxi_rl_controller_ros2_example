@@ -1,0 +1,100 @@
+{
+  "passed": true,
+  "validation_date": "2026-10-23",
+  "mod": "com.bxi.elf4",
+  "scope": "Offline model identity, metadata, finite CPU inference, inherited observation reconstruction and adapter wiring; not independent new-training or closed-loop validation.",
+  "model_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+  "onnx_metadata": {
+    "upper_body_amp": "disabled",
+    "pd_kaixuan": "kp50_kd10",
+    "pd_myactuator": "kp150_kd15",
+    "checkpoint_iteration": "49999",
+    "training_run": "2026-10-22_13-25-26_elf4_motor_adapted_from_scratch_seed42",
+    "robot": "ELF4",
+    "checkpoint_sha256": "fbf16f41cc9fb009ec0fa1c431c8181a5748d63decb2fe614561dede1aff9987",
+    "source_checkpoint": "model_49999.pt"
+  },
+  "onnx_inputs": [
+    {
+      "name": "obs",
+      "shape": [
+        1,
+        960
+      ],
+      "type": "tensor(float)"
+    }
+  ],
+  "onnx_outputs": [
+    {
+      "name": "actions",
+      "shape": [
+        1,
+        29
+      ],
+      "type": "tensor(float)"
+    }
+  ],
+  "backend": "onnxruntime CPUExecutionProvider",
+  "motor_profile_id": "elf4_motor_selection_20261022",
+  "motor_parameters_sha256": "e59ea5703e76737b361bec917fc9a8e06eebd5ec78bb382d5c36187bc4b9367e",
+  "samples": 120,
+  "maximum_absolute_error": {
+    "observation": 0.0,
+    "raw_action_against_direct_cpu_onnx": 0.0,
+    "position_target_against_direct_cpu_onnx": 0.0
+  },
+  "maximum_absolute_value": {
+    "raw_action": 5.607463836669922,
+    "position_target": 1.7943898439407349
+  },
+  "recorded_reference": {
+    "path": "validation/isaac_reference.npz",
+    "sha256": "f38b5e67f5e29dfeae3038de584b2ccd78e0df7769c99c19d30238e80df1b6c2",
+    "checkpoint_iteration": 43000,
+    "usage": "Use recorded q/dq/omega/gravity/commands/previous raw actions to reconstruct inherited observation tensors; do not compare new-network outputs to recorded old-network actions. Gravity is injected because these samples contain no quaternion."
+  },
+  "new_action_reference": "Evaluate the actual active ONNX directly with CPUExecutionProvider on each recorded obs tensor, then compare the adapter actions and named position targets. This checks adapter wiring, not new ONNX/PyTorch/Isaac numerical parity.",
+  "training_contract_status": {
+    "confirmed_by_active_onnx_metadata": [
+      "robot ELF4",
+      "checkpoint iteration 49999",
+      "MyActuator kp150/kd15",
+      "Kaixuan kp50/kd10",
+      "upper_body_amp disabled"
+    ],
+    "not_embedded_in_onnx": [
+      "joint names/order",
+      "observation layout/history order",
+      "default positions",
+      "action scales",
+      "physics/policy timing"
+    ],
+    "independent_new_training_reference_available": false,
+    "inherited_from_previous_deployment": [
+      "29 joint names and order",
+      "10 x 96 oldest-to-newest observation contract",
+      "default joint positions",
+      "action scales",
+      "control timing"
+    ],
+    "explicitly_unchanged_in_supplied_motor_notes": [
+      "default joint positions",
+      "action scales"
+    ],
+    "inherited_not_independently_confirmed": [
+      "29 joint names and order",
+      "10 x 96 oldest-to-newest observation contract",
+      "control timing"
+    ]
+  },
+  "test_command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=bxi_rl_controller/src/bxi_example_py_elf3 $Train_CONDA_PREFIX/bin/python -m pytest -q bxi_rl_controller/src/bxi_example_py_elf3/test/test_elf4_mod.py",
+  "closed_loop_simulation_run": false,
+  "real_robot_run": false,
+  "deploy_contract_sha256": "d9b687a3256b9ef4c49fb1b5c165df2a6bff8fa880e68448b223e2cc1d25dd0e",
+  "regression_tests": {
+    "command": "test/test_elf4_mod.py",
+    "passed": 28,
+    "skipped": 1,
+    "skip_reason": "Recorded model_43000 action parity is not applicable to the active model_49999."
+  }
+}

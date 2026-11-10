@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "checkpoint_iteration": 43000,
+  "source_checkpoint_sha256": "48c38eb83304c210900f442bb58119348efae63d2e9daad3685ea6ffc24d2fcf",
+  "source_git_commit": "93cd8eabc807d4c3d4ccc6c49275da9daaf5c073",
+  "source_has_uncommitted_upper_body_changes": true,
+  "format": "ONNX opset 11 and TorchScript",
+  "input": {
+    "obs": [
+      1,
+      960
+    ]
+  },
+  "output": {
+    "actions": [
+      1,
+      29
+    ]
+  },
+  "policy_hz": 50,
+  "physics_hz": 200,
+  "dependencies": {
+    "numpy": "1.26.4",
+    "onnxruntime": "1.23.2",
+    "mujoco": "3.3.2"
+  },
+  "verification": {
+    "onnx_parity": true,
+    "observation_reconstruction_max_error": 0.0,
+    "mujoco_10_commands_no_falls": true,
+    "mujoco_gui": true
+  },
+  "models": {
+    "policy.onnx": "b376d68a7557f6d2949350532b90e951f81306bdcea24fdb02f60397c3fb65e6",
+    "policy.pt": "a368e74af9ff4de4051d655d383d9549fdfc4edfcffa53830e405ed4806e0620"
+  }
+}

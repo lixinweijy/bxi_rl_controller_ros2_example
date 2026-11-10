@@ -1,0 +1,9 @@
+{
+  "source_checkpoint": "/home/cheng/Tienkung-Lab/logs/walk/2026-10-21_12-06-44_upper_body_rank_from37300_seed42/model_43000.pt",
+  "checkpoint_sha256": "48c38eb83304c210900f442bb58119348efae63d2e9daad3685ea6ffc24d2fcf",
+  "checkpoint_iteration": 43000,
+  "created_at": "2026-10-21T16:07:21.420552+08:00",
+  "bundle": "/home/cheng/Tienkung-Lab/outputs/elf4_deploy_upper_body_model_43000_20261021_160721",
+  "task": "walk_elf4_amp",
+  "training_variant": "upper_body_rank_from37300_seed42"
+}

@@ -1,0 +1,13 @@
+{
+  "mujoco_version": "3.17.0",
+  "python_version": "3.10.20",
+  "native_reference_samples": 2200,
+  "observation_inference_verification_passed": true,
+  "pairing_tests_passed": 6,
+  "velocity_projection_tests_passed": 7,
+  "headless_all_11_cases_60s_stable": true,
+  "dynamic_agreement_passed": false,
+  "gui_5s_completed": true,
+  "gui_exit_code": 0,
+  "training_started": false
+}

@@ -1,0 +1,32 @@
+{
+  "status": "validated_with_residual_engine_differences",
+  "checkpoint_iteration": 49999,
+  "fixes": [
+    "Paired latest ONNX, training gains, torque/speed limits, and defaults",
+    "Actual PhysX-cooked convex collision hulls per link",
+    "MuJoCo 3.17.0 discrete solver for coupled implicit PD/contact",
+    "Named-joint controls and enforced mass-weighted joint speed limits",
+    "Model/config/XML pairing guards"
+  ],
+  "native_observation_max_error": 0,
+  "onnx_vs_native_action_max_error": 3.933906555175781e-06,
+  "all_11_cases_60s_stable": true,
+  "dynamic_agreement_passed": false,
+  "remaining_case_discrepancies": {
+    "forward": [
+      "mean vx differs from Isaac"
+    ],
+    "right": [
+      "mean ankle spacing differs from Isaac"
+    ],
+    "turn_left": [
+      "mean ankle spacing differs from Isaac"
+    ],
+    "walk_turn_left": [
+      "mean ankle spacing differs from Isaac",
+      "mean vx differs from Isaac"
+    ]
+  },
+  "standing_width_mujoco": 0.25066679642155587,
+  "standing_width_isaac": 0.2553350031375885
+}

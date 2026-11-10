@@ -1,0 +1,101 @@
+{
+  "mujoco": "3.17.0",
+  "scene": "/tmp/elf4_closed_loop_o68dao9w/scene.xml",
+  "scene_sha256": "b320befad9f43bbc08a7f21e21ba6e340a62ad03df34b50c61ef3d323b9f7555",
+  "policy_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+  "deploy_sha256": "56c5e43a2cde776b7feafdc91e21d52bec4d16fc5086710f7fcd7c996c184e8d",
+  "integrator": "discrete",
+  "command": [
+    0.5,
+    0.0,
+    0.0
+  ],
+  "physics_dt": 0.005,
+  "policy_dt": 0.02,
+  "startup_suspension_verified": true,
+  "requested_sim_seconds": 30.0,
+  "sim_seconds": 29.999999999998117,
+  "policy_frames": 1500,
+  "min_height": 1.3273986948853433,
+  "max_tilt_deg": 3.899286572996939,
+  "max_joint_speed": 6.925608583040617,
+  "max_actuator_force": 71.11868262290955,
+  "saturated_motor_steps": 37,
+  "motor_samples_at_speed_limit": 0,
+  "velocity_projection_steps": 0,
+  "velocity_projection_motor_steps": 0,
+  "joint_velocity_limiter": {
+    "simulation_steps": 6200,
+    "projection_steps": 0,
+    "max_unconstrained_speed_ratio": 0.6235446021314539,
+    "max_impulse": 0.0,
+    "max_residual": 0.0
+  },
+  "foot_lateral_separation": {
+    "definition": "absolute lateral separation of ankle_x link origins, projected onto torso body Y; not collision-edge distance",
+    "initial_m": 0.24100308489113537,
+    "final_m": 0.2459136254409958,
+    "maximum_m": 0.27303550250619096,
+    "minimum_m": 0.22005688887155528,
+    "final_minus_initial_m": 0.004910540549860426,
+    "first_after_settle_m": 0.22337272763338967,
+    "final_minus_first_after_settle_m": 0.022540897807606125,
+    "mean_after_settle_m": 0.25115454136201193,
+    "final_two_second_mean_m": 0.25777120662107467,
+    "final_ten_second_mean_m": 0.2539052133658026
+  },
+  "root_height": {
+    "final_ten_second_mean_m": 1.3511642402513813
+  },
+  "command_tracking": {
+    "evaluated": true,
+    "settle_seconds_excluded": 2.0,
+    "samples": 1399,
+    "quantity_order": [
+      "body_vx_m_s",
+      "body_vy_m_s",
+      "body_yaw_rad_s"
+    ],
+    "linear_axis_rmse_limit_m_s": 0.15,
+    "yaw_rmse_limit_rad_s": 0.3,
+    "passed": false,
+    "mean_body_velocity": [
+      0.30661278403184355,
+      -0.012549261399735672,
+      -0.017585081276529625
+    ],
+    "body_velocity_std": [
+      0.043394763355470135,
+      0.07689247110856386,
+      0.07043891465633345
+    ],
+    "mean_absolute_error": [
+      0.19338721596815636,
+      0.06836445424889054,
+      0.056742347986277246
+    ],
+    "rmse": [
+      0.1981961674366879,
+      0.07790979447322541,
+      0.07260079738862636
+    ],
+    "final_two_second_mean_body_velocity": [
+      0.3092596361643732,
+      -0.01606473526098483,
+      -0.01700213409436935
+    ],
+    "final_ten_second_mean_body_velocity": [
+      0.3044024092290891,
+      -0.014938744510466933,
+      -0.016231195051903128
+    ]
+  },
+  "root_xy_displacement": 8.969567773058488,
+  "finite_state_and_forces": true,
+  "warnings": {},
+  "wall_seconds": 1.3870622292160988,
+  "stability_passed": true,
+  "tracking_passed": false,
+  "pass_definition": "full requested duration upright and finite without MuJoCo warnings, plus command tracking within stated RMSE limits; optional reference must also match",
+  "passed": false
+}

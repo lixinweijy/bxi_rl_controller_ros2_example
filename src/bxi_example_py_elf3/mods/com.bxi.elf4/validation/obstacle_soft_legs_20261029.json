@@ -1,0 +1,829 @@
+{
+  "date": "2026-10-29",
+  "user_symptom": {
+    "runtime": "simulation",
+    "terrain": "stairs",
+    "description": "Legs feel soft with latest model, while gait improved."
+  },
+  "scope": "Offline controlled MuJoCo diagnostics with the existing ELF4 shared physics and raw torso-link IMU. Stair dimensions are based on the default scene but translated into an isolated test course. This is not an exact replay of the user GUI session.",
+  "model_selection": {
+    "source_plugin": "policy_37500_dwaq.onnx",
+    "installed_plugin": "policy_37500_dwaq.onnx",
+    "installed_model_equals_source": true,
+    "input": "history[batch,245]",
+    "output": "actions[batch,12]",
+    "embedded_contract": false,
+    "metadata_in_use": "policy_1500_dwaq.json",
+    "latest_training_parameters_provided": false
+  },
+  "unchanged_parameters": {
+    "knee_kp_Nm_per_rad": 150,
+    "knee_kd_Nm_s_per_rad": 15,
+    "knee_effort_limit_Nm": 300,
+    "ankle_pitch_effort_limit_Nm": 50,
+    "physics_dt_s": 0.005,
+    "control_dt_s": 0.02,
+    "armature_kg_m2": 0.02,
+    "command_forward_m_s": 0.5,
+    "command_ramp_s": 1.0,
+    "warmup": "AMP49999 at zero command for 2 seconds, then reset/enter tested DWAQ"
+  },
+  "tests": {
+    "single_platforms": {
+      "scope": "Synthetic flat floor and 6/10cm static raised platform, starts at x=.8m. Current installed contract; raw torso link IMU; no GUI/ROS or production parameter changes. Not the user obstacle reproduction.",
+      "cases": [
+        {
+          "model": "policy_2000_dwaq.onnx",
+          "step_height_m": 0.0,
+          "elapsed_sim_s": 11.980000000000807,
+          "fell": false,
+          "pelvis_max_x_m": 2.228030268591491,
+          "pelvis_min_z_after_2s_m": 1.0525443510739318,
+          "foot_step_contact_samples": 0,
+          "knee_mean_actual_rad": [
+            0.2606442783151102,
+            0.30508718779573785
+          ],
+          "knee_mean_target_rad": [
+            0.2690808419474141,
+            0.2663537081114515
+          ],
+          "knee_abs_tracking_error_p95_rad": [
+            0.42367213273782317,
+            0.4994596979302905
+          ],
+          "knee_peak_torque_Nm": [
+            64.01878060227035,
+            58.63924468427018
+          ],
+          "knee_torque_limit_fraction": [
+            0.0,
+            0.0
+          ],
+          "leg_peak_torque_ratio": 1.0,
+          "ankle_roll_peak_torque_ratio": 1.0,
+          "velocity_projection_steps": 0
+        },
+        {
+          "model": "policy_37500_dwaq.onnx",
+          "step_height_m": 0.0,
+          "elapsed_sim_s": 11.980000000000807,
+          "fell": false,
+          "pelvis_max_x_m": 4.570653741464696,
+          "pelvis_min_z_after_2s_m": 1.0189179784752005,
+          "foot_step_contact_samples": 0,
+          "knee_mean_actual_rad": [
+            0.7473729818406094,
+            0.7113481772307844
+          ],
+          "knee_mean_target_rad": [
+            0.606881087253949,
+            0.557752094849317
+          ],
+          "knee_abs_tracking_error_p95_rad": [
+            0.37568192560775915,
+            0.3869704307548348
+          ],
+          "knee_peak_torque_Nm": [
+            48.36082351807789,
+            60.1973752162459
+          ],
+          "knee_torque_limit_fraction": [
+            0.0,
+            0.0
+          ],
+          "leg_peak_torque_ratio": 1.0,
+          "ankle_roll_peak_torque_ratio": 0.6629095756514521,
+          "velocity_projection_steps": 0
+        },
+        {
+          "model": "policy_2000_dwaq.onnx",
+          "step_height_m": 0.06,
+          "elapsed_sim_s": 11.980000000000807,
+          "fell": false,
+          "pelvis_max_x_m": 2.299362953180362,
+          "pelvis_min_z_after_2s_m": 1.0534244386524219,
+          "foot_step_contact_samples": 11165,
+          "knee_mean_actual_rad": [
+            0.2666447146358392,
+            0.32041064845303696
+          ],
+          "knee_mean_target_rad": [
+            0.28180592690775536,
+            0.27026081867590696
+          ],
+          "knee_abs_tracking_error_p95_rad": [
+            0.4172028174336804,
+            0.5853227648072892
+          ],
+          "knee_peak_torque_Nm": [
+            45.41367792928152,
+            107.50212849198562
+          ],
+          "knee_torque_limit_fraction": [
+            0.0,
+            0.0
+          ],
+          "leg_peak_torque_ratio": 1.0,
+          "ankle_roll_peak_torque_ratio": 0.9124845704343698,
+          "velocity_projection_steps": 0
+        },
+        {
+          "model": "policy_37500_dwaq.onnx",
+          "step_height_m": 0.06,
+          "elapsed_sim_s": 11.980000000000807,
+          "fell": false,
+          "pelvis_max_x_m": 4.6416369811582605,
+          "pelvis_min_z_after_2s_m": 1.0201116634832907,
+          "foot_step_contact_samples": 6207,
+          "knee_mean_actual_rad": [
+            0.7653390890216435,
+            0.7250011536870437
+          ],
+          "knee_mean_target_rad": [
+            0.6233983053620081,
+            0.5751522076895916
+          ],
+          "knee_abs_tracking_error_p95_rad": [
+            0.4048822185247496,
+            0.41704930659161094
+          ],
+          "knee_peak_torque_Nm": [
+            107.04684645997146,
+            61.07494798113902
+          ],
+          "knee_torque_limit_fraction": [
+            0.0,
+            0.0
+          ],
+          "leg_peak_torque_ratio": 1.0,
+          "ankle_roll_peak_torque_ratio": 0.8609194517470529,
+          "velocity_projection_steps": 0
+        },
+        {
+          "model": "policy_2000_dwaq.onnx",
+          "step_height_m": 0.1,
+          "elapsed_sim_s": 11.980000000000807,
+          "fell": false,
+          "pelvis_max_x_m": 2.365647238882863,
+          "pelvis_min_z_after_2s_m": 1.05539877002317,
+          "foot_step_contact_samples": 10761,
+          "knee_mean_actual_rad": [
+            0.27969891479880893,
+            0.33877549191680295
+          ],
+          "knee_mean_target_rad": [
+            0.28675018946727915,
+            0.29344387367397606
+          ],
+          "knee_abs_tracking_error_p95_rad": [
+            0.4613236629847275,
+            0.655840448725959
+          ],
+          "knee_peak_torque_Nm": [
+            85.73660208807127,
+            133.46149769349088
+          ],
+          "knee_torque_limit_fraction": [
+            0.0,
+            0.0
+          ],
+          "leg_peak_torque_ratio": 1.0,
+          "ankle_roll_peak_torque_ratio": 0.8624073383603653,
+          "velocity_projection_steps": 0,
+          "leg_peak_torque_ratio_by_name": {
+            "l_hip_y_joint": 0.19148292824144822,
+            "l_hip_x_joint": 0.5160281725275406,
+            "l_hip_z_joint": 0.4149727770534675,
+            "l_knee_y_joint": 0.28578867362690424,
+            "l_ankle_y_joint": 1.0,
+            "l_ankle_x_joint": 0.8577439135054672,
+            "r_hip_y_joint": 0.13394719341667544,
+            "r_hip_x_joint": 0.5980672398762866,
+            "r_hip_z_joint": 0.6535693967321112,
+            "r_knee_y_joint": 0.44487165897830294,
+            "r_ankle_y_joint": 1.0,
+            "r_ankle_x_joint": 0.8624073383603653
+          },
+          "leg_torque_limit_fraction_by_name": {
+            "l_hip_y_joint": 0.0,
+            "l_hip_x_joint": 0.0,
+            "l_hip_z_joint": 0.0,
+            "l_knee_y_joint": 0.0,
+            "l_ankle_y_joint": 0.24849699398797595,
+            "l_ankle_x_joint": 0.0,
+            "r_hip_y_joint": 0.0,
+            "r_hip_x_joint": 0.0,
+            "r_hip_z_joint": 0.0,
+            "r_knee_y_joint": 0.0,
+            "r_ankle_y_joint": 0.09018036072144289,
+            "r_ankle_x_joint": 0.0
+          }
+        },
+        {
+          "model": "policy_37500_dwaq.onnx",
+          "step_height_m": 0.1,
+          "elapsed_sim_s": 11.980000000000807,
+          "fell": false,
+          "pelvis_max_x_m": 4.654741610547461,
+          "pelvis_min_z_after_2s_m": 1.016956209228424,
+          "foot_step_contact_samples": 5899,
+          "knee_mean_actual_rad": [
+            0.7749830962425096,
+            0.7327559494858006
+          ],
+          "knee_mean_target_rad": [
+            0.6366517595857023,
+            0.576307816917159
+          ],
+          "knee_abs_tracking_error_p95_rad": [
+            0.4129550830295809,
+            0.452998971971294
+          ],
+          "knee_peak_torque_Nm": [
+            97.16475541787258,
+            60.97133395689019
+          ],
+          "knee_torque_limit_fraction": [
+            0.0,
+            0.0
+          ],
+          "leg_peak_torque_ratio": 1.0,
+          "ankle_roll_peak_torque_ratio": 0.8836264895355599,
+          "velocity_projection_steps": 0,
+          "leg_peak_torque_ratio_by_name": {
+            "l_hip_y_joint": 0.14057077313140137,
+            "l_hip_x_joint": 0.42286770925085826,
+            "l_hip_z_joint": 0.6487355173014232,
+            "l_knee_y_joint": 0.3238825180595753,
+            "l_ankle_y_joint": 1.0,
+            "l_ankle_x_joint": 0.6879519856637648,
+            "r_hip_y_joint": 0.18070850284215462,
+            "r_hip_x_joint": 0.3988422117038331,
+            "r_hip_z_joint": 0.61794184160161,
+            "r_knee_y_joint": 0.20323777985630065,
+            "r_ankle_y_joint": 1.0,
+            "r_ankle_x_joint": 0.8836264895355599
+          },
+          "leg_torque_limit_fraction_by_name": {
+            "l_hip_y_joint": 0.0,
+            "l_hip_x_joint": 0.0,
+            "l_hip_z_joint": 0.0,
+            "l_knee_y_joint": 0.0,
+            "l_ankle_y_joint": 0.14457831325301204,
+            "l_ankle_x_joint": 0.0,
+            "r_hip_y_joint": 0.0,
+            "r_hip_x_joint": 0.0,
+            "r_hip_z_joint": 0.0,
+            "r_knee_y_joint": 0.0,
+            "r_ankle_y_joint": 0.028112449799196786,
+            "r_ankle_x_joint": 0.0
+          }
+        }
+      ]
+    },
+    "five_stairs": {
+      "scope": "Five 15cm-rise 28cm-tread stairs copied in dimensions from default ut_course_stair_up_1..5, translated to first edge x=.8, friction1.0; then landing at z=.75. Current installed contract; raw torso link IMU; no GUI/ROS or production parameter changes. Not the user obstacle reproduction.",
+      "cases": [
+        {
+          "model": "policy_2000_dwaq.onnx",
+          "step_height_m": 0.15,
+          "elapsed_sim_s": 7.800000000000153,
+          "fell": true,
+          "pelvis_max_x_m": 3.684959035551579,
+          "pelvis_min_z_after_2s_m": 0.861026039841997,
+          "pelvis_min_clearance_to_stair_at_same_x_m": 0.11102603984199699,
+          "last_knee_actual_rad": [
+            0.7492133239718066,
+            0.964670506205658
+          ],
+          "last_knee_target_rad": [
+            1.2438632249832153,
+            -1.1888208389282227
+          ],
+          "last_knee_torque_Nm": [
+            -48.81949115207226,
+            -300.0
+          ],
+          "foot_step_contact_samples": 902,
+          "knee_mean_actual_rad": [
+            0.4981264502866938,
+            0.5902051764465805
+          ],
+          "knee_mean_target_rad": [
+            0.4342549788540807,
+            0.48364255315270915
+          ],
+          "knee_abs_tracking_error_p95_rad": [
+            1.1710049233541548,
+            1.567748760286958
+          ],
+          "knee_peak_torque_Nm": [
+            237.33349568399464,
+            300.0
+          ],
+          "knee_torque_limit_fraction": [
+            0.0,
+            0.006896551724137931
+          ],
+          "leg_peak_torque_ratio_by_name": {
+            "l_hip_y_joint": 0.42521446749562664,
+            "l_hip_x_joint": 0.6084538782623089,
+            "l_hip_z_joint": 1.0,
+            "l_knee_y_joint": 0.7911116522799821,
+            "l_ankle_y_joint": 1.0,
+            "l_ankle_x_joint": 1.0,
+            "r_hip_y_joint": 0.57464050946929,
+            "r_hip_x_joint": 1.0,
+            "r_hip_z_joint": 1.0,
+            "r_knee_y_joint": 1.0,
+            "r_ankle_y_joint": 1.0,
+            "r_ankle_x_joint": 1.0
+          },
+          "leg_torque_limit_fraction_by_name": {
+            "l_hip_y_joint": 0.0,
+            "l_hip_x_joint": 0.0,
+            "l_hip_z_joint": 0.010344827586206896,
+            "l_knee_y_joint": 0.0,
+            "l_ankle_y_joint": 0.36551724137931035,
+            "l_ankle_x_joint": 0.0034482758620689655,
+            "r_hip_y_joint": 0.0,
+            "r_hip_x_joint": 0.006896551724137931,
+            "r_hip_z_joint": 0.010344827586206896,
+            "r_knee_y_joint": 0.006896551724137931,
+            "r_ankle_y_joint": 0.18275862068965518,
+            "r_ankle_x_joint": 0.06551724137931035
+          },
+          "leg_peak_torque_ratio": 1.0,
+          "ankle_roll_peak_torque_ratio": 1.0,
+          "velocity_projection_steps": 56
+        },
+        {
+          "model": "policy_37500_dwaq.onnx",
+          "step_height_m": 0.15,
+          "elapsed_sim_s": 11.980000000000807,
+          "fell": false,
+          "pelvis_max_x_m": 4.960911036814842,
+          "pelvis_min_z_after_2s_m": 1.018629375679891,
+          "pelvis_min_clearance_to_stair_at_same_x_m": 0.8567394241125987,
+          "last_knee_actual_rad": [
+            0.7003744357636181,
+            0.6692344405724202
+          ],
+          "last_knee_target_rad": [
+            0.4089645743370056,
+            0.6145470142364502
+          ],
+          "last_knee_torque_Nm": [
+            -43.04075017215344,
+            -18.109757766236243
+          ],
+          "foot_step_contact_samples": 2229,
+          "knee_mean_actual_rad": [
+            0.8753487984723317,
+            0.8182400350038153
+          ],
+          "knee_mean_target_rad": [
+            0.7142511702565304,
+            0.6630268078970621
+          ],
+          "knee_abs_tracking_error_p95_rad": [
+            0.8096305525852212,
+            0.7282544928861231
+          ],
+          "knee_peak_torque_Nm": [
+            126.65367592966658,
+            123.0991485589837
+          ],
+          "knee_torque_limit_fraction": [
+            0.0,
+            0.0
+          ],
+          "leg_peak_torque_ratio_by_name": {
+            "l_hip_y_joint": 0.26091836928635276,
+            "l_hip_x_joint": 0.35870005457240123,
+            "l_hip_z_joint": 0.9112965178473952,
+            "l_knee_y_joint": 0.42217891976555527,
+            "l_ankle_y_joint": 1.0,
+            "l_ankle_x_joint": 0.7407109183324672,
+            "r_hip_y_joint": 0.29769656162564134,
+            "r_hip_x_joint": 0.503170085842573,
+            "r_hip_z_joint": 1.0,
+            "r_knee_y_joint": 0.41033049519661235,
+            "r_ankle_y_joint": 1.0,
+            "r_ankle_x_joint": 1.0
+          },
+          "leg_torque_limit_fraction_by_name": {
+            "l_hip_y_joint": 0.0,
+            "l_hip_x_joint": 0.0,
+            "l_hip_z_joint": 0.0,
+            "l_knee_y_joint": 0.0,
+            "l_ankle_y_joint": 0.20481927710843373,
+            "l_ankle_x_joint": 0.0,
+            "r_hip_y_joint": 0.0,
+            "r_hip_x_joint": 0.0,
+            "r_hip_z_joint": 0.006024096385542169,
+            "r_knee_y_joint": 0.0,
+            "r_ankle_y_joint": 0.09839357429718876,
+            "r_ankle_x_joint": 0.006024096385542169
+          },
+          "leg_peak_torque_ratio": 1.0,
+          "ankle_roll_peak_torque_ratio": 1.0,
+          "velocity_projection_steps": 0
+        }
+      ]
+    },
+    "twelve_stairs_1p4m_width": {
+      "scope": "Twelve 15cm-rise 28cm-tread stairs, 1.4m wide, using default building stair dimensions, translated to first edge x=.8, friction1.0; then landing at z=1.8. Current installed contract; raw torso link IMU; no GUI/ROS or production parameter changes. Not the user obstacle reproduction.",
+      "cases": [
+        {
+          "model": "policy_37500_dwaq.onnx",
+          "step_height_m": 0.15,
+          "elapsed_sim_s": 10.120000000000516,
+          "fell": true,
+          "pelvis_max_x_m": 4.529784688869536,
+          "pelvis_min_z_after_2s_m": 1.018629375679891,
+          "pelvis_min_clearance_to_stair_at_same_x_m": 0.1396071842912796,
+          "last_pelvis_position": [
+            4.516430615355458,
+            -1.159768776297265,
+            1.9396071842912794,
+            0.5268717624286797
+          ],
+          "last_knee_actual_rad": [
+            2.4344811350107975,
+            1.5821329656778205
+          ],
+          "last_knee_target_rad": [
+            2.007650375366211,
+            0.2317028045654297
+          ],
+          "last_knee_torque_Nm": [
+            11.143249886486387,
+            -58.93000500873359
+          ],
+          "foot_step_contact_samples": 5076,
+          "knee_mean_actual_rad": [
+            1.1778437683061453,
+            1.0006651868541645
+          ],
+          "knee_mean_target_rad": [
+            0.9821725434727139,
+            0.83648963548519
+          ],
+          "knee_abs_tracking_error_p95_rad": [
+            1.1695708445573507,
+            1.1838503664771507
+          ],
+          "knee_peak_torque_Nm": [
+            167.84508727141423,
+            183.27867384824674
+          ],
+          "knee_torque_limit_fraction": [
+            0.0,
+            0.0
+          ],
+          "leg_peak_torque_ratio_by_name": {
+            "l_hip_y_joint": 0.3024477040632118,
+            "l_hip_x_joint": 0.7390091211769867,
+            "l_hip_z_joint": 1.0,
+            "l_knee_y_joint": 0.5594836242380474,
+            "l_ankle_y_joint": 1.0,
+            "l_ankle_x_joint": 1.0,
+            "r_hip_y_joint": 0.3193010312573167,
+            "r_hip_x_joint": 0.6193632543959101,
+            "r_hip_z_joint": 1.0,
+            "r_knee_y_joint": 0.6109289128274892,
+            "r_ankle_y_joint": 1.0,
+            "r_ankle_x_joint": 1.0
+          },
+          "leg_torque_limit_fraction_by_name": {
+            "l_hip_y_joint": 0.0,
+            "l_hip_x_joint": 0.0,
+            "l_hip_z_joint": 0.0024691358024691358,
+            "l_knee_y_joint": 0.0,
+            "l_ankle_y_joint": 0.2716049382716049,
+            "l_ankle_x_joint": 0.0024691358024691358,
+            "r_hip_y_joint": 0.0,
+            "r_hip_x_joint": 0.0,
+            "r_hip_z_joint": 0.02962962962962963,
+            "r_knee_y_joint": 0.0,
+            "r_ankle_y_joint": 0.21481481481481482,
+            "r_ankle_x_joint": 0.05925925925925926
+          },
+          "leg_peak_torque_ratio": 1.0,
+          "ankle_roll_peak_torque_ratio": 1.0,
+          "velocity_projection_steps": 21,
+          "events": {
+            "pelvis_y_exceeds_0.5m": {
+              "time": 7.680000000000134,
+              "pelvis": [
+                3.338178243230712,
+                -0.5000115070584672,
+                2.4377391519733496,
+                0.9924613259866936
+              ],
+              "knee_actual": [
+                0.9311797233180651,
+                1.1488460809305983
+              ],
+              "knee_target": [
+                2.2979352474212646,
+                0.5051999092102051
+              ],
+              "feet": [
+                [
+                  3.2884147235043373,
+                  -0.5630438590450307,
+                  1.5354058158471955
+                ],
+                [
+                  3.215488750808807,
+                  -0.31614525670188204,
+                  1.4989245513635348
+                ]
+              ]
+            },
+            "pelvis_y_exceeds_0.7m": {
+              "time": 9.3800000000004,
+              "pelvis": [
+                4.293044633554961,
+                -0.700798250629359,
+                2.806476257852869,
+                0.9974270910299299
+              ],
+              "knee_actual": [
+                0.7914769233160517,
+                0.7034460378256414
+              ],
+              "knee_target": [
+                0.9498821496963501,
+                0.3250425457954407
+              ],
+              "feet": [
+                [
+                  4.277499701215444,
+                  -0.7495091331399034,
+                  1.8137879973137045
+                ],
+                [
+                  4.305140811243689,
+                  -0.4834562583852696,
+                  1.8400422315946867
+                ]
+              ]
+            },
+            "body_tilt_exceeds_30deg": {
+              "time": 10.000000000000497,
+              "pelvis": [
+                4.508077105565007,
+                -0.9870047331083995,
+                2.1541695460815053,
+                0.8559604936245498
+              ],
+              "knee_actual": [
+                2.616277236516733,
+                0.21698754477768675
+              ],
+              "knee_target": [
+                2.248696804046631,
+                1.2383235692977905
+              ],
+              "feet": [
+                [
+                  4.352063873758189,
+                  -0.42905780049461184,
+                  1.2815268075544022
+                ],
+                [
+                  4.471438615011895,
+                  -0.6298894501774622,
+                  1.9270832883635234
+                ]
+              ]
+            },
+            "either_knee_exceeds_90deg": {
+              "time": 3.039999999999935,
+              "pelvis": [
+                0.8203867472817399,
+                -0.020046581111975187,
+                1.025013464247295,
+                0.9922087393637552
+              ],
+              "knee_actual": [
+                1.6891137957971996,
+                0.5667738317247649
+              ],
+              "knee_target": [
+                2.5407772064208984,
+                0.5739998817443848
+              ],
+              "feet": [
+                [
+                  0.636180257812763,
+                  -0.16514816150785758,
+                  0.036242450121785785
+                ],
+                [
+                  0.6832996103373686,
+                  0.034302338063593216,
+                  0.28373316647960517
+                ]
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "twelve_stairs_2p8m_width": {
+      "scope": "Twelve 15cm-rise 28cm-tread stairs, 2.8m wide (diagnostic width-only variation), using default building stair dimensions, translated to first edge x=.8, friction1.0; then landing at z=1.8. Current installed contract; raw torso link IMU; no GUI/ROS or production parameter changes. Not the user obstacle reproduction.",
+      "cases": [
+        {
+          "model": "policy_37500_dwaq.onnx",
+          "step_height_m": 0.15,
+          "elapsed_sim_s": 11.780000000000776,
+          "fell": false,
+          "pelvis_max_x_m": 5.507001959732684,
+          "pelvis_min_z_after_2s_m": 1.018629375679891,
+          "pelvis_min_clearance_to_stair_at_same_x_m": 0.8300212803062152,
+          "last_pelvis_position": [
+            5.507001959732684,
+            -1.011983901911187,
+            2.8395791917153432,
+            0.9984465068405657
+          ],
+          "last_knee_actual_rad": [
+            0.9951710134503516,
+            0.5891966022457023
+          ],
+          "last_knee_target_rad": [
+            0.7881023287773132,
+            0.40889573097229004
+          ],
+          "last_knee_torque_Nm": [
+            -0.11584498427754397,
+            -28.66144525217176
+          ],
+          "foot_step_contact_samples": 4967,
+          "knee_mean_actual_rad": [
+            1.0346123416333712,
+            0.9734900852742745
+          ],
+          "knee_mean_target_rad": [
+            0.847359625225673,
+            0.7993027294268373
+          ],
+          "knee_abs_tracking_error_p95_rad": [
+            1.0519458311286054,
+            1.0240601782699315
+          ],
+          "knee_peak_torque_Nm": [
+            162.29706599276608,
+            183.29298029215113
+          ],
+          "knee_torque_limit_fraction": [
+            0.0,
+            0.0
+          ],
+          "leg_peak_torque_ratio_by_name": {
+            "l_hip_y_joint": 0.26091836928635276,
+            "l_hip_x_joint": 0.5791552918224183,
+            "l_hip_z_joint": 0.9843291537967654,
+            "l_knee_y_joint": 0.5409902199758869,
+            "l_ankle_y_joint": 1.0,
+            "l_ankle_x_joint": 0.9306978714483909,
+            "r_hip_y_joint": 0.29769656162564134,
+            "r_hip_x_joint": 0.503170085842573,
+            "r_hip_z_joint": 1.0,
+            "r_knee_y_joint": 0.6109766009738371,
+            "r_ankle_y_joint": 1.0,
+            "r_ankle_x_joint": 1.0
+          },
+          "leg_torque_limit_fraction_by_name": {
+            "l_hip_y_joint": 0.0,
+            "l_hip_x_joint": 0.0,
+            "l_hip_z_joint": 0.0,
+            "l_knee_y_joint": 0.0,
+            "l_ankle_y_joint": 0.26844262295081966,
+            "l_ankle_x_joint": 0.0,
+            "r_hip_y_joint": 0.0,
+            "r_hip_x_joint": 0.0,
+            "r_hip_z_joint": 0.018442622950819672,
+            "r_knee_y_joint": 0.0,
+            "r_ankle_y_joint": 0.1864754098360656,
+            "r_ankle_x_joint": 0.00819672131147541
+          },
+          "leg_peak_torque_ratio": 1.0,
+          "ankle_roll_peak_torque_ratio": 1.0,
+          "velocity_projection_steps": 1,
+          "events": {
+            "pelvis_y_exceeds_0.5m": {
+              "time": 8.260000000000225,
+              "pelvis": [
+                3.879477301257752,
+                -0.5021271087314012,
+                2.6579336657948023,
+                0.9966618942799494
+              ],
+              "knee_actual": [
+                0.7437990451365415,
+                1.3907717012173346
+              ],
+              "knee_target": [
+                0.7314270734786987,
+                0.6745074987411499
+              ],
+              "feet": [
+                [
+                  3.9479953579659104,
+                  -0.5669956282052163,
+                  1.8232562944205215
+                ],
+                [
+                  3.723115625007254,
+                  -0.43053095413780224,
+                  1.6931765074674874
+                ]
+              ]
+            },
+            "pelvis_y_exceeds_0.7m": {
+              "time": 9.720000000000454,
+              "pelvis": [
+                4.64536153368845,
+                -0.70316908987839,
+                2.8392331775541173,
+                0.997694360833404
+              ],
+              "knee_actual": [
+                0.5922124406187282,
+                0.9586194400100171
+              ],
+              "knee_target": [
+                0.4332796335220337,
+                1.1591687202453613
+              ],
+              "feet": [
+                [
+                  4.469657405771587,
+                  -0.8463213563384082,
+                  1.9089189986897521
+                ],
+                [
+                  4.583796168420497,
+                  -0.5957620748743764,
+                  1.8353819217919796
+                ]
+              ]
+            },
+            "either_knee_exceeds_90deg": {
+              "time": 3.039999999999935,
+              "pelvis": [
+                0.8203867472817398,
+                -0.020046581111975187,
+                1.025013464247295,
+                0.9922087393637551
+              ],
+              "knee_actual": [
+                1.6891137957971993,
+                0.5667738317247649
+              ],
+              "knee_target": [
+                2.5407772064208984,
+                0.5739998817443848
+              ],
+              "feet": [
+                [
+                  0.6361802578127629,
+                  -0.16514816150785758,
+                  0.036242450121785785
+                ],
+                [
+                  0.6832996103373687,
+                  0.03430233806359313,
+                  0.2837331664796051
+                ]
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "bounded_findings": [
+    "With identical deployment parameters the newer model commands greater knee flexion, already on flat ground.",
+    "Both models traverse the 6cm and 10cm isolated platforms without triggering the fall criterion.",
+    "On five 15cm-rise/28cm-tread stairs, 37500 stays upright and reaches the landing; 2000 triggers the fall criterion.",
+    "On the 12-step 1.4m-wide stair, lateral foot placement crosses the stair/landing edge before large tilt and collapse. At t=9.38s pelvis y=-0.701m and left ankle y=-0.750m, while torso up cosine remains 0.997.",
+    "A width-only change to 2.8m with the same PD permits 37500 to reach x>5.5m on the upper landing without triggering the fall criterion. Lateral drift persists.",
+    "Knees do not reach the 300Nm cap in the latest-model stair cases. This alone does not exclude finite PD compliance or tracking lag.",
+    "Ankle pitch torque clipping is present on stairs, but no causal intervention on that cap was performed; clipping cannot by itself identify the failure cause.",
+    "The latest model exports no embedded metadata and currently reuses the supplied 1500 contract. Matching tensor dimensions does not prove PD/default pose/action scales/observation conventions match the 37500 training run."
+  ],
+  "production_changes": false,
+  "reproduction_scripts": [
+    "/tmp/elf4_obstacle_20261029.py",
+    "/tmp/elf4_stairs_20261029.py",
+    "/tmp/elf4_stairs12_events_20261029.py",
+    "/tmp/elf4_stairs12_wide_20261029.py"
+  ]
+}

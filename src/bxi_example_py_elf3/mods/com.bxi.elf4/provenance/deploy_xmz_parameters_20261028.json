@@ -1,0 +1,377 @@
+{
+  "date": "2026-10-28",
+  "profile": {
+    "profile_id": "elf4_deploy_xmz_20261028",
+    "path": "assets/deploy_xmz_config.json",
+    "sha256": "3be5241b83ef83cedcf144b17ecdeebc13be2ebb6806ebb7ae2a0fbf085fefb5",
+    "source": "deploy_xmz.zip",
+    "source_model_xml": "provenance/deploy_xmz_model.xml",
+    "source_model_xml_sha256": "0c9cd2510dbb0837c7f52841e90f870d865c02ad3886f52fad08dae2edd2b2a7",
+    "source_run": "walk_elf4/2026-10-21_19-08-24/model_37600.pt",
+    "torque_policy": "joint_control.effort_limit; source runner explicitly clips qfrc_applied by config, not residual URDF actuatorfrcrange.",
+    "speed_policy": "joint_control.velocity_limit in rad/s; existing mass-weighted projection retained.",
+    "gain_inheritance": "Exact joint_control stiffness/damping; all 29 pairs match existing model_49999 gains.",
+    "velocity_enforcement": "Mass-matrix-weighted joint impulse projection with coupled floating-base response and position reintegration. Source runner reads but does not enforce velocity limits.",
+    "passive_joint_parameters": "armature/joint_damping/joint_frictionloss in policy-name order from the supplied model XML. PD damping is not passive joint damping.",
+    "previous_profile": "provenance/deploy_before_xmz_20261028.json"
+  },
+  "source_archive": "/home/user-kevien/文档/xwechat_files/wxid_pvh6wfj6jy4n22_2e26/msg/file/2026-10/deploy_xmz.zip",
+  "archive_sha256": "b8239df87157bb4a979af649affcc6ba8fd2af568b5378a64d6d13352d02a195",
+  "changes": {
+    "stiffness": [],
+    "damping": [],
+    "effort_limit": [
+      {
+        "joint": "waist_y_joint",
+        "before": 100.0,
+        "after": 90.0
+      },
+      {
+        "joint": "waist_z_joint",
+        "before": 100.0,
+        "after": 150.0
+      },
+      {
+        "joint": "l_hip_x_joint",
+        "before": 220.0,
+        "after": 150.0
+      },
+      {
+        "joint": "r_hip_x_joint",
+        "before": 220.0,
+        "after": 150.0
+      },
+      {
+        "joint": "l_hip_z_joint",
+        "before": 60.0,
+        "after": 45.0
+      },
+      {
+        "joint": "r_hip_z_joint",
+        "before": 60.0,
+        "after": 45.0
+      }
+    ],
+    "velocity_limit": [
+      {
+        "joint": "l_shoulder_y_joint",
+        "before": 3.1415926535897927,
+        "after": 3.14
+      },
+      {
+        "joint": "r_shoulder_y_joint",
+        "before": 3.1415926535897927,
+        "after": 3.14
+      },
+      {
+        "joint": "waist_y_joint",
+        "before": 15.707963267948966,
+        "after": 20.0
+      },
+      {
+        "joint": "l_shoulder_x_joint",
+        "before": 3.3510321638291125,
+        "after": 3.14
+      },
+      {
+        "joint": "r_shoulder_x_joint",
+        "before": 3.3510321638291125,
+        "after": 3.14
+      },
+      {
+        "joint": "waist_x_joint",
+        "before": 15.707963267948966,
+        "after": 20.0
+      },
+      {
+        "joint": "l_shoulder_z_joint",
+        "before": 3.3510321638291125,
+        "after": 3.14
+      },
+      {
+        "joint": "r_shoulder_z_joint",
+        "before": 3.3510321638291125,
+        "after": 3.14
+      },
+      {
+        "joint": "waist_z_joint",
+        "before": 15.707963267948966,
+        "after": 20.0
+      },
+      {
+        "joint": "l_elbow_y_joint",
+        "before": 3.3510321638291125,
+        "after": 3.14
+      },
+      {
+        "joint": "r_elbow_y_joint",
+        "before": 3.3510321638291125,
+        "after": 3.14
+      },
+      {
+        "joint": "l_hip_y_joint",
+        "before": 13.08996938995747,
+        "after": 15.0
+      },
+      {
+        "joint": "r_hip_y_joint",
+        "before": 13.08996938995747,
+        "after": 15.0
+      },
+      {
+        "joint": "l_wrist_x_joint",
+        "before": 3.3510321638291125,
+        "after": 3.14
+      },
+      {
+        "joint": "r_wrist_x_joint",
+        "before": 3.3510321638291125,
+        "after": 3.14
+      },
+      {
+        "joint": "l_hip_x_joint",
+        "before": 15.707963267948966,
+        "after": 20.0
+      },
+      {
+        "joint": "r_hip_x_joint",
+        "before": 15.707963267948966,
+        "after": 20.0
+      },
+      {
+        "joint": "l_wrist_y_joint",
+        "before": 3.665191429188092,
+        "after": 3.14
+      },
+      {
+        "joint": "r_wrist_y_joint",
+        "before": 3.665191429188092,
+        "after": 3.14
+      },
+      {
+        "joint": "l_hip_z_joint",
+        "before": 15.707963267948966,
+        "after": 20.0
+      },
+      {
+        "joint": "r_hip_z_joint",
+        "before": 15.707963267948966,
+        "after": 20.0
+      },
+      {
+        "joint": "l_wrist_z_joint",
+        "before": 3.665191429188092,
+        "after": 3.14
+      },
+      {
+        "joint": "r_wrist_z_joint",
+        "before": 3.665191429188092,
+        "after": 3.14
+      },
+      {
+        "joint": "l_knee_y_joint",
+        "before": 13.08996938995747,
+        "after": 15.0
+      },
+      {
+        "joint": "r_knee_y_joint",
+        "before": 13.08996938995747,
+        "after": 15.0
+      },
+      {
+        "joint": "l_ankle_x_joint",
+        "before": 20.0,
+        "after": 10.0
+      },
+      {
+        "joint": "r_ankle_x_joint",
+        "before": 20.0,
+        "after": 10.0
+      }
+    ],
+    "armature": [
+      {
+        "joint": "l_shoulder_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_shoulder_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "waist_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_shoulder_x_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_shoulder_x_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "waist_x_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_shoulder_z_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_shoulder_z_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "waist_z_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_elbow_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_elbow_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_hip_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_hip_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_wrist_x_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_wrist_x_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_hip_x_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_hip_x_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_wrist_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_wrist_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_hip_z_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_hip_z_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_wrist_z_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_wrist_z_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_knee_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_knee_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_ankle_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_ankle_y_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "l_ankle_x_joint",
+        "before": 0.0,
+        "after": 0.02
+      },
+      {
+        "joint": "r_ankle_x_joint",
+        "before": 0.0,
+        "after": 0.02
+      }
+    ],
+    "joint_damping": [],
+    "joint_frictionloss": []
+  },
+  "preserved_policy_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+  "preserved_fields": [
+    "onnx",
+    "checkpoint_iteration",
+    "default_joint_pos",
+    "default_joint_vel",
+    "action_scale",
+    "observations",
+    "control",
+    "contact",
+    "initial_root_pos",
+    "training_command_ranges"
+  ],
+  "excluded_policy_sha256": "645934cc507e6e22aea929308af83f98eb6ca3fe63a95e1b9e01a0275cd36694",
+  "source_runner_notes": [
+    "config damping means PD Kd; XML passive damping and frictionloss are zero.",
+    "Effective source force cap comes from config explicit clip; source XML has no actuators and contains different residual URDF actuatorfrcrange.",
+    "Source velocity limits are read but not enforced; current mass-weighted projection remains active with the configured limits.",
+    "Source is model_37600 with different action scale/default pose/root-gravity convention/collision geometry/integrator; these were not imported."
+  ],
+  "deploy_contract_sha256": "56c5e43a2cde776b7feafdc91e21d52bec4d16fc5086710f7fcd7c996c184e8d",
+  "adapted_xml_sha256": "fd70e8fadf43eae3426df66558aa691f8fcf973d3b1ac761b82ec21c67faef28",
+  "runtime_validation": {
+    "scope": "Offline source-checkout closed-loop simulation, not ROS GUI or real robot.",
+    "stand_report": "validation/xmz_stand_30s_20261028.json",
+    "forward_report": "validation/xmz_forward_30s_20261028.json",
+    "stand_stability_passed": true,
+    "stand_tracking_passed": true,
+    "forward_stability_passed": true,
+    "forward_tracking_passed": false,
+    "forward_command_m_s": 0.5,
+    "forward_mean_vx_m_s": 0.30661278403184355,
+    "note": "New parameters are matched exactly; forward tracking remains below command and has not been tuned to hide the difference."
+  },
+  "real_robot_tested": false
+}

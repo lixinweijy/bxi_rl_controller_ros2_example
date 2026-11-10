@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "validation_scope": "headless simulation only; no ROS nodes and no real robot actions",
+  "test_interpreter": "/usr/bin/python3.10",
+  "reference_policy_comparison_performed": false,
+  "reference_policy_comparison_reason": "The user replaced the ONNX model. The original iteration-43000 bundle is not an action-parity reference for the new model.",
+  "standing_quality_passed": null,
+  "standing_quality_note": "Standing velocity tracking is measured, but no training reference stance-width envelope was supplied; an upright result does not validate foot placement. The zero-command foot separation still grows substantially.",
+  "lateral_speed_magnitude_asymmetry_m_s": 0.10052166531353915,
+  "all_stability_passed": true,
+  "all_tracking_passed": false,
+  "passed": false,
+  "runs": {
+    "standing_zero": {
+      "mujoco": "3.5.0",
+      "scene": "/tmp/elf4_closed_loop_oteir73z/scene.xml",
+      "scene_sha256": "026b3b3bc521a37faf591e0e39aeb3c489782753d6a3fe4fd2901696fa023b7b",
+      "policy_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+      "deploy_sha256": "d9b687a3256b9ef4c49fb1b5c165df2a6bff8fa880e68448b223e2cc1d25dd0e",
+      "integrator": "implicitfast",
+      "command": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "physics_dt": 0.001,
+      "policy_dt": 0.02,
+      "startup_suspension_verified": true,
+      "requested_sim_seconds": 30.0,
+      "sim_seconds": 30.000000000014904,
+      "policy_frames": 1500,
+      "min_height": 1.2439199232404532,
+      "max_tilt_deg": 5.034820614358029,
+      "max_joint_speed": 10.899528880665798,
+      "max_actuator_force": 200.38793381825263,
+      "saturated_motor_steps": 0,
+      "motor_samples_at_speed_limit": 0,
+      "velocity_projection_steps": 0,
+      "velocity_projection_motor_steps": 0,
+      "foot_lateral_separation": {
+        "definition": "absolute lateral separation of ankle_x link origins, projected onto torso body Y; not collision-edge distance",
+        "initial_m": 0.24100308489113537,
+        "final_m": 0.611849977446846,
+        "maximum_m": 0.9685900269687345,
+        "minimum_m": 0.24100308489113537,
+        "final_minus_initial_m": 0.3708468925557106,
+        "first_after_settle_m": 0.5619984245144442,
+        "final_minus_first_after_settle_m": 0.049851552932401844,
+        "mean_after_settle_m": 0.7504882297696324,
+        "final_two_second_mean_m": 0.7580788868276161
+      },
+      "command_tracking": {
+        "evaluated": true,
+        "settle_seconds_excluded": 2.0,
+        "samples": 1399,
+        "quantity_order": [
+          "body_vx_m_s",
+          "body_vy_m_s",
+          "body_yaw_rad_s"
+        ],
+        "linear_axis_rmse_limit_m_s": 0.15,
+        "yaw_rmse_limit_rad_s": 0.3,
+        "passed": true,
+        "mean_body_velocity": [
+          -0.014169148069185683,
+          6.842509031740823e-05,
+          -0.046989330218583744
+        ],
+        "body_velocity_std": [
+          0.07673686647674628,
+          0.09728537817331674,
+          0.10376231200366007
+        ],
+        "mean_absolute_error": [
+          0.06357947630738954,
+          0.07114234673629147,
+          0.08938394638764101
+        ],
+        "rmse": [
+          0.07803404022397213,
+          0.09728540223650327,
+          0.11390616553433804
+        ],
+        "final_two_second_mean_body_velocity": [
+          -0.023415703954381216,
+          0.037410549358712644,
+          -0.0497287071062074
+        ]
+      },
+      "root_xy_displacement": 0.36994149421598505,
+      "finite_state_and_forces": true,
+      "warnings": {},
+      "wall_seconds": 8.587298077065498,
+      "stability_passed": true,
+      "tracking_passed": true,
+      "pass_definition": "full requested duration upright and finite without MuJoCo warnings, plus command tracking within stated RMSE limits; optional reference must also match",
+      "passed": true
+    },
+    "lateral_positive": {
+      "mujoco": "3.5.0",
+      "scene": "/tmp/elf4_closed_loop_aws98mik/scene.xml",
+      "scene_sha256": "026b3b3bc521a37faf591e0e39aeb3c489782753d6a3fe4fd2901696fa023b7b",
+      "policy_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+      "deploy_sha256": "d9b687a3256b9ef4c49fb1b5c165df2a6bff8fa880e68448b223e2cc1d25dd0e",
+      "integrator": "implicitfast",
+      "command": [
+        0.0,
+        0.3,
+        0.0
+      ],
+      "physics_dt": 0.001,
+      "policy_dt": 0.02,
+      "startup_suspension_verified": true,
+      "requested_sim_seconds": 15.0,
+      "sim_seconds": 14.999999999996572,
+      "policy_frames": 750,
+      "min_height": 1.2343300533977424,
+      "max_tilt_deg": 5.0324367834728285,
+      "max_joint_speed": 9.318698951480954,
+      "max_actuator_force": 173.4727010276978,
+      "saturated_motor_steps": 0,
+      "motor_samples_at_speed_limit": 0,
+      "velocity_projection_steps": 0,
+      "velocity_projection_motor_steps": 0,
+      "foot_lateral_separation": {
+        "definition": "absolute lateral separation of ankle_x link origins, projected onto torso body Y; not collision-edge distance",
+        "initial_m": 0.24100308489113537,
+        "final_m": 0.6052009423461834,
+        "maximum_m": 0.6576270146296264,
+        "minimum_m": 0.2017156988250805,
+        "final_minus_initial_m": 0.364197857455048,
+        "first_after_settle_m": 0.2017156988250805,
+        "final_minus_first_after_settle_m": 0.4034852435211029,
+        "mean_after_settle_m": 0.5384809356986231,
+        "final_two_second_mean_m": 0.5660709823152391
+      },
+      "command_tracking": {
+        "evaluated": true,
+        "settle_seconds_excluded": 2.0,
+        "samples": 649,
+        "quantity_order": [
+          "body_vx_m_s",
+          "body_vy_m_s",
+          "body_yaw_rad_s"
+        ],
+        "linear_axis_rmse_limit_m_s": 0.15,
+        "yaw_rmse_limit_rad_s": 0.3,
+        "passed": false,
+        "mean_body_velocity": [
+          -0.07512227669118306,
+          0.1607742602610186,
+          -0.026165090328766166
+        ],
+        "body_velocity_std": [
+          0.04530384941631532,
+          0.11307796141737589,
+          0.07970126633682215
+        ],
+        "mean_absolute_error": [
+          0.0753906143862156,
+          0.13928445215405483,
+          0.06100991072274987
+        ],
+        "rmse": [
+          0.08772568168559783,
+          0.17936117741634086,
+          0.08388625517690931
+        ],
+        "final_two_second_mean_body_velocity": [
+          -0.07163981633548365,
+          0.16857417416354425,
+          -0.014877858622903486
+        ]
+      },
+      "root_xy_displacement": 2.37221904709733,
+      "finite_state_and_forces": true,
+      "warnings": {},
+      "wall_seconds": 5.605059204157442,
+      "stability_passed": true,
+      "tracking_passed": false,
+      "pass_definition": "full requested duration upright and finite without MuJoCo warnings, plus command tracking within stated RMSE limits; optional reference must also match",
+      "passed": false
+    },
+    "lateral_negative": {
+      "mujoco": "3.5.0",
+      "scene": "/tmp/elf4_closed_loop_4tiasmmd/scene.xml",
+      "scene_sha256": "026b3b3bc521a37faf591e0e39aeb3c489782753d6a3fe4fd2901696fa023b7b",
+      "policy_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+      "deploy_sha256": "d9b687a3256b9ef4c49fb1b5c165df2a6bff8fa880e68448b223e2cc1d25dd0e",
+      "integrator": "implicitfast",
+      "command": [
+        0.0,
+        -0.3,
+        0.0
+      ],
+      "physics_dt": 0.001,
+      "policy_dt": 0.02,
+      "startup_suspension_verified": true,
+      "requested_sim_seconds": 15.0,
+      "sim_seconds": 14.999999999996572,
+      "policy_frames": 750,
+      "min_height": 1.2616710742517023,
+      "max_tilt_deg": 4.092417059192095,
+      "max_joint_speed": 7.76934868650988,
+      "max_actuator_force": 123.02743648539057,
+      "saturated_motor_steps": 0,
+      "motor_samples_at_speed_limit": 0,
+      "velocity_projection_steps": 0,
+      "velocity_projection_motor_steps": 0,
+      "foot_lateral_separation": {
+        "definition": "absolute lateral separation of ankle_x link origins, projected onto torso body Y; not collision-edge distance",
+        "initial_m": 0.24100308489113537,
+        "final_m": 0.4604591775377735,
+        "maximum_m": 0.511727327911883,
+        "minimum_m": 0.24100308489113537,
+        "final_minus_initial_m": 0.21945609264663812,
+        "first_after_settle_m": 0.40778868175912203,
+        "final_minus_first_after_settle_m": 0.05267049577865146,
+        "mean_after_settle_m": 0.3672340302360859,
+        "final_two_second_mean_m": 0.42741135450701817
+      },
+      "command_tracking": {
+        "evaluated": true,
+        "settle_seconds_excluded": 2.0,
+        "samples": 649,
+        "quantity_order": [
+          "body_vx_m_s",
+          "body_vy_m_s",
+          "body_yaw_rad_s"
+        ],
+        "linear_axis_rmse_limit_m_s": 0.15,
+        "yaw_rmse_limit_rad_s": 0.3,
+        "passed": false,
+        "mean_body_velocity": [
+          -0.043965574332897786,
+          -0.060252594947479456,
+          -0.0675708877929576
+        ],
+        "body_velocity_std": [
+          0.06382499431776946,
+          0.09430376719775024,
+          0.10755763669435803
+        ],
+        "mean_absolute_error": [
+          0.06156357913914347,
+          0.23974740505252087,
+          0.0975541920656284
+        ],
+        "rmse": [
+          0.07750226852218502,
+          0.2576276746335783,
+          0.12702153395548327
+        ],
+        "final_two_second_mean_body_velocity": [
+          -0.06947329749794416,
+          -0.10582358766923683,
+          -0.07419632935325787
+        ]
+      },
+      "root_xy_displacement": 1.0080019112054017,
+      "finite_state_and_forces": true,
+      "warnings": {},
+      "wall_seconds": 7.279826441314071,
+      "stability_passed": true,
+      "tracking_passed": false,
+      "pass_definition": "full requested duration upright and finite without MuJoCo warnings, plus command tracking within stated RMSE limits; optional reference must also match",
+      "passed": false
+    }
+  },
+  "reproduction_commands": [
+    ".venv/sparring_sim/bin/python tools/validate_elf4_closed_loop.py --duration 30 --command 0 0 0",
+    ".venv/sparring_sim/bin/python tools/validate_elf4_closed_loop.py --duration 15 --command 0 0.3 0",
+    ".venv/sparring_sim/bin/python tools/validate_elf4_closed_loop.py --duration 15 --command 0 -0.3 0"
+  ],
+  "reproduction_working_directory": "bxi_rl_controller"
+}

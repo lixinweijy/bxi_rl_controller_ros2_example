@@ -1,0 +1,63 @@
+{
+  "mod": "com.bxi.elf4",
+  "version": "1.3.0",
+  "date": "2026-10-28",
+  "models": [
+    {
+      "file": "assets/policy.onnx",
+      "sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+      "state": "com.bxi.elf4/elf4",
+      "event": "btn_10=40",
+      "keyboard": "1",
+      "gamepad": "RB+X",
+      "role": "existing model_49999 full body"
+    },
+    {
+      "file": "assets/policy_1500_dwaq.onnx",
+      "sha256": "bf62a9e696ddd82dbb5ab9f7e3d39329de990c04373d6917977e5dde4c8a8285",
+      "state": "com.bxi.elf4/elf4_dwaq_1500",
+      "event": "btn_10=41",
+      "keyboard": "2",
+      "gamepad": "LB+A",
+      "input": [
+        "history",
+        [
+          1,
+          245
+        ]
+      ],
+      "output": [
+        "actions",
+        [
+          1,
+          12
+        ]
+      ],
+      "held_joints": 17
+    }
+  ],
+  "metadata_file": "assets/policy_1500_dwaq.json",
+  "metadata_sha256": "59d651325317ff9d1833309df02b3bf366531b61b22c4097055c1677b13369db",
+  "static_and_inference_tests": {
+    "passed": 35,
+    "scope": "12-joint name mapping, 49-D observations, five-frame ordering, gait phase, raw previous action, preview isolation, 17 held targets, actual ONNX versus independent input packing/direct CPU decode, hash guard, bidirectional resource lifecycle and existing ELF4 regressions."
+  },
+  "switches_exercised_in_state_machine": [
+    41,
+    40,
+    41,
+    40
+  ],
+  "transition": "soft_switch",
+  "resource_policy": "Separate on_demand sessions with reset and release on exit.",
+  "remote_profile_scope": "Only robot=elf4 maps LB+A/keyboard2 to the DWAQ event. ELF3 keyboard2 retains recover.",
+  "shared_physics": "Unchanged XMZ ELF4 model, including all-joint armature 0.02. Training metadata ankle velocity Y/X=15/5 rad/s differs from shared simulation 20/10 rad/s; full training physics parity is not claimed.",
+  "real_robot_actions_sent": false,
+  "physical_gamepad_tested": false,
+  "gui_simulation_switch_tested": false,
+  "remote_controller_tests": {
+    "control_rules": "passed",
+    "robot_profile": "passed",
+    "scope": "C++ input mapper tests without starting a ROS node or input driver; all gamepad modifier/face combinations plus keyboard1/2 and ELF3 default behavior."
+  }
+}

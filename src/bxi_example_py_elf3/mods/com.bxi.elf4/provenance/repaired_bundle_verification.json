@@ -1,0 +1,99 @@
+{
+  "passed": true,
+  "scope": "model/config/XML pairing, observation construction and inference only",
+  "dynamic_equivalence_tested": false,
+  "checkpoint_iteration": 49999,
+  "checkpoint_sha256": "fbf16f41cc9fb009ec0fa1c431c8181a5748d63decb2fe614561dede1aff9987",
+  "onnx_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+  "samples": 2200,
+  "onnx_input": {
+    "name": "obs",
+    "shape": [
+      1,
+      960
+    ],
+    "dtype": "tensor(float)"
+  },
+  "onnx_output": {
+    "name": "actions",
+    "shape": [
+      1,
+      29
+    ]
+  },
+  "maximum_observation_reconstruction_error": 0.0,
+  "maximum_action_error_against_isaac": 3.933906555175781e-06,
+  "maximum_position_target_error_against_isaac": 1.1920928955078125e-06,
+  "torchscript_parity": {
+    "tested": true,
+    "maximum_absolute_error": 3.337860107421875e-06
+  },
+  "cases": [
+    {
+      "case": "stand",
+      "samples": 200,
+      "maximum_observation_error": 0.0,
+      "maximum_action_error": 1.3113021850585938e-06
+    },
+    {
+      "case": "forward",
+      "samples": 200,
+      "maximum_observation_error": 0.0,
+      "maximum_action_error": 2.6226043701171875e-06
+    },
+    {
+      "case": "backward",
+      "samples": 200,
+      "maximum_observation_error": 0.0,
+      "maximum_action_error": 2.0265579223632812e-06
+    },
+    {
+      "case": "left",
+      "samples": 200,
+      "maximum_observation_error": 0.0,
+      "maximum_action_error": 2.7418136596679688e-06
+    },
+    {
+      "case": "right",
+      "samples": 200,
+      "maximum_observation_error": 0.0,
+      "maximum_action_error": 1.9073486328125e-06
+    },
+    {
+      "case": "turn_left",
+      "samples": 200,
+      "maximum_observation_error": 0.0,
+      "maximum_action_error": 2.1457672119140625e-06
+    },
+    {
+      "case": "turn_right",
+      "samples": 200,
+      "maximum_observation_error": 0.0,
+      "maximum_action_error": 3.933906555175781e-06
+    },
+    {
+      "case": "walk_turn_left",
+      "samples": 200,
+      "maximum_observation_error": 0.0,
+      "maximum_action_error": 3.337860107421875e-06
+    },
+    {
+      "case": "walk_turn_right",
+      "samples": 200,
+      "maximum_observation_error": 0.0,
+      "maximum_action_error": 2.6226043701171875e-06
+    },
+    {
+      "case": "diagonal_left",
+      "samples": 200,
+      "maximum_observation_error": 0.0,
+      "maximum_action_error": 3.337860107421875e-06
+    },
+    {
+      "case": "diagonal_right",
+      "samples": 200,
+      "maximum_observation_error": 0.0,
+      "maximum_action_error": 2.86102294921875e-06
+    }
+  ]
+}

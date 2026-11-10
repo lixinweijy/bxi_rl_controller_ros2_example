@@ -1,0 +1,224 @@
+{
+  "passed": true,
+  "validation_date": "2026-10-23",
+  "mod": "com.bxi.elf4",
+  "scope": "Offline model identity, independent native Isaac model_49999 observation/action/position-target parity, named-joint adapter wiring, and training control parameter matching. Closed-loop simulation results are reported separately.",
+  "model_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+  "deploy_contract_sha256": "2da0f1c6ed7d7cd1c4286912215f66691ea8f11582baac505b38ef956299f500",
+  "onnx_metadata": {
+    "upper_body_amp": "disabled",
+    "pd_kaixuan": "kp50_kd10",
+    "pd_myactuator": "kp150_kd15",
+    "checkpoint_iteration": "49999",
+    "training_run": "2026-10-22_13-25-26_elf4_motor_adapted_from_scratch_seed42",
+    "robot": "ELF4",
+    "checkpoint_sha256": "fbf16f41cc9fb009ec0fa1c431c8181a5748d63decb2fe614561dede1aff9987",
+    "source_checkpoint": "model_49999.pt"
+  },
+  "onnx_inputs": [
+    {
+      "name": "obs",
+      "shape": [
+        1,
+        960
+      ],
+      "type": "tensor(float)"
+    }
+  ],
+  "onnx_outputs": [
+    {
+      "name": "actions",
+      "shape": [
+        1,
+        29
+      ],
+      "type": "tensor(float)"
+    }
+  ],
+  "backend": "onnxruntime CPUExecutionProvider",
+  "motor_profile_id": "elf4_motor_selection_20261022",
+  "motor_parameters_sha256": "e59ea5703e76737b361bec917fc9a8e06eebd5ec78bb382d5c36187bc4b9367e",
+  "samples": 2200,
+  "cases": [
+    {
+      "case": "stand",
+      "samples": 200,
+      "maximum_absolute_error": {
+        "observation": 0.0,
+        "raw_action_against_isaac": 1.3113021850585938e-06,
+        "position_target_against_isaac": 4.76837158203125e-07,
+        "raw_action_against_direct_cpu_onnx": 0.0,
+        "position_target_against_direct_cpu_onnx": 0.0
+      }
+    },
+    {
+      "case": "forward",
+      "samples": 200,
+      "maximum_absolute_error": {
+        "observation": 0.0,
+        "raw_action_against_isaac": 2.6226043701171875e-06,
+        "position_target_against_isaac": 9.5367431640625e-07,
+        "raw_action_against_direct_cpu_onnx": 0.0,
+        "position_target_against_direct_cpu_onnx": 0.0
+      }
+    },
+    {
+      "case": "backward",
+      "samples": 200,
+      "maximum_absolute_error": {
+        "observation": 0.0,
+        "raw_action_against_isaac": 2.0265579223632812e-06,
+        "position_target_against_isaac": 4.76837158203125e-07,
+        "raw_action_against_direct_cpu_onnx": 0.0,
+        "position_target_against_direct_cpu_onnx": 0.0
+      }
+    },
+    {
+      "case": "left",
+      "samples": 200,
+      "maximum_absolute_error": {
+        "observation": 0.0,
+        "raw_action_against_isaac": 2.7418136596679688e-06,
+        "position_target_against_isaac": 7.748603820800781e-07,
+        "raw_action_against_direct_cpu_onnx": 0.0,
+        "position_target_against_direct_cpu_onnx": 0.0
+      }
+    },
+    {
+      "case": "right",
+      "samples": 200,
+      "maximum_absolute_error": {
+        "observation": 0.0,
+        "raw_action_against_isaac": 1.9073486328125e-06,
+        "position_target_against_isaac": 4.76837158203125e-07,
+        "raw_action_against_direct_cpu_onnx": 0.0,
+        "position_target_against_direct_cpu_onnx": 0.0
+      }
+    },
+    {
+      "case": "turn_left",
+      "samples": 200,
+      "maximum_absolute_error": {
+        "observation": 0.0,
+        "raw_action_against_isaac": 2.1457672119140625e-06,
+        "position_target_against_isaac": 7.748603820800781e-07,
+        "raw_action_against_direct_cpu_onnx": 0.0,
+        "position_target_against_direct_cpu_onnx": 0.0
+      }
+    },
+    {
+      "case": "turn_right",
+      "samples": 200,
+      "maximum_absolute_error": {
+        "observation": 0.0,
+        "raw_action_against_isaac": 3.933906555175781e-06,
+        "position_target_against_isaac": 8.344650268554688e-07,
+        "raw_action_against_direct_cpu_onnx": 0.0,
+        "position_target_against_direct_cpu_onnx": 0.0
+      }
+    },
+    {
+      "case": "walk_turn_left",
+      "samples": 200,
+      "maximum_absolute_error": {
+        "observation": 0.0,
+        "raw_action_against_isaac": 3.337860107421875e-06,
+        "position_target_against_isaac": 1.1920928955078125e-06,
+        "raw_action_against_direct_cpu_onnx": 0.0,
+        "position_target_against_direct_cpu_onnx": 0.0
+      }
+    },
+    {
+      "case": "walk_turn_right",
+      "samples": 200,
+      "maximum_absolute_error": {
+        "observation": 0.0,
+        "raw_action_against_isaac": 2.6226043701171875e-06,
+        "position_target_against_isaac": 9.5367431640625e-07,
+        "raw_action_against_direct_cpu_onnx": 0.0,
+        "position_target_against_direct_cpu_onnx": 0.0
+      }
+    },
+    {
+      "case": "diagonal_left",
+      "samples": 200,
+      "maximum_absolute_error": {
+        "observation": 0.0,
+        "raw_action_against_isaac": 3.337860107421875e-06,
+        "position_target_against_isaac": 9.5367431640625e-07,
+        "raw_action_against_direct_cpu_onnx": 0.0,
+        "position_target_against_direct_cpu_onnx": 0.0
+      }
+    },
+    {
+      "case": "diagonal_right",
+      "samples": 200,
+      "maximum_absolute_error": {
+        "observation": 0.0,
+        "raw_action_against_isaac": 2.86102294921875e-06,
+        "position_target_against_isaac": 5.960464477539062e-07,
+        "raw_action_against_direct_cpu_onnx": 0.0,
+        "position_target_against_direct_cpu_onnx": 0.0
+      }
+    }
+  ],
+  "maximum_absolute_error": {
+    "observation": 0.0,
+    "raw_action_against_isaac": 3.933906555175781e-06,
+    "position_target_against_isaac": 1.1920928955078125e-06,
+    "raw_action_against_direct_cpu_onnx": 0.0,
+    "position_target_against_direct_cpu_onnx": 0.0
+  },
+  "maximum_absolute_value": {
+    "raw_action": 5.474412441253662,
+    "position_target": 1.766049861907959
+  },
+  "recorded_reference": {
+    "path": "validation/isaac_reference_49999.npz",
+    "sha256": "8a5dfef560f94d71a17f1fb0c2297af6c02a73c529077e9d31d63922ff22ac86",
+    "metadata_path": "validation/isaac_reference_49999.json",
+    "checkpoint_iteration": 49999,
+    "checkpoint_sha256": "fbf16f41cc9fb009ec0fa1c431c8181a5748d63decb2fe614561dede1aff9987",
+    "usage": "Replay 11 independent native Isaac episodes, 200 frames each. At each case reset the history. Inject recorded projected gravity (no quaternion supplied) and raw previous action, reconstruct the full oldest-to-newest input, then compare actual adapter output to native actions and targets."
+  },
+  "training_contract_status": {
+    "independent_new_training_reference_available": true,
+    "confirmed_against_native_isaac_metadata": [
+      "29 joint names/order",
+      "default_joint_pos",
+      "default_joint_vel",
+      "action_scale",
+      "stiffness",
+      "damping",
+      "effort_limit",
+      "velocity_limit",
+      "physics_dt",
+      "policy_dt"
+    ],
+    "confirmed_by_episode_replay": [
+      "10 x 96 oldest-to-newest history",
+      "repeat-first-frame history initialization",
+      "raw previous actions before clipping/scaling",
+      "float32 observation layout/scales",
+      "ONNX/native action parity",
+      "position target formula"
+    ],
+    "projection_quaternion_test": "Independent nontrivial roll/pitch/yaw unit test; native replay supplies projected gravity directly."
+  },
+  "historical_reference": {
+    "path": "validation/isaac_reference.npz",
+    "checkpoint_iteration": 43000,
+    "usage": "Preserved historical observation/regression evidence; not used for current native action parity."
+  },
+  "upstream_bundle_verification": "provenance/repaired_bundle.json",
+  "test_command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=bxi_rl_controller/src/bxi_example_py_elf3 $Train_CONDA_PREFIX/bin/python -m pytest -q bxi_rl_controller/src/bxi_example_py_elf3/test/test_elf4_mod.py",
+  "closed_loop_simulation_run": false,
+  "real_robot_run": false,
+  "regression_tests": {
+    "command": "test/test_elf4_mod.py",
+    "passed": 43,
+    "skipped": 1,
+    "skip_reason": "Historical model_43000 action parity does not apply to the active model_49999.",
+    "elapsed_seconds": 101.92
+  }
+}

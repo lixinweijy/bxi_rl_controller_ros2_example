@@ -1,0 +1,186 @@
+{
+  "passed": true,
+  "checkpoint_iteration": 43000,
+  "cases": [
+    {
+      "case": "forward",
+      "command": [
+        0.8,
+        0,
+        0
+      ],
+      "simulated_seconds": 12.000000000000476,
+      "fallen": false,
+      "minimum_root_height": 1.2740724300201276,
+      "minimum_upright_cosine": 0.9796735011548015,
+      "mean_body_velocity_after_2s": [
+        0.956330926442209,
+        0.02356538507887015,
+        -0.038325879927898376
+      ],
+      "warnings": {}
+    },
+    {
+      "case": "backward",
+      "command": [
+        -0.5,
+        0,
+        0
+      ],
+      "simulated_seconds": 12.000000000000476,
+      "fallen": false,
+      "minimum_root_height": 1.2675893693438547,
+      "minimum_upright_cosine": 0.997531039490661,
+      "mean_body_velocity_after_2s": [
+        -0.45935283887728134,
+        -0.08271651373976945,
+        -0.02445043992028286
+      ],
+      "warnings": {}
+    },
+    {
+      "case": "turn_left",
+      "command": [
+        0,
+        0,
+        0.8
+      ],
+      "simulated_seconds": 12.000000000000476,
+      "fallen": false,
+      "minimum_root_height": 1.2727773621522331,
+      "minimum_upright_cosine": 0.9938682601750312,
+      "mean_body_velocity_after_2s": [
+        -0.0364628977728136,
+        -0.040618145920154995,
+        0.8490848421632823
+      ],
+      "warnings": {}
+    },
+    {
+      "case": "turn_right",
+      "command": [
+        0,
+        0,
+        -0.8
+      ],
+      "simulated_seconds": 12.000000000000476,
+      "fallen": false,
+      "minimum_root_height": 1.285582595884121,
+      "minimum_upright_cosine": 0.9950858567418617,
+      "mean_body_velocity_after_2s": [
+        -0.08050871659617928,
+        -0.055861750774770284,
+        -0.8205608031989764
+      ],
+      "warnings": {}
+    },
+    {
+      "case": "diagonal_left",
+      "command": [
+        0.5,
+        0.3,
+        0
+      ],
+      "simulated_seconds": 12.000000000000476,
+      "fallen": false,
+      "minimum_root_height": 1.172342166086266,
+      "minimum_upright_cosine": 0.9745009104616328,
+      "mean_body_velocity_after_2s": [
+        0.4575436522362041,
+        0.20372265426332334,
+        -0.03842302912302218
+      ],
+      "warnings": {}
+    },
+    {
+      "case": "diagonal_right",
+      "command": [
+        0.5,
+        -0.3,
+        0
+      ],
+      "simulated_seconds": 12.000000000000476,
+      "fallen": false,
+      "minimum_root_height": 1.2827797514826247,
+      "minimum_upright_cosine": 0.9913793719488344,
+      "mean_body_velocity_after_2s": [
+        0.4845893504217154,
+        -0.21065175538277797,
+        -0.05161848565896754
+      ],
+      "warnings": {}
+    },
+    {
+      "case": "walk_turn_left",
+      "command": [
+        0.6,
+        0,
+        0.5
+      ],
+      "simulated_seconds": 12.000000000000476,
+      "fallen": false,
+      "minimum_root_height": 1.2676106161845186,
+      "minimum_upright_cosine": 0.9812975645764365,
+      "mean_body_velocity_after_2s": [
+        0.6400582348056102,
+        -0.03626272472105101,
+        0.4343951318988554
+      ],
+      "warnings": {}
+    },
+    {
+      "case": "walk_turn_right",
+      "command": [
+        0.6,
+        0,
+        -0.5
+      ],
+      "simulated_seconds": 12.000000000000476,
+      "fallen": false,
+      "minimum_root_height": 1.2258165904780929,
+      "minimum_upright_cosine": 0.9495814654144346,
+      "mean_body_velocity_after_2s": [
+        0.663388549879302,
+        0.09097709506989574,
+        -0.5100705341905619
+      ],
+      "warnings": {}
+    },
+    {
+      "case": "sidestep_left",
+      "command": [
+        0,
+        0.35,
+        0
+      ],
+      "simulated_seconds": 12.000000000000476,
+      "fallen": false,
+      "minimum_root_height": 1.243998061384042,
+      "minimum_upright_cosine": 0.996594031751148,
+      "mean_body_velocity_after_2s": [
+        -0.12759959202884005,
+        0.022967482174196883,
+        0.10904460045915444
+      ],
+      "warnings": {}
+    },
+    {
+      "case": "sidestep_right",
+      "command": [
+        0,
+        -0.35,
+        0
+      ],
+      "simulated_seconds": 12.000000000000476,
+      "fallen": false,
+      "minimum_root_height": 1.262271556397137,
+      "minimum_upright_cosine": 0.9891155055854368,
+      "mean_body_velocity_after_2s": [
+        -0.010619016120528835,
+        -0.18519031942043013,
+        -0.05144584885264997
+      ],
+      "warnings": {}
+    }
+  ]
+}

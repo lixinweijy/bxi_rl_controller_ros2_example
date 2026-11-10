@@ -1,0 +1,33 @@
+{
+  "updated_on": "2026-10-23",
+  "model_path": "assets/policy.onnx",
+  "model_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+  "model_source": "User replaced the Mod source ONNX before this parameter update.",
+  "onnx_metadata": {
+    "source_checkpoint": "model_49999.pt",
+    "checkpoint_sha256": "fbf16f41cc9fb009ec0fa1c431c8181a5748d63decb2fe614561dede1aff9987",
+    "training_run": "2026-10-22_13-25-26_elf4_motor_adapted_from_scratch_seed42",
+    "checkpoint_iteration": "49999",
+    "robot": "ELF4",
+    "pd_myactuator": "kp150_kd15",
+    "pd_kaixuan": "kp50_kd10",
+    "upper_body_amp": "disabled"
+  },
+  "motor_parameters_path": "assets/motor_parameters.json",
+  "motor_parameters_sha256": "e59ea5703e76737b361bec917fc9a8e06eebd5ec78bb382d5c36187bc4b9367e",
+  "inherited_contract": "provenance/deploy_43000.json",
+  "inherited_fields": [
+    "observations",
+    "joint_names_policy",
+    "joint_names_controller",
+    "default_joint_pos",
+    "default_joint_vel",
+    "action_scale",
+    "initial_root_pos",
+    "initial_root_quat_wxyz",
+    "training_command_ranges",
+    "control policy_hz/history/timing"
+  ],
+  "inheritance_basis": "The supplied motor table states that default joint positions and action scaling remain inherited/unchanged. The ONNX retains obs[1,960] and actions[1,29]; full training environment configuration is not embedded.",
+  "historical_reports": "43000 Isaac action parity and the 2026-10-21 simulation reports describe the original model and do not validate this replacement model."
+}

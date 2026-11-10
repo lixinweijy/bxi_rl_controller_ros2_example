@@ -1,0 +1,8 @@
+{
+  "source_archive": "elf4_deploy_upper_body_model_43000_20261021_160721.zip",
+  "source_archive_sha256": "eddb4514fced9068194c5b5cd591ca622a6cc0bf2d13d51a4700da6b716655cd",
+  "model_sha256": "b376d68a7557f6d2949350532b90e951f81306bdcea24fdb02f60397c3fb65e6",
+  "original_files_verified": 64,
+  "checkpoint_iteration": 43000,
+  "notes": "Original reports describe the supplied bundle; they are not validation of the BXI adapter or real hardware."
+}

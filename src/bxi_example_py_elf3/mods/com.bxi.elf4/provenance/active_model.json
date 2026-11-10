@@ -1,0 +1,41 @@
+{
+  "updated_on": "2026-10-23",
+  "model_path": "assets/policy.onnx",
+  "model_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+  "model_source": "elf4_mujoco_model49999_repaired_20261023_150954.zip; byte-identical to the previously active model_49999. Repair updates simulation physics/assets and supplies independent native training references.",
+  "onnx_metadata": {
+    "upper_body_amp": "disabled",
+    "pd_kaixuan": "kp50_kd10",
+    "pd_myactuator": "kp150_kd15",
+    "checkpoint_iteration": "49999",
+    "training_run": "2026-10-22_13-25-26_elf4_motor_adapted_from_scratch_seed42",
+    "robot": "ELF4",
+    "checkpoint_sha256": "fbf16f41cc9fb009ec0fa1c431c8181a5748d63decb2fe614561dede1aff9987",
+    "source_checkpoint": "model_49999.pt"
+  },
+  "motor_parameters_path": "assets/motor_parameters.json",
+  "motor_parameters_sha256": "e59ea5703e76737b361bec917fc9a8e06eebd5ec78bb382d5c36187bc4b9367e",
+  "source_bundle": "provenance/repaired_bundle.json",
+  "source_training_provenance": "provenance/repaired_bundle_source.json",
+  "training_contract": "assets/deploy.json",
+  "independent_reference": "validation/isaac_reference_49999.npz",
+  "independent_reference_metadata": "validation/isaac_reference_49999.json",
+  "independent_parity_report": "validation/active_model_report.json",
+  "historical_reports": "Original model_43000 provenance/reference files and pre-repair model_49999 reports are preserved separately; they are not current repaired closed-loop evidence.",
+  "upstream_dynamic_agreement_passed": false,
+  "upstream_remaining_case_discrepancies": {
+    "forward": [
+      "mean vx differs from Isaac"
+    ],
+    "right": [
+      "mean ankle spacing differs from Isaac"
+    ],
+    "turn_left": [
+      "mean ankle spacing differs from Isaac"
+    ],
+    "walk_turn_left": [
+      "mean ankle spacing differs from Isaac",
+      "mean vx differs from Isaac"
+    ]
+  }
+}

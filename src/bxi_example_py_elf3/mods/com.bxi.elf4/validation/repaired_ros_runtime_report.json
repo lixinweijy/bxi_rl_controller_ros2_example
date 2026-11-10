@@ -1,0 +1,146 @@
+{
+  "mujoco": "3.17.0",
+  "ankle_width_after_target": {
+    "samples": 6078,
+    "maximum_m": 0.27696329135249936,
+    "last_ten_second_mean_m": 0.23645208495013506,
+    "last_m": 0.2621699799926145
+  },
+  "robot": "elf4",
+  "target_state": "com.bxi.elf4/elf4",
+  "target_observed": true,
+  "states": {
+    "com.bxi.basic_actions/zero_torque": 10,
+    "com.bxi.elf4/elf4": 658
+  },
+  "first_state_seconds": {
+    "com.bxi.basic_actions/zero_torque": 8.22422652458772,
+    "com.bxi.elf4/elf4": 9.225321220699698
+  },
+  "camera_info_publication": {
+    "color": {
+      "samples": 1912,
+      "hz": 29.984417944416972,
+      "p95_interval_ms": 34.32092070579529
+    },
+    "depth": {
+      "samples": 1912,
+      "hz": 29.98445175009298,
+      "p95_interval_ms": 34.25949299708009
+    }
+  },
+  "root_height_after_target": {
+    "samples": 13151,
+    "minimum": 1.3141498087590808,
+    "last": 1.3331672007256608
+  },
+  "images": {
+    "color": {
+      "samples": 1889,
+      "hz": 29.617385581312988,
+      "p95_interval_ms": 36.98907978832722,
+      "width": 1280,
+      "height": 720,
+      "encoding": "rgb8",
+      "bytes": 2764800,
+      "step": 3840
+    },
+    "depth": {
+      "samples": 1862,
+      "hz": 29.194001497226598,
+      "p95_interval_ms": 39.790940936654806,
+      "width": 848,
+      "height": 480,
+      "encoding": "16UC1",
+      "bytes": 814080,
+      "step": 1696
+    }
+  },
+  "max_tilt_degrees_after_target": 3.272091829804682,
+  "max_joint_speed_after_settle": 9.951681371818507,
+  "command_rate": {
+    "samples": 3188,
+    "hz": 50.00012662180699,
+    "p95_interval_ms": 21.385155152529478
+  },
+  "control_timing": {
+    "compute_budget_ms": 5.0,
+    "fatal_error": null,
+    "last_miss": null,
+    "period_ms": 20.0,
+    "state": "com.bxi.elf4/elf4",
+    "total_budget_overruns": 1,
+    "total_cycles": 3289,
+    "total_deadline_misses": 0,
+    "total_skipped_periods": 0
+  },
+  "launch_log": "/tmp/bxi_elf4_repaired_runtime/elf4_launch.log",
+  "passive_observation": false,
+  "scope": "Actual local ROS simulation and GUI; observer only subscribed to simulation topics. No hardware node or real robot action.",
+  "date": "2026-10-23",
+  "launch_duration_wall_seconds": 75,
+  "target_active_wall_seconds": 65.7746787793003,
+  "model_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+  "deploy_contract_sha256": "2da0f1c6ed7d7cd1c4286912215f66691ea8f11582baac505b38ef956299f500",
+  "realtime_factor_samples": [
+    0.856,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "foot_width_definition": "Absolute ankle_x link-origin lateral separation in torso frame, reconstructed from observed named joint states.",
+  "runtime_stability_passed": true,
+  "initial_shutdown_test": {
+    "simulator_exit_code": -11,
+    "cause": "A repeated SIGINT interrupted OpenGL thread cleanup.",
+    "fix": "Ignore further SIGINT during final teardown and join viewer threads.",
+    "followup_verification": "Passed isolated headless EGL camera test with duplicate SIGINT; see shutdown_smoke_test. GUI viewer cleanup was not exercised by this follow-up."
+  },
+  "real_robot_tested": false,
+  "shutdown_smoke_test": {
+    "domain_id": 176,
+    "headless": true,
+    "rendering_backend": "egl",
+    "motion_commands_published": 0,
+    "scene": "/tmp/bxi_elf4_scene_q0fuvzxo.xml",
+    "status": "passed",
+    "command": [
+      "/home/user-kevien/holomotion/bxi_rl_controller/.venv/elf4_sim/bin/python",
+      "-m",
+      "bxi_example_py_elf3.elf4_simulation",
+      "--ros-args",
+      "-p",
+      "model_file:=/tmp/bxi_elf4_scene_q0fuvzxo.xml",
+      "-p",
+      "headless:=true"
+    ],
+    "active_camera_seconds": 6.027640585787594,
+    "received_frames": {
+      "color": 174,
+      "depth": 176
+    },
+    "frame_shapes": {
+      "color": [
+        1280,
+        720,
+        "rgb8",
+        2764800
+      ],
+      "depth": [
+        848,
+        480,
+        "16UC1",
+        814080
+      ]
+    },
+    "second_signal_delivered": true,
+    "duplicate_signal_interval_ms": 2.1176538430154324,
+    "exit_code": 0,
+    "shutdown_seconds": 0.31651122216135263,
+    "log_path": "/tmp/elf4_repaired_integration_20261023/shutdown_smoke.log",
+    "log_tail": "[INFO] [1792748168.523006541] [elf4_simulation]: ELF4: 29 motors, MuJoCo 3.17 discrete MIT feedback; awaiting reset/release\n"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "checkpoint_iteration": 43000,
+  "samples": 120,
+  "onnx_input": {
+    "name": "obs",
+    "shape": [
+      1,
+      960
+    ],
+    "dtype": "tensor(float)"
+  },
+  "onnx_output": {
+    "name": "actions",
+    "shape": [
+      1,
+      29
+    ]
+  },
+  "maximum_observation_reconstruction_error": 0.0,
+  "maximum_action_error_against_isaac": 1.9073486328125e-06,
+  "torchscript_parity": {
+    "tested": true,
+    "maximum_absolute_error": 1.9073486328125e-06
+  }
+}

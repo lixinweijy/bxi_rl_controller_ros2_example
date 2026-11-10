@@ -1,0 +1,468 @@
+{
+  "source_archive": "elf4_mujoco_model49999_repaired_20261023_150954.zip",
+  "source_archive_sha256": "aaf75d54ad0d9e08bb6798d053d0ddc4572bd57223d32d66f8be0552125e99c1",
+  "verification_date": "2026-10-23",
+  "original_files_verified": 111,
+  "all_original_checksums_match": true,
+  "verification_method": "Read SHA256SUMS, require each resolved file path to remain within the extracted bundle, hash every listed file with SHA-256; no bundled shell script was executed.",
+  "sha256sums_sha256": "9a696b76d3709bae90707728d8495714d06fdd0c569500649b7bdb6441a18fa0",
+  "checkpoint_iteration": 49999,
+  "checkpoint_sha256": "fbf16f41cc9fb009ec0fa1c431c8181a5748d63decb2fe614561dede1aff9987",
+  "model_sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988",
+  "model_identical_to_previous_active_49999": true,
+  "isaac_reference": {
+    "path": "validation/isaac_reference_49999.npz",
+    "sha256": "8a5dfef560f94d71a17f1fb0c2297af6c02a73c529077e9d31d63922ff22ac86",
+    "samples": 2200,
+    "cases": 11,
+    "frames_per_case": 200
+  },
+  "upstream_dynamic_agreement_passed": false,
+  "notes": "Original reports are upstream evidence; local BXI adapter and closed-loop results are tracked separately. Earlier model_43000 provenance and reference samples remain preserved.",
+  "verified_files": [
+    {
+      "path": "README.md",
+      "sha256": "90ba981eedb20f347ddfc6f8d26fdbbaa3e7930d3671d51a7682161c9dcd6119"
+    },
+    {
+      "path": "assets/elf4/elf4.xml",
+      "sha256": "8f8a390f26aa32e2d84c8a67c094a2a6b39717bd95418b8cff0c0976738a0fc0"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_ankle_x_link.obj",
+      "sha256": "d6a3e41a30db48d923c5713bece8648f7143ff833d26e6038a8cc77be486f24b"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_ankle_y_link.obj",
+      "sha256": "5bb4a309bb9b3b569361b7fc2e40778fb91cc022323e9f68f21deda0f2de5fbb"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_elbow_y_link.obj",
+      "sha256": "d30813ee0a6e794932b915d9e2de38660faadd78e707d7256109cfc9b0fda15f"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_hip_x_link.obj",
+      "sha256": "90f8659f0b7aa51cdcbde2a9ba8159ca1c4f00d0ffad25cc3d18fbfb85e6c225"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_hip_y_link.obj",
+      "sha256": "87eebcbacb9b2e4547a0b00380adb9a7a92cf1590cd3a04b3f2121e2a4424e61"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_hip_z_link.obj",
+      "sha256": "a027b7f244957ababf38177944bf6bbf2518860c5a7faaa8947559769083e622"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_knee_y_link.obj",
+      "sha256": "58e563e333ceb2df076ba55878da4052aaf58009e766c93719a8df92a2631b58"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_shoulder_x_link.obj",
+      "sha256": "1db75b1673f13296cc1b35532f32922f5ac10086356c404f07699a2a5313560f"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_shoulder_y_link.obj",
+      "sha256": "a8c50c6673e7a2a9faec2ff7179f6b1a619e5e9907fbf2ad580fbb846166b830"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_shoulder_z_link.obj",
+      "sha256": "2a258affdc71bcd27eb4ea1c29d4ac7bb6e3fd9bd82b3c88ca7e398a1030c85e"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_wrist_x_link.obj",
+      "sha256": "6c0dc2653803f8d2e0e2c5dbb1864bcca91e7b385072a8dc3402fee254399b68"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_wrist_y_link.obj",
+      "sha256": "22b34ecf4646394bf8e835984f8c955af0a7350f3177c22ed08f7dede0b0d123"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/l_wrist_z_link.obj",
+      "sha256": "1c9905a9899399c7a3138d656fa63ddf9e50efbfa04515c2dc3a036a343fed45"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_ankle_x_link.obj",
+      "sha256": "bed3ae4d3af4bd26f6376e6c886bdd2bcfeafbb1b15ff06b8fc7d8f99085ca24"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_ankle_y_link.obj",
+      "sha256": "aa218ebac559123e2d051d0d67fc45ea28e93092a7453ee663ef7fa0def6dc0e"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_elbow_y_link.obj",
+      "sha256": "48b8d544f97445d4afef302df25b2aa8350c35039f5d2accc12f606b3c38a935"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_hip_x_link.obj",
+      "sha256": "8931e0331c859f2150d82a5da1f9775f35d523dd6a91d233e88d2379d5b1be1e"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_hip_y_link.obj",
+      "sha256": "4970630f88432a191e252b79e967179a2c8e18d4d61b2315523b0fc77f463e6b"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_hip_z_link.obj",
+      "sha256": "463ba5b990c0637b457a60d681de0c3d6f4bfe5a2dd1f6351f81f92be4905086"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_knee_y_link.obj",
+      "sha256": "0214a64d6ae71106ba9b7ca66f38acfaa37a59697adbe7c6969d3a0d5c9bc911"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_shoulder_x_link.obj",
+      "sha256": "d92c32f08b0323901a449d138cf142a3e8542f4efa0756b9d9d1bcc6cbf6e9d1"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_shoulder_y_link.obj",
+      "sha256": "fc871fd2a050e18dc8ccd98429086c4c79e95f7f9cbbe619939ae911b0757b4d"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_shoulder_z_link.obj",
+      "sha256": "5ee25c6034456de9b163ccd2a33c0df23d24ed15169c08ba4d39331b70c1a29e"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_wrist_x_link.obj",
+      "sha256": "4009e3fa64ccbeac2de304e8c650e537f4f73de2beef061ed92d225e87894dd8"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_wrist_y_link.obj",
+      "sha256": "3c2ceac0b707ffa3b86db279c4ac373ff0b491c64a4d1658a2e539cd741ff17e"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/r_wrist_z_link.obj",
+      "sha256": "4e57db38318a9b853e2725e3309cfcca0098d5293f60166ae5cf848067958f9c"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/torso_link.obj",
+      "sha256": "31680ea3c96325c6d04219759b0b0f563802e647cc082702df11447e05a20db1"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/waist_x_link.obj",
+      "sha256": "f75f2e6cc96ea093d6ff7e368cb00a714c5192eef4db15e7678d8c26a1135203"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/waist_y_link.obj",
+      "sha256": "a5cc258eb3b8ef6398a4ea558a7d5f417d53d4a4e29491abff4ed10dd81feb5b"
+    },
+    {
+      "path": "assets/elf4/meshes/collision/waist_z_link.obj",
+      "sha256": "108959e0a0d0d471f855b6e2177c43f2cb615cc90f38145dd17a82ffe058fd27"
+    },
+    {
+      "path": "assets/elf4/meshes/l_ankle_x_link.obj",
+      "sha256": "62bf3be95e7ac6b0f87f2f7298fc02f97058cd20b66e71adf3c17939bb4c2586"
+    },
+    {
+      "path": "assets/elf4/meshes/l_ankle_y_link.obj",
+      "sha256": "f57433d66d5bbd022d4d0fa6c2c73dc564ca6f5e18a19981acc132b7b4e7b0a7"
+    },
+    {
+      "path": "assets/elf4/meshes/l_elbow_y_link.obj",
+      "sha256": "2d6a64abb30b31bd38816d2dba8de8ca606522439eb296e4f6f0389fc4fa213c"
+    },
+    {
+      "path": "assets/elf4/meshes/l_hip_x_link.obj",
+      "sha256": "674bbb66178f9576f9aa5b6ef174c629ca4ea6165ea6b1e7296565e325e9afa6"
+    },
+    {
+      "path": "assets/elf4/meshes/l_hip_y_link.obj",
+      "sha256": "2cc512940c39b275de1c55d3544f556110ebe5d15fe1c2164322c43b9b4f1e1c"
+    },
+    {
+      "path": "assets/elf4/meshes/l_hip_z_link.obj",
+      "sha256": "757826112102efb9f6be9bb934b756628934feca3d5f44ee9649bb80c6dee805"
+    },
+    {
+      "path": "assets/elf4/meshes/l_knee_y_link.obj",
+      "sha256": "3dee9772e504ca8a52f0e5a9229a54a1758f86ae13f1d8cd92092103727242e3"
+    },
+    {
+      "path": "assets/elf4/meshes/l_shoulder_x_link.obj",
+      "sha256": "d9bfadc6d77a42c3c6aca26f89c5a7ed29c1a59025bc5d49b2e84e7cfcf89694"
+    },
+    {
+      "path": "assets/elf4/meshes/l_shoulder_y_link.obj",
+      "sha256": "a32187a23cb687cacbbe694fff1c486829da3974a646af3d8ec98f2c8189c944"
+    },
+    {
+      "path": "assets/elf4/meshes/l_shoulder_z_link.obj",
+      "sha256": "296bf845454a5b723b69ae6e3aedabf0c340e999b602af32cc367ff470ceda50"
+    },
+    {
+      "path": "assets/elf4/meshes/l_wrist_x_link.obj",
+      "sha256": "022210fd78577b6321455ed4ff467ef42a4c2f339ccf8abf14691c10ef53ddd3"
+    },
+    {
+      "path": "assets/elf4/meshes/l_wrist_y_link.obj",
+      "sha256": "8288f8eb032c4c86798349c15646aa72aec44200d5c849606a519e70471ca2b7"
+    },
+    {
+      "path": "assets/elf4/meshes/l_wrist_z_link.obj",
+      "sha256": "2cf24b67f583b9f9388aafca4c6a620ed8403283ad3f0767dbcdafe06736f2be"
+    },
+    {
+      "path": "assets/elf4/meshes/r_ankle_x_link.obj",
+      "sha256": "0ba5cada90b8b6bb2a4d401d9950421887887145d8020eb38da00bc3861a976a"
+    },
+    {
+      "path": "assets/elf4/meshes/r_ankle_y_link.obj",
+      "sha256": "8c68cac98baf3ad6d13c09cc0935b7e8d2e201be3e2bebc1956bcc95d18e5f2d"
+    },
+    {
+      "path": "assets/elf4/meshes/r_elbow_y_link.obj",
+      "sha256": "2d316bd2eb70547cc6db101da5d1200038cb92cb231a6249010642a53637cade"
+    },
+    {
+      "path": "assets/elf4/meshes/r_hip_x_link.obj",
+      "sha256": "c9c7b08edf119b4a65df1fcc8a3c687c8768632de86ff8d9e745714e88fa1021"
+    },
+    {
+      "path": "assets/elf4/meshes/r_hip_y_link.obj",
+      "sha256": "cd43193ac584a64f1bb65fdc6853738aea4c727064a12c1e913dec6ba5eb8f32"
+    },
+    {
+      "path": "assets/elf4/meshes/r_hip_z_link.obj",
+      "sha256": "8d5ab902c52e69f00cc54e0ba36a0d57d065acba741bcaedef9e31f92c4b33df"
+    },
+    {
+      "path": "assets/elf4/meshes/r_knee_y_link.obj",
+      "sha256": "f2dc79658e1aeb866a11a0e4824052f224a2d172e21409600d5c9a426f6a90e3"
+    },
+    {
+      "path": "assets/elf4/meshes/r_shoulder_x_link.obj",
+      "sha256": "eea734901fa4da73340f1b31ab9605af45bde436a3c8c50ed78cdbdf844405cc"
+    },
+    {
+      "path": "assets/elf4/meshes/r_shoulder_y_link.obj",
+      "sha256": "b10e9c0ccbeb8fa37a94a5425b6a85fa101cdb05d3b4ac619562c0553844f309"
+    },
+    {
+      "path": "assets/elf4/meshes/r_shoulder_z_link.obj",
+      "sha256": "21491e16106313117e59e5b243fc8db1cbc12fb5d90a7e5a8acbb23186f0462c"
+    },
+    {
+      "path": "assets/elf4/meshes/r_wrist_x_link.obj",
+      "sha256": "303527e6a2469a43fdcc6248d8a82307c4a49b56d189356b4b433ac0e94aba3d"
+    },
+    {
+      "path": "assets/elf4/meshes/r_wrist_y_link.obj",
+      "sha256": "14ad740d20bcc8e54fc1164de9f0c7b3cc1f5d6be4f52f227b38d54e268dd994"
+    },
+    {
+      "path": "assets/elf4/meshes/r_wrist_z_link.obj",
+      "sha256": "fe083ad9ec07c4653336aa78adb6d482fa8b35239edcb507c75af2408cb40020"
+    },
+    {
+      "path": "assets/elf4/meshes/torso_link.obj",
+      "sha256": "682e74639593e8fbe6157953ed4500d5ac53eab25f8231ea9444c3e49298de41"
+    },
+    {
+      "path": "assets/elf4/meshes/waist_x_link.obj",
+      "sha256": "8aa4c405a75a46612812a16c380bb71add2c00ec838af05f28b8de9d60b3ed54"
+    },
+    {
+      "path": "assets/elf4/meshes/waist_y_link.obj",
+      "sha256": "de088e0dff483fba15b9ba1e912707437b09da8e72206da1ab7fe9702974a4ea"
+    },
+    {
+      "path": "assets/elf4/meshes/waist_z_link.obj",
+      "sha256": "4a857c0da579edecf277f2f036bcc0d9ce7f6bdcc2f396b554386ad165cfc0b5"
+    },
+    {
+      "path": "config/controller_joint_names_original.yaml",
+      "sha256": "3019de53982f8d2dcad6539750e4e0ea7bdcf0c61932d944dee0448e5b515278"
+    },
+    {
+      "path": "config/deploy.json",
+      "sha256": "ef631720a71067d4c7a8ad6f9303c534f5e91f15d03a900021c82270515289b9"
+    },
+    {
+      "path": "config/deploy.yaml",
+      "sha256": "8927fbc2854a2335a23f8fec2ee26776c8bd7a6c3198b805d0a3067b205392a1"
+    },
+    {
+      "path": "config/joints.csv",
+      "sha256": "ad90d9e130fbec9e481a86f74254bf754fe15fea0efa50ea98671b4012a25654"
+    },
+    {
+      "path": "config/motor_parameters.json",
+      "sha256": "e59ea5703e76737b361bec917fc9a8e06eebd5ec78bb382d5c36187bc4b9367e"
+    },
+    {
+      "path": "install.sh",
+      "sha256": "fb610278df0a07cb69230a5786b5aa88b388fc61f0e96c7c61992d8612dcc7b1"
+    },
+    {
+      "path": "models/policy.onnx",
+      "sha256": "83ab3bd76a55af008025b081bb0f59449d218dfefb5b0e838193f38ea250b988"
+    },
+    {
+      "path": "models/policy.pt",
+      "sha256": "e08947ca5ad21cd89e49f12f56b8c225a7244b0cb7e807c78ed5f4b597f720d0"
+    },
+    {
+      "path": "provenance/airborne_dynamics_comparison.json",
+      "sha256": "994b9e2850b742cc7807454bf07a980d32bbe536ee5f4c2ee473fd4cd9abbb1d"
+    },
+    {
+      "path": "provenance/baseline_variants.json",
+      "sha256": "78158d63d9176d4e8360fdc2fb2b30d914378356dc0d526f12931b31794d10ff"
+    },
+    {
+      "path": "provenance/build_mujoco_assets.py",
+      "sha256": "a76d0f4f84032f258a6f9c1f2d8ce247a768f57d475765f7c3ac7dcf345a2cbc"
+    },
+    {
+      "path": "provenance/contact_timing_comparison.json",
+      "sha256": "2a06084b3aa620f9fe6ca920e9d5a0b7efbdfe0ff6f7c0b97c122287ffd0dd15"
+    },
+    {
+      "path": "provenance/elf4_render_source.xml",
+      "sha256": "296cfcb05f5d1a9d7040d9151363c77cf03bba4e2279d39d6d0a2e3dfebdbd3a"
+    },
+    {
+      "path": "provenance/findings_summary.json",
+      "sha256": "177ccfc0cce00dd1c83e38508ebe430e2b5c218a585d43118d8afe7efa8c91d9"
+    },
+    {
+      "path": "provenance/initial_dynamics_comparison.json",
+      "sha256": "fe6468ba12f360d5989abc9b850f58c4e892fd9a4af49792545d00c3a1962d04"
+    },
+    {
+      "path": "provenance/mujoco_conversion.json",
+      "sha256": "623cc37e4cb885602c18f4a7c8b5418e8e0eddddf701a232867e01525fd77d37"
+    },
+    {
+      "path": "provenance/physics_scene_settings.json",
+      "sha256": "d6d9a3ee6119e12406f5cff5052b70a86659ae8396be43819e6877dc1d8b76be"
+    },
+    {
+      "path": "provenance/physx_collision_report.json",
+      "sha256": "a7ecdfc60d71478343d747b0d9343bd4033837b99d86f0bb214b36d9eafa6094"
+    },
+    {
+      "path": "provenance/physx_cooked_comparison.json",
+      "sha256": "d4e5f61af3b56b4d9a7beab79be17e0f666e53c8f5ef1b4f7e51eac38420ce92"
+    },
+    {
+      "path": "provenance/physx_limits_inertias.json",
+      "sha256": "88bea2253d6035351c259de27915e5b2e37e8a8e8b92e3e051263447065db8f9"
+    },
+    {
+      "path": "provenance/repair_summary.json",
+      "sha256": "260542ea8705075f21aa9624f9281b8f04f112cb2d67221829c6d1afbb331141"
+    },
+    {
+      "path": "provenance/source.json",
+      "sha256": "fdcf32e56c4498b6b3589cf35479d730b40a69f3c5df63bef045e5cb865d230b"
+    },
+    {
+      "path": "provenance/training_agent.yaml",
+      "sha256": "277d875cbc449b1fd644b9b3b6840d136331a002850f79ce1963d91d5bedebff"
+    },
+    {
+      "path": "provenance/training_env.yaml",
+      "sha256": "870d9fddd391de38740cde80f17948ee8afd78ab1a14990dcf4fc7e523a63e60"
+    },
+    {
+      "path": "provenance/viewer_shutdown.json",
+      "sha256": "3181774c09f51f36b0a500e128311c9222aab1241a9ff583d8848d75bb4f6033"
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "8363ef555b95660e8b49856aa367343563ecf006ccb5fbec91c5c0461b6eef2c"
+    },
+    {
+      "path": "run.sh",
+      "sha256": "77adc2ce52a2bec11cd182945b04d26534aedd08fe6d7340a9a5597c9df57733"
+    },
+    {
+      "path": "runtime/joint_velocity_limits.py",
+      "sha256": "32e5f035846d01bcde1405357f94599857f36bfbaaef8ddb2875c4b58c4f6dc6"
+    },
+    {
+      "path": "runtime/policy.py",
+      "sha256": "fdffc247653c846134b2e30f351b650a39bb14ca2906deb2330c462b0d2e99ff"
+    },
+    {
+      "path": "runtime/run_mujoco.py",
+      "sha256": "638328211fcdfd4a5229a7764aedf0a611c3bc489a03dc9c2eadacd1d33198e7"
+    },
+    {
+      "path": "runtime/simulation.py",
+      "sha256": "3e0eafbc1bee4dc501e1f7e20cf85fab54c2d380ed531d774f1024f2a6662dd6"
+    },
+    {
+      "path": "runtime/verify.py",
+      "sha256": "e12685840b9a88dfbdbbe7448b3a7233e5e769cc001670379d37cdc0875d3998"
+    },
+    {
+      "path": "validation/README.md",
+      "sha256": "62fc58478d59b811b95c4606f6104eb3893d642946a23d4397d1fa9b20754fab"
+    },
+    {
+      "path": "validation/build_assets.log",
+      "sha256": "623cc37e4cb885602c18f4a7c8b5418e8e0eddddf701a232867e01525fd77d37"
+    },
+    {
+      "path": "validation/build_reference.py",
+      "sha256": "3e920c4ecdc7d49d16092650b9e5404f6ac3c8bee5161704db51f1fe01b58dea"
+    },
+    {
+      "path": "validation/comparison.png",
+      "sha256": "4f44855b418b9aa3c8d67569a4bd4dc6bc55fafd7c33cb0e0474508f098a1487"
+    },
+    {
+      "path": "validation/gui_smoke.json",
+      "sha256": "d0bfa6e2960cf2e8a3e9c076c381899679008e89889fe680f611c5753189c9c3"
+    },
+    {
+      "path": "validation/gui_smoke.log",
+      "sha256": "d0bfa6e2960cf2e8a3e9c076c381899679008e89889fe680f611c5753189c9c3"
+    },
+    {
+      "path": "validation/isaac_reference.json",
+      "sha256": "247dfa16f17445a1b8d0f9cdaae175aa442b3a2326b22188bd35f3c0ab4dc0b6"
+    },
+    {
+      "path": "validation/isaac_reference.npz",
+      "sha256": "8a5dfef560f94d71a17f1fb0c2297af6c02a73c529077e9d31d63922ff22ac86"
+    },
+    {
+      "path": "validation/mujoco_command_suite.json",
+      "sha256": "347959b594526c527acc795199f94e06a928b67be6eec20721ab56ec5efe8f7b"
+    },
+    {
+      "path": "validation/standing_comparison.npz",
+      "sha256": "09f0e2f8daddcf5d36ac13503ec95d0acfff7452598e162053031000d9958b92"
+    },
+    {
+      "path": "validation/suite_final.log",
+      "sha256": "9e5b6d7a4222a962efcf50c9d0037a7f6aa0f12b64ea754006c55be71f5591df"
+    },
+    {
+      "path": "validation/test_pairing.py",
+      "sha256": "e90c746c657d8270bfb6f03f1dd03cc7bf0194d4b505fa45c28f6e4bc38b39a5"
+    },
+    {
+      "path": "validation/test_results.json",
+      "sha256": "eebdcd61f813af816d65614477d80da66fe20bcc79cb3b35475524bcc168aa3d"
+    },
+    {
+      "path": "validation/test_velocity_limits.py",
+      "sha256": "5c5567f4f7b20c19dbc860936c59dda418340cad6e3023b8f42d9a8283ce83cc"
+    },
+    {
+      "path": "validation/validate_suite.py",
+      "sha256": "f3ad2840cfe8e2e045fb2f0b3d3eb46a69a9810e56691ef9b8d41caf16abe52d"
+    },
+    {
+      "path": "validation/verification.json",
+      "sha256": "31b8c7e571106d677996cedebce6e96c6a3f58f142181f3bfe6c9eef814c1d3b"
+    },
+    {
+      "path": "validation/verification.log",
+      "sha256": "31b8c7e571106d677996cedebce6e96c6a3f58f142181f3bfe6c9eef814c1d3b"
+    }
+  ]
+}
