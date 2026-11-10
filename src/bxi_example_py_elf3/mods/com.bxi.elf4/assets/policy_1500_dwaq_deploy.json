@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "metadata": {
+    "path": "assets/policy_1500_dwaq.json"
+  },
+  "command_min": [
+    -0.6,
+    -0.5,
+    -1.57
+  ],
+  "command_max": [
+    1.0,
+    0.5,
+    1.57
+  ],
+  "command_limit_source": "Reuse the existing ELF4 remote command envelope; the supplied policy metadata does not specify a wider command range.",
+  "simulation_limits_note": "Shared ELF4 physics retains the existing XMZ velocity caps. The supplied lower-body training contract lists ankle Y/X speed caps 15/5 rad/s while the shared simulation uses 20/10 rad/s. No global physics is changed when adding this model."
+}
