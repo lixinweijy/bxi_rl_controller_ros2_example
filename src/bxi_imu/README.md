@@ -93,6 +93,16 @@ ros2 launch bxi_imu imu.launch.py driver:=hipnuc port:=/dev/ttyIMU baudrate:=921
 ros2 launch bxi_imu imu.launch.py driver:=yesense port:=/dev/ttyIMU_YESENSE_1 baudrate:=921600
 ```
 
+### Reader scheduling
+
+On Linux, `imu_reader_priority:=20` applies `SCHED_RR/20` only to the
+`imu_reader` thread. The parameter is read at startup. The default is 0 (keep inherited scheduling); valid real-time
+priorities are 1–99. Root, an adequate `RLIMIT_RTPRIO`, or `CAP_SYS_NICE` is needed.
+If the request fails, the node warns and keeps inherited scheduling. Configure this
+while stopped, keep the priority below critical motor control threads, and verify
+the actual policy with `ps -T` and arrival-gap measurements. Existing DDS and CSV
+writer threads retain their scheduling. Avoid using `chrt` on the entire process.
+
 ### Controlling IMU CSV recording
 
 The default recording setting is stored in the module configuration:

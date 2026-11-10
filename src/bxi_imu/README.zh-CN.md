@@ -116,6 +116,20 @@ ros2 launch bxi_imu imu.launch.py \
   driver:=yesense port:=/dev/ttyIMU_YESENSE_1 baudrate:=921600
 ```
 
+### 接收线程调度
+
+Linux 下可只提高串口接收线程的优先级，CSV 写盘和已有 DDS 线程保持原调度：
+
+```bash
+ros2 launch bxi_imu imu.launch.py imu_reader_priority:=20
+```
+
+`imu_reader_priority` 仅在启动时读取，默认 0（保持继承的调度），1～99 使用 `SCHED_RR`。
+需要 root 或足够的 `RLIMIT_RTPRIO` / `CAP_SYS_NICE`；权限不足会告警并保留原调度。
+接收线程在 `ps -T` 中显示为 `imu_reader`。部署时优先级应低于关键电机控制线程，
+避免给整个进程使用 `chrt`，导致写盘和 DDS 线程一起提升。应在安全停机窗口配置，
+启动后核对线程实际策略，并复测接收间隔；该参数不保证消除串口和内核引入的全部延迟。
+
 ### 控制 IMU CSV 记录
 
 默认是否记录由模块配置文件决定：

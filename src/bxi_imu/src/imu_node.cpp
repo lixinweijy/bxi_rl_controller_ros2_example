@@ -18,6 +18,7 @@
 #include <cmath>
 #include <condition_variable>
 #include <cstdint>
+#include <cstring>
 #include <ctime>
 #include <filesystem>
 #include <fstream>
@@ -37,6 +38,7 @@
 
 #include "bxi_imu/imu_backend.hpp"
 #include "bxi_imu/probe.hpp"
+#include "bxi_imu/reader_scheduling.hpp"
 #include "bxi_imu/sample_freshness.hpp"
 
 namespace bxi_imu
@@ -85,6 +87,7 @@ public:
     imu_record_max_files_ = declare_parameter<int>("imu_record_max_files", 10);
     probe_timeout_ms_ = declare_parameter<int>("probe_timeout_ms", 1200);
     probe_min_frames_ = declare_parameter<int>("probe_min_frames", 3);
+    reader_priority_ = declare_parameter<int>("imu_reader_priority", 0);
     imu_candidates_ = declare_parameter<std::vector<std::string>>(
       "imu_candidates",
       std::vector<std::string>{
@@ -92,6 +95,10 @@ public:
         "yesense|/dev/ttyIMU|921600|-y,x,z|200.0|2.5",
         "yesense|/dev/ttyIMU_YESENSE_1|921600|-y,x,z|200.0|2.5"});
 
+    if (reader_priority_ < 0 || reader_priority_ > 99) {
+      RCLCPP_ERROR(get_logger(), "imu_reader_priority must be in [0, 99]");
+      return;
+    }
     if (probe_timeout_ms_ < 100 || probe_min_frames_ < 2) {
       RCLCPP_ERROR(get_logger(), "invalid IMU probe settings: timeout_ms=%d min_frames=%d",
         probe_timeout_ms_, probe_min_frames_);
@@ -462,6 +469,17 @@ private:
 
   void read_loop()
   {
+    pthread_setname_np(pthread_self(), "imu_reader");
+    if (reader_priority_ > 0) {
+      const int error = set_reader_priority(reader_priority_);
+      if (error != 0) {
+        RCLCPP_WARN(get_logger(),
+          "cannot set IMU reader SCHED_RR/%d: %s; keeping inherited scheduling",
+          reader_priority_, std::strerror(error));
+      } else {
+        RCLCPP_INFO(get_logger(), "IMU reader scheduling: SCHED_RR/%d", reader_priority_);
+      }
+    }
     while (rclcpp::ok() && running_) {
       ImuSample sample;
       if (!backend_->read(sample)) {
@@ -1137,6 +1155,7 @@ private:
   int record_file_index_{0};
   int probe_timeout_ms_{1200};
   int probe_min_frames_{3};
+  int reader_priority_{0};
   std::uint64_t recorded_rows_since_flush_{0};
   std::optional<std::chrono::steady_clock::time_point> last_record_time_;
   static constexpr std::size_t record_queue_capacity_{2000};

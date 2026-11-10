@@ -89,6 +89,10 @@ def generate_launch_description():
             DeclareLaunchArgument("baudrate", default_value="921600"),
             DeclareLaunchArgument("probe_timeout_ms", default_value="1200"),
             DeclareLaunchArgument("probe_min_frames", default_value="3"),
+            DeclareLaunchArgument(
+                "imu_reader_priority", default_value="0",
+                description="Reader-only SCHED_RR priority (1-99); 0 keeps inherited scheduling",
+            ),
             DeclareLaunchArgument("imu_freshness_mode", default_value="observe"),
             DeclareLaunchArgument("imu_freshness_lag_limit_ms", default_value="100.0"),
             DeclareLaunchArgument(
@@ -113,6 +117,9 @@ def generate_launch_description():
                         ),
                         "probe_min_frames": ParameterValue(
                             LaunchConfiguration("probe_min_frames"), value_type=int
+                        ),
+                        "imu_reader_priority": ParameterValue(
+                            LaunchConfiguration("imu_reader_priority"), value_type=int
                         ),
                         "imu_freshness_mode": LaunchConfiguration("imu_freshness_mode"),
                         "imu_freshness_lag_limit_ms": ParameterValue(
