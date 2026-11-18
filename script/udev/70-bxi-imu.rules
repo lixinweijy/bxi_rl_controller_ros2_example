@@ -1,0 +1,5 @@
+# Shared IMU alias on every architecture and USB port. The helper retains a
+# valid mapping and claims another matching device when the current one leaves.
+ACTION=="add|change", SUBSYSTEM=="tty", KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ENV{BXI_IMU}="1", MODE:="0660", RUN+="/usr/local/bin/bxi-imu-link add %k"
+ACTION=="add|change", SUBSYSTEM=="tty", KERNEL=="ttyACM*", ATTRS{idVendor}=="5953", ATTRS{idProduct}=="5543", ENV{BXI_IMU}="1", MODE:="0660", RUN+="/usr/local/bin/bxi-imu-link add %k"
+ACTION=="remove", SUBSYSTEM=="tty", KERNEL=="ttyUSB*|ttyACM*", RUN+="/usr/local/bin/bxi-imu-link remove %k"
