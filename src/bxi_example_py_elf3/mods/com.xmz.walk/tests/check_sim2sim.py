@@ -15,7 +15,7 @@ spec = importlib.util.spec_from_file_location('xmz_reference', source/'amp_sim2s
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 for command in ([0.,0.,0.], [.3,0.,0.], [0.,0.,.3]):
-    sim = module.Elf4XmzSim2Sim(source/'elf4_2w.onnx', source/'model/elf4_xmz.xml',source/'config.json',np.array(command))
+    sim = module.Elf4XmzSim2Sim(source/'xmz_10k.onnx', source/'model/elf4_xmz.xml',source/'config.json',np.array(command))
     policy = Elf4Policy(root/'assets/config.json',root/'assets/policy.onnx')
     lowest = float(sim.data.qpos[2])
     max_error = 0.

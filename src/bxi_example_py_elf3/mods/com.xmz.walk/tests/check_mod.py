@@ -70,7 +70,7 @@ class XmzTest(unittest.TestCase):
             np.testing.assert_array_equal(frame.torque, 0)
         if SOURCE:
             self.assertEqual((ROOT/'assets/config.json').read_bytes(), (SOURCE/'config.json').read_bytes())
-            self.assertEqual((ROOT/'assets/policy.onnx').read_bytes(), (SOURCE/'elf4_2w.onnx').read_bytes())
+            self.assertEqual((ROOT/'assets/policy.onnx').read_bytes(), (SOURCE/'xmz_10k.onnx').read_bytes())
 
     def test_history_and_vector_scale_against_reference(self):
         p = self.p
