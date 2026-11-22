@@ -23,9 +23,9 @@ events:
     value: 1
 speed_profiles:
   walk:
-    vx_scale: 1.0
+    vx_scale: 0.5
     vx_min: -0.5
-    vx_max: 1.0
+    vx_max: 0.5
     vy_scale: 0.5
     vy_min: -0.5
     vy_max: 0.5
