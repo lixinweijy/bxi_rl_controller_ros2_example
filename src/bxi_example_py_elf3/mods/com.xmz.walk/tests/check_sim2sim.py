@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare the moving model to the supplied runner; pass its ELF4 source directory."""
+"""Compare the single model to the supplied runner; pass its ELF4 source directory."""
 import importlib.util
 from pathlib import Path
 import sys
@@ -15,8 +15,8 @@ spec = importlib.util.spec_from_file_location('xmz_reference', source/'amp_sim2s
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 for command in ([0.,0.,0.], [.3,0.,0.], [0.,0.,.3]):
-    sim = module.Elf4XmzSim2Sim(root/'assets/policy_1.onnx', source/'model/elf4_xmz.xml',root/'assets/config_1.json',np.array(command))
-    policy = Elf4Policy(root/'assets/config_1.json',root/'assets/policy_1.onnx')
+    sim = module.Elf4XmzSim2Sim(root/'assets/policy.onnx', source/'model/elf4_xmz.xml',root/'assets/config.json',np.array(command))
+    policy = Elf4Policy(root/'assets/config.json',root/'assets/policy.onnx')
     lowest = float(sim.data.qpos[2])
     max_error = 0.
     for step in range(500):
