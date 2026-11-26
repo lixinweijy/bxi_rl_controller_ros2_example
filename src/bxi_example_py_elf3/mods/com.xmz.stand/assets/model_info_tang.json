@@ -1,0 +1,15 @@
+{
+  "profile": "elf4_xmz_stand_540",
+  "training_run": "2026-11-24_11-58-56_xmz_540_smooth_stand",
+  "iteration": "37300",
+  "checkpoint": "model_37300.pt",
+  "checkpoint_sha256": "57113e2b3948daa001fc9941cad2bdbf1e771ab3c420dc79f75db156053b2515",
+  "controller_parameters_sha256": "1d0bf9e0397a50e2521b30f902d90be7ce6e3f1597adf8d7cf1a9e8ed89fa4c9",
+  "source_snapshot_sha256": "06c1f66486fe6a12aa7c140b1f8a103d937b8fc9a73b69089d1d3cff42f1e91e",
+  "asset_signature": "6c15295bf7a47c92d6e9a9de1e7af538db5f6796bbab60d6a7c424b2f3af3677",
+  "arm_database_sha256": "a6f1d9257656567f4c4601357bc3962f1f92c166e103f7993cbbd80a32d3cc1c",
+  "checkpoint_saved_utc": "2026-11-24T05:43:50+00:00",
+  "onnx_sha256": "fcd8b02fc52352ab7183b1cb254886b31c6d6b22dfe4ae49de30fd70dff2267b",
+  "parity_samples": 65,
+  "parity_max_abs": 7.62939453125e-06
+}
