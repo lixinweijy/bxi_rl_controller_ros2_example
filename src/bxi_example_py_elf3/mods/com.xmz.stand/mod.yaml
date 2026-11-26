@@ -47,6 +47,10 @@ transition_profiles:
     sample_to: false
 
 routes:
+  - from: com.xmz.walk/walk
+    event: stand
+    to: stand
+    transition: posture_blend
   - from: com.bxi.basic_actions/pd_brake
     event: stand
     to: stand

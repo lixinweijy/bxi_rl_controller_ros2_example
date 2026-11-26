@@ -14,6 +14,8 @@ from elf4_policy import Elf4Policy
 spec = importlib.util.spec_from_file_location('xmz_reference', source/'amp_sim2sim_elf4_xmz.py')
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
+if not hasattr(module.Elf4XmzSim2Sim, 'action_to_target'):
+    raise SystemExit('Reference runner must include the wrist input/output offsets and action_to_target().')
 for command in ([0.,0.,0.], [.3,0.,0.], [0.,0.,.3]):
     sim = module.Elf4XmzSim2Sim(root/'assets/policy.onnx', source/'model/elf4_xmz.xml',root/'assets/config.json',np.array(command))
     policy = Elf4Policy(root/'assets/config.json',root/'assets/policy.onnx')
@@ -27,7 +29,7 @@ for command in ([0.,0.,0.], [.3,0.,0.], [0.,0.,.3]):
         np.testing.assert_allclose(obs,ref,atol=2e-5,rtol=1e-5)
         target = policy.infer(obs)
         action = sim.infer(ref)
-        expected = sim.default_pos + sim.action_scale*action.astype(np.float64)
+        expected = sim.action_to_target(action)
         max_error = max(max_error,float(np.max(np.abs(target-expected))))
         np.testing.assert_allclose(target,expected,atol=2e-5,rtol=1e-5)
         assert not sim.step(action), f'fall command={command}, t={step*.02}'

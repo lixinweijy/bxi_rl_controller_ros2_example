@@ -69,6 +69,11 @@ class StandTest(unittest.TestCase):
         manifest = yaml.safe_load((ROOT/'mod.yaml').read_text())
         self.assertEqual(manifest['events']['stand'], {'slot': 'btn_5', 'value': 1})
         self.assertEqual(manifest['states']['stand']['params']['arm_speed'], .5)
+        self.assertIn({'from': 'com.xmz.walk/walk', 'event': 'stand',
+                       'to': 'stand', 'transition': 'posture_blend'}, manifest['routes'])
+        self.assertEqual(manifest['transition_profiles']['posture_blend'],
+                         {'type': 'running_blend', 'duration': .6, 'curve': 'smoothstep',
+                          'sample_from': False, 'sample_to': False})
         if REMOTE:
             remote = yaml.safe_load(REMOTE.read_text())
             rule = next(r for r in remote['outputs']['level'] if r['output'] == 'btn_5=1')
@@ -156,6 +161,7 @@ class StandTest(unittest.TestCase):
         ctx.request_state = machine.request_transition
         adapter = RemoteEventAdapter(config['remote_events'])
         for slot,target in [('btn_3','com.bxi.basic_actions/pd_brake'),
+                            ('btn_1','com.xmz.walk/walk'),
                             ('btn_5','com.xmz.stand/stand'),
                             ('btn_3','com.bxi.basic_actions/pd_brake'),
                             ('btn_5','com.xmz.stand/stand'),
@@ -165,8 +171,11 @@ class StandTest(unittest.TestCase):
                             ('btn_2','com.bxi.basic_actions/zero_torque')]:
             adapter.extract_events(SimpleNamespace())
             events = adapter.extract_events(SimpleNamespace(**{slot:1}))
+            from_walk = machine.current_state_name == 'com.xmz.walk/walk'
             for i in range(60):
                 machine.update(.02,events if i==0 else [])
+                if from_walk and i == 0:
+                    self.assertTrue(machine.in_transition)
                 machine.update_current_state(.02)
             self.assertEqual(machine.current_state_name,target)
             self.assertFalse(machine.in_transition)

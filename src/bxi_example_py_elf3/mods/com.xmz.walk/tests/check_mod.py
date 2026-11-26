@@ -37,6 +37,8 @@ class XmzTest(unittest.TestCase):
         self.walk = self.states['com.xmz.walk/walk']
         self.walk._bind_logger(Mock())
         self.p = self.walk.policy.get()
+        offsets = sys.modules[type(self.p).__module__].WRIST_POSITION_OFFSETS_DEG
+        self.offset = np.deg2rad([offsets.get(n, 0.) for n in self.p.names])
         self.now = 1_000_000_000
         names = tuple(reversed(self.p.names)) + ('head_y_joint', 'head_z_joint')
         layout = JointLayout(names)
@@ -51,8 +53,8 @@ class XmzTest(unittest.TestCase):
         self.walk.on_prepare(self.ctx, None)
 
     def test_parameters_and_only_xmz_model(self):
-        self.assertEqual({m.id for m in self.runtime.mods}, {'com.bxi.basic_actions', 'com.xmz.walk'})
-        self.assertEqual(len(self.states), 5)
+        self.assertEqual({m.id for m in self.runtime.mods}, {'com.bxi.basic_actions', 'com.xmz.walk', 'com.xmz.stand'})
+        self.assertEqual(len(self.states), 6)
         self.assertTrue((ROOT/'assets/policy.onnx').is_file())
         self.assertEqual(len(self.p.disabled), 0)
         self.assertEqual(self.walk.inference_hz, 50)
@@ -84,16 +86,39 @@ class XmzTest(unittest.TestCase):
             omega = np.array([.1, -.2, .3])
             command = np.array([(-1)**i * .8, .2, -.3])
             clipped_cmd = np.clip(command, p.ranges[:, 0], p.ranges[:, 1])
-            frame = np.concatenate((omega, [0, 0, -1], clipped_cmd, q-p.default, dq, p.previous)).astype(np.float32)
+            frame = np.concatenate((omega, [0, 0, -1], clipped_cmd, q+self.offset-p.default, dq, p.previous)).astype(np.float32)
             if i == 0: reference[:] = frame
             else: reference[:-1] = reference[1:]; reference[-1] = frame
             obs = p.observe(p.names[::-1], q[::-1], dq[::-1], [1,0,0,0], omega, command)
             np.testing.assert_array_equal(obs, np.clip(reference.reshape(1,-1),-100,100))
             action = session.run([p.output_name], {p.input_name: obs})[0][0]
-            np.testing.assert_allclose(p.infer(obs), p.default+p.action_scale*np.clip(action,-100,100).astype(np.float64), atol=1e-7)
+            np.testing.assert_allclose(p.infer(obs), p.default+p.action_scale*np.clip(action,-100,100).astype(np.float64)+self.offset, atol=1e-7)
         action = np.linspace(-120,120,29,dtype=np.float32).reshape(1,29)
         p.session = SimpleNamespace(run=lambda *args: [action])
-        np.testing.assert_allclose(p.infer(obs), p.default+p.action_scale*np.clip(action[0],-100,100).astype(np.float64))
+        np.testing.assert_allclose(p.infer(obs), p.default+p.action_scale*np.clip(action[0],-100,100).astype(np.float64)+self.offset)
+
+    def test_wrist_offsets_before_input_and_after_output(self):
+        p = self.p
+        q = p.default + np.linspace(-.1, .1, 29)
+        dq = np.linspace(-.2, .2, 29)
+        original = q.copy()
+        p.reset()
+        for _ in range(2):
+            obs = p.observe(p.names[::-1], q[::-1], dq[::-1], [1,0,0,0], np.zeros(3), np.zeros(3))
+            np.testing.assert_allclose(p.history[-1,9:38], q+self.offset-p.default, atol=1e-7)
+            np.testing.assert_allclose(p.history[-1,38:67], dq, atol=1e-7)
+        np.testing.assert_array_equal(q, original)
+        session = p.session
+        try:
+            raw = np.full((1,29), .2, np.float32)
+            p.session = SimpleNamespace(run=lambda *args: [raw])
+            target = p.infer(obs)
+            np.testing.assert_allclose(target, p.default+p.action_scale*.2+self.offset, atol=1e-7)
+            np.testing.assert_array_equal(p.previous, raw[0])
+            p.observe(p.names, q, dq, [1,0,0,0], np.zeros(3), np.zeros(3))
+            np.testing.assert_array_equal(p.history[-1,67:], raw[0])
+        finally:
+            p.session = session
 
     def test_preview_mapping_freshness_and_invalid_input(self):
         before = self.p.history.copy()
@@ -150,7 +175,7 @@ class XmzTest(unittest.TestCase):
                 np.testing.assert_array_equal(self.p.history[:-1],history[1:])
             expected = np.clip(np.array(raw)*[.5,.5,1.57],self.p.ranges[:,0],self.p.ranges[:,1])
             np.testing.assert_allclose(self.p.history[-1,6:9],expected,atol=1e-7)
-            np.testing.assert_allclose(frame.qpos,self.p.default+self.p.action_scale*self.p.previous,atol=1e-7)
+            np.testing.assert_allclose(frame.qpos,self.p.default+self.p.action_scale*self.p.previous+self.offset,atol=1e-7)
             np.testing.assert_allclose(frame.kp,self.p.kp)
             np.testing.assert_allclose(frame.kd,self.p.kd)
         self.walk.command_received = time.monotonic()-.6
@@ -222,7 +247,7 @@ class XmzTest(unittest.TestCase):
             runtime=load_mod_runtime(yaml.safe_load((PACKAGE/'config/elf3_state_machine.yaml').read_text()),built_in_root=Path(directory)/'empty',extra_roots=[Path(directory)/'extra'])
             try:
                 runtime.resources.load_startup()
-                self.assertEqual(len(runtime.mods),2)
+                self.assertEqual(len(runtime.mods),3)
             finally:runtime.close()
 
     def test_unused_second_assets_are_not_required(self):

@@ -6,6 +6,12 @@ RB+X 固定运行 `assets/policy.onnx`，参数来自 `assets/config.json`。有
 
 模型SHA256：`311add88260ad5046ffa5721a4391ea0248e05301755cc7127a12f74304be211`。参数SHA256：`7365348dbb84ddd8925fddf087a7acab6d328fc90630047633cef86fff322cfe`。ONNX接口float32[1,960]→[1,29]，无训练metadata，按用户指定沿用运动组配置。离线加载/推理通过不代表实机运动验收。
 
+## 腕 X 角度偏置（2026-11-25）
+
+按用户要求，在 elf4_policy.py 的 WRIST_POSITION_OFFSETS_DEG 设置左腕X −10°、右腕X +10°。observe() 在减默认角和观测缩放之前加偏置；infer() 在动作裁剪、缩放并加默认角之后再加同号偏置。两处是独立加法，不是互逆标定。原始关节反馈、速度、previous action、默认姿态和PD参数不变，进入策略前的PD姿态保持原值。内部统一换算为rad；冻结手臂时对应偏置屏蔽。
+
+修改后需构建到正式install并正常重新Start才加载。未因此修改ONNX/JSON或底层标定。check_mod新增输入/输出单位、方向、原反馈不变与历史动作未加偏置的检查；check_sim2sim需要同步修改后的参考runner。
+
 ## 使用与换模型
 
 正常Start后RB+B进入PD，RB+X进入单模型；RB+B回PD、RB+A零力矩、RB+Y零位。遥控profile前后满杆±0.5m/s、横移±0.5m/s、转向±1.57rad/s，最终还受当前config.json的command_ranges限制。100ms反馈校验、IMU/倾角保护和宿主失联锁定保持。

@@ -6,6 +6,10 @@ import numpy as np
 import onnxruntime as ort
 
 
+# User-requested angle offsets, applied before observation and after action scaling.
+WRIST_POSITION_OFFSETS_DEG = {"l_wrist_x_joint": -20.0, "r_wrist_x_joint": 20.0}
+
+
 class Elf4Policy:
     def __init__(self, config_path, policy_path):
         self.cfg = json.loads(config_path.read_text())
@@ -15,6 +19,8 @@ class Elf4Policy:
         self.disabled = np.array([self.names.index(name) for name in
                                   ([name for name in self.names if any(part in name for part in ("shoulder", "elbow", "wrist"))]
                                    if self.cfg["freeze_arm_input_output"] else [])], dtype=np.intp)
+        self.position_offset = np.deg2rad([WRIST_POSITION_OFFSETS_DEG.get(name, 0.0) for name in self.names])
+        self.position_offset[self.disabled] = 0.0
         self.default = np.array([self.cfg["default_joint_pos"][name] for name in self.names])
         self.kp = [float(self.cfg["joint_control"][name]["stiffness"]) for name in self.names]
         self.kd = [float(self.cfg["joint_control"][name]["damping"]) for name in self.names]
@@ -85,7 +91,7 @@ class Elf4Policy:
         cmd = np.clip(cmd, self.ranges[:, 0], self.ranges[:, 1])
         scales = self.cfg["obs_scales"]
         frame = np.concatenate((omega * scales["ang_vel"], gravity * scales["projected_gravity"],
-                                cmd * scales["commands"], (q - self.default) * scales["joint_pos"],
+                                cmd * scales["commands"], (q + self.position_offset - self.default) * scales["joint_pos"],
                                 dq * scales["joint_vel"], self.previous * scales["actions"])).astype(np.float32)
         # Mask only the actor input; real feedback remains available to PD and safety checks.
         frame[9 + self.disabled] = 0
@@ -107,4 +113,4 @@ class Elf4Policy:
         self.raw_action[:] = action[0]
         self.previous[:] = np.clip(action[0], -self.cfg["clip_actions"], self.cfg["clip_actions"])
         self.previous[self.disabled] = 0
-        return self.default + self.action_scale * self.previous.astype(np.float64)
+        return self.default + self.action_scale * self.previous.astype(np.float64) + self.position_offset
